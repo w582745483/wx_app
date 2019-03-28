@@ -6,7 +6,7 @@ import Login from './component/login';
 
 ReactDOM.render(
     <div>
-        <Login/>
+        <Logo/>
     </div>,
 
 document.getElementById('root'));

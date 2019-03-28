@@ -5,7 +5,7 @@ export default class Logo extends Component{
     state={
         src:""
     }
-    handleClick=()=>{
+    handleClick1=()=>{
         // var xhr=new XMLHttpRequest()
         // xhr.open('GET',"http://47.93.189.47:8818/WebService1.asmx/HelloWorld",true)
         // xhr.onreadystatechange=function(){
@@ -20,7 +20,19 @@ export default class Logo extends Component{
         // xhr.send();
        
 
-        fetch("http://47.93.189.47:8818/WebService1.asmx/HelloWorld")
+        fetch("http://47.93.189.47:8818/WebService1.asmx/GetLoginQrcode")
+            .then(res=>res.text())
+            .then(data=>{
+                 console.log('data',data)
+               this.setState({
+                   src:"data:image/jpg;base64,"+data
+               })
+              
+            })
+     }
+     handleClick2=()=>{
+
+        fetch("http://47.93.189.47:8818/WebService1.asmx?op=SendTimeLine")
             .then(res=>res.text())
             .then(data=>{
                  console.log('data',data)
@@ -37,7 +49,8 @@ export default class Logo extends Component{
                 <div className='login_box'>
                 <img class="img" src={this.state.src}></img>
                 <p className='sub_title'>使用手机微信扫码登录</p>
-                <button onClick={this.handleClick}>按钮</button>
+                <button onClick={this.handleClick1}>按钮11</button>
+                <button onClick={this.handleClick2}>按钮22</button>
                 </div>
             </div>
         )
