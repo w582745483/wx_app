@@ -1,8 +1,8 @@
 import React from 'react'
 import {Button,Icon,Input} from 'antd'
 
-import background from '../assets/img/background.jpg'
-import { relative } from 'path';
+import Background from '../container/background'
+
 export default class Login extends React.Component {
   
     render() {
@@ -15,7 +15,7 @@ export default class Login extends React.Component {
  
         return (
             <div>
-                <img src={background} alt='logo' className='login-background' />
+                <Background/>
                 <div className="login">
                     <div style={style}>
                         <Icon type="user"  style={{fontSize:'30px',color: '#FFFFFF',}}/>

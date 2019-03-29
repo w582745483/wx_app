@@ -1,4 +1,8 @@
 /* 二维码展示页面Css*/
+
+body,html{
+    height:100%;
+}  
 .logo-img {
   position:fixed;
   top: 0;
