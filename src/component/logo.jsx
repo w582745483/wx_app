@@ -32,7 +32,7 @@ export default class Logo extends Component{
      }
      handleClick2=()=>{
 
-        fetch("http://47.93.189.47:8818/WebService1.asmx?op=SendTimeLine")
+        fetch("http://47.93.189.47:8818/WebService1.asmx/SendTimeLine")
             .then(res=>res.text())
             .then(data=>{
                  console.log('data',data)
