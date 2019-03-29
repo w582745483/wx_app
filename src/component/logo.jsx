@@ -49,8 +49,8 @@ export default class Logo extends Component{
                 <div className='login_box'>
                 <img class="img" src={this.state.src}></img>
                 <p className='sub_title'>使用手机微信扫码登录</p>
-                <button onClick={this.handleClick1}>按钮11</button>
-                <button onClick={this.handleClick2}>按钮22</button>
+                <button onClick={this.handleClick1}>获取登录二维码</button>
+                <button onClick={this.handleClick2}>发朋友圈</button>
                 </div>
             </div>
         )
