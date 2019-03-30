@@ -1,18 +1,16 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom'
-import {Icon} from 'antd'
 
 import '../assets/css/main.css'
 import logo from '../assets/img/ng-scope.jpg'
 import refresh from '../assets/img/refresh.jpg'
 export default class Logo extends Component {
     state = {
-        src: ""
+        src: "",
+        qr:'使用手机微信扫码登录',
+        opacity:'1'
     }
     handleClick1 = () => {
-
-
-
         fetch("http://47.93.189.47:8818/WebService1.asmx/GetLoginQrcode")
             .then(res => res.text())
             .then(data => {
@@ -51,6 +49,27 @@ export default class Logo extends Component {
         }
         xhr.send(JSON.stringify(postData));
     }
+    handleRefresh=()=>{
+        fetch("http://47.93.189.47:8818/WebService1.asmx/GetLoginQrcode")
+        .then(res => res.text())
+        .then(data => {
+            console.log('data', data)
+            this.setState({
+                src: "data:image/jpg;base64," + data
+            })
+        })
+        this.setState({
+            qr:'使用手机微信扫码登录',
+            opacity:'1'
+        })
+        clearTimeout( this.timeInit)
+        setTimeout(()=>{
+            this.setState({
+                qr:'二维码失效，点击刷新',
+                opacity:'0.4'
+            })
+        },240000)
+    }
     componentWillMount() {
         fetch("http://47.93.189.47:8818/WebService1.asmx/GetLoginQrcode")
             .then(res => res.text())
@@ -59,27 +78,31 @@ export default class Logo extends Component {
                 this.setState({
                     src: "data:image/jpg;base64," + data
                 })
-
             })
+            this.timeInit=setTimeout(()=>{
+                this.setState({
+                    qr:'二维码失效，点击刷新',
+                    opacity:'0.4'
+                })
+            },240000)
     }
     render() {
-
         return (
             <div>
                 <img src={logo} alt='logo' className='logo-img' />
                 <div className='login_box'>
-                    <img className="img" src={this.state.src}></img>
-                   
-                   
-                    <div className='icons-list'  style={{marginTop:'-173px',paddingBottom:'120px',}}>
-                        {/* <img className="refresh" src={refresh}></img> */}
-                        <Icon type="sync" rotate={180}  theme="outlined" className='icons-list' spin style={{fontSize:'50px',paddingLeft:'163px'}}/>
+                    <img className="imgqr" style={{opacity:this.state.opacity}} src={this.state.src}></img>
+                    <div style={{marginTop:'-213px',paddingBottom:'70px',}}>
+                        <img className="refresh" onClick={this.handleRefresh} src={refresh}></img>
                     </div>
-                    <p className='sub_title'>使用手机微信扫码登录</p>
+                    <div className='sub_title'>
+                    <p >{this.state.qr}</p>
                     <button onClick={this.handleClick1}>重新获取二维码</button>
                     <button onClick={this.handleClick2}>发朋友圈</button>
                     <button onClick={this.handleClick3}>添加视频连接</button>
                     <button onClick={this.handleClick4}>发送视频</button>
+                    </div>
+                  
 
                 </div>
                
