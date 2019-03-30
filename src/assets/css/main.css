@@ -41,6 +41,7 @@ body,html{
     height: 230px;
     margin: 42px auto 12px;
     padding: 20px 20px;
+    opacity:0.4;
 }
 .sub_title{
     position: relative;
@@ -74,4 +75,13 @@ body,html{
     font-size: 1.5rem;
     background: transparent;
     color: #FDFCFD;
+}
+
+.refresh{
+    z-index: 10;
+    display: block;
+    width: 50px;
+    height: 50px;
+    margin: 42px auto 12px;
+    padding: 20px 20px;
 }
