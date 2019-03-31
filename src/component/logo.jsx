@@ -7,20 +7,10 @@ import refresh from '../assets/img/refresh.jpg'
 export default class Logo extends Component {
     state = {
         src: "",
-        qr:'使用手机微信扫码登录',
-        opacity:'1'
+        qr: '使用手机微信扫码登录',
+        opacity: '1'
     }
-    handleClick1 = () => {
-        fetch("http://47.93.189.47:8818/WebService1.asmx/GetLoginQrcode")
-            .then(res => res.text())
-            .then(data => {
-                console.log('data', data)
-                this.setState({
-                    src: "data:image/jpg;base64," + data
-                })
 
-            })
-    }
     handleClick2 = () => {
 
         fetch("http://47.93.189.47:8818/WebService1.asmx/SendTimeLine")
@@ -32,7 +22,7 @@ export default class Logo extends Component {
 
     }
     handleClick3 = () => {
-        this.props.history.replace('/video')
+        this.props.history.push('/video')
     }
     handleClick4 = () => {
         var xhr = new XMLHttpRequest()
@@ -49,63 +39,83 @@ export default class Logo extends Component {
         }
         xhr.send(JSON.stringify(postData));
     }
-    handleRefresh=()=>{
-        fetch("http://47.93.189.47:8818/WebService1.asmx/GetLoginQrcode")
-        .then(res => res.text())
-        .then(data => {
-            console.log('data', data)
-            this.setState({
-                src: "data:image/jpg;base64," + data
-            })
-        })
-        this.setState({
-            qr:'使用手机微信扫码登录',
-            opacity:'1'
-        })
-        clearTimeout( this.timeInit)
-        setTimeout(()=>{
-            this.setState({
-                qr:'二维码失效，点击刷新',
-                opacity:'0.4'
-            })
-        },240000)
-    }
-    componentWillMount() {
-        fetch("http://47.93.189.47:8818/WebService1.asmx/GetLoginQrcode")
+    handleRefresh = () => {
+        fetch("http://47.93.189.47:8818/WebService1.asmx/GetUuidAndLoginQrcode")
             .then(res => res.text())
             .then(data => {
                 console.log('data', data)
                 this.setState({
-                    src: "data:image/jpg;base64," + data
+                    src: "data:image/jpg;base64," + data.substr(data.lastIndexOf('_Qk') + 1, data.length)
+                })
+
+            })
+        this.setState({
+            qr: '使用手机微信扫码登录',
+            opacity: '1'
+        })
+        clearTimeout(this.timeInit)
+        setTimeout(() => {
+            this.setState({
+                qr: '二维码失效，点击刷新',
+                opacity: '0.4'
+            })
+        }, 240000)
+    }
+    componentWillMount() {
+        fetch("http://47.93.189.47:8818/WebService1.asmx/GetUuidAndLoginQrcode")
+            .then(res => res.text())
+            .then(data => {
+                console.log('data', data)
+                this.setState({
+                    src: "data:image/jpg;base64," + data.substr(data.lastIndexOf('_Qk') + 1, data.length)
+                })
+                // fetch('http://47.93.189.47:8818/WebService1.asmx/checkLogin', {
+                //     method: 'POST',
+                //     body: data.substr(0,data.lastIndexOf('_Qk'))
+                // }).then(res => console.log(res.text()))
+
+                var xhr = new XMLHttpRequest()
+                
+                xhr.open('POST', "http://47.93.189.47:8818/WebService1.asmx/checkLogin", true)
+                xhr.onreadystatechange = function () {
+                    if (this.readyState == 4) {
+                        console.log(this.responseText)
+                    }
+                }
+                xhr.send(data.substr(0,data.lastIndexOf('_Qk')));
+            })
+            .catch(error => {
+                this.setState({
+                    qr: error
                 })
             })
-            this.timeInit=setTimeout(()=>{
-                this.setState({
-                    qr:'二维码失效，点击刷新',
-                    opacity:'0.4'
-                })
-            },240000)
+
+        this.timeInit = setTimeout(() => {
+            this.setState({
+                qr: '二维码失效，点击刷新',
+                opacity: '0.4'
+            })
+        }, 4000)
     }
     render() {
         return (
             <div>
                 <img src={logo} alt='logo' className='logo-img' />
                 <div className='login_box'>
-                    <img className="imgqr" style={{opacity:this.state.opacity}} src={this.state.src}></img>
-                    <div style={{marginTop:'-213px',paddingBottom:'70px',}}>
+                    <img className="imgqr" style={{ opacity: this.state.opacity }} src={this.state.src}></img>
+                    <div style={{ marginTop: '-213px', paddingBottom: '70px', }}>
                         <img className="refresh" onClick={this.handleRefresh} src={refresh}></img>
                     </div>
                     <div className='sub_title'>
-                    <p >{this.state.qr}</p>
-                    <button onClick={this.handleClick1}>重新获取二维码</button>
-                    <button onClick={this.handleClick2}>发朋友圈</button>
-                    <button onClick={this.handleClick3}>添加视频连接</button>
-                    <button onClick={this.handleClick4}>发送视频</button>
+                        <p >{this.state.qr}</p>
+                        <button onClick={this.handleClick2}>发朋友圈</button>
+                        <button onClick={this.handleClick3}>添加视频连接</button>
+                        <button onClick={this.handleClick4}>发送视频</button>
                     </div>
-                  
+
 
                 </div>
-               
+
             </div>
         )
     }
