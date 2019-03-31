@@ -29,7 +29,7 @@ export default class Video extends React.Component {
         }
         fetch('http://47.93.189.47:8818/WebService1.asmx/SendTimeLineBigVideo', {
             method: 'POST',
-           
+
             body: JSON.stringify(postData)
         }).then(res => console.log(res.json()))
         //   .then(data=>console.log(data))
@@ -50,20 +50,24 @@ export default class Video extends React.Component {
         return (
             <div>
                 <Background />
-                <List
-                    style={style}
-                    grid={{ gutter: 16, column: 4 }}
-                    dataSource={data}
-                    renderItem={item => (
-                        <List.Item>
-                            <Card style={{ fontSize: '30px', color: 'red' }} title={item.title}></Card>
-                            <Input onChange={e => this.handleChange(item.key, e.target.value)} style={{ width: '400px', height: '30px' }} />
-                        </List.Item>
-                    )}
-                />
-                <div style={{ textAlign: 'center', marginTop: '30px' }}>
-                    <Button onClick={this.handleClick} style={{ width: '200px', height: '40px', fontSize: '20px', background: '#1890ff', border: 'none' }} size='large' type='primary' onClick={this.handleClick}>确定</Button>
+                <div style={{textAlign:'center',position:'absolute',top:'30%',left:'40%',margin:'-100px 0 0 -100px',height:'100%'}}>
+                    <List
+                      
+                        grid={{ gutter: 16, column: 4 }}
+                        dataSource={data}
+                        renderItem={item => (
+                            <List.Item>
+                                <Card style={{ fontSize: '30px', color: 'red' }} title={item.title}></Card>
+                                <Input onChange={e => this.handleChange(item.key, e.target.value)} style={{ width: '400px', height: '30px' }} />
+                            </List.Item>
+                        )}
+                    />
+                    <div style={{ textAlign: 'center', marginTop: '30px' }}>
+                        <Button onClick={this.handleClick} style={{ width: '200px', height: '40px', fontSize: '20px', background: '#1890ff', border: 'none' }} size='large' type='primary' onClick={this.handleClick}>确定</Button>
+                    </div>
                 </div>
+
+
 
             </div>
         )

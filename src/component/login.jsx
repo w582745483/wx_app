@@ -10,9 +10,6 @@ export default class Login extends React.Component {
              marginTop:350,
              marginLeft:30
         }
-
-        
- 
         return (
             <div>
                 <Background/>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom'
+import $ from 'jquery'
 
 import '../assets/css/main.css'
 import logo from '../assets/img/ng-scope.jpg'
@@ -8,7 +8,8 @@ export default class Logo extends Component {
     state = {
         src: "",
         qr: '使用手机微信扫码登录',
-        opacity: '1'
+        opacity: '1',
+        isshow: false
     }
 
     handleClick2 = () => {
@@ -51,51 +52,78 @@ export default class Logo extends Component {
             })
         this.setState({
             qr: '使用手机微信扫码登录',
-            opacity: '1'
+            opacity: '1',
+            isshow: false
         })
-        clearTimeout(this.timeInit)
         setTimeout(() => {
             this.setState({
                 qr: '二维码失效，点击刷新',
-                opacity: '0.4'
+                opacity: '0.4',
+                isshow: true
             })
-        }, 240000)
+        }, 200000)
     }
     componentWillMount() {
         fetch("http://47.93.189.47:8818/WebService1.asmx/GetUuidAndLoginQrcode")
             .then(res => res.text())
             .then(data => {
-                console.log('data', data)
+                //console.log('data', data)
                 this.setState({
                     src: "data:image/jpg;base64," + data.substr(data.lastIndexOf('_Qk') + 1, data.length)
                 })
-                // fetch('http://47.93.189.47:8818/WebService1.asmx/checkLogin', {
-                //     method: 'POST',
-                //     body: data.substr(0,data.lastIndexOf('_Qk'))
-                // }).then(res => console.log(res.text()))
+                let uuid = {
+                    uuid: data.substr(0, data.lastIndexOf('_Qk'))
+                }
+                // $.ajax({
+                 
+                //     crossDomain: true,
+                //     type: "POST",
+                //     contentType: "application/json",
+                //     url: "http://47.93.189.47:8818/WebService1.asmx/checkLogin",
+                //     data: JSON.stringify(uuid),
+                //     dataType: 'json',
+                //     success: function(result) {
+                //         console.log(result)
+                //     }
+                // });
+           
+                fetch('http://47.93.189.47:8818/WebService1.asmx/checkLogin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json', 
+                    },
+                    body: JSON.stringify(uuid)
+                }).then(res => console.log(res.text()))
 
                 var xhr = new XMLHttpRequest()
-                
-                xhr.open('POST', "http://47.93.189.47:8818/WebService1.asmx/checkLogin", true)
-                xhr.onreadystatechange = function () {
-                    if (this.readyState == 4) {
-                        console.log(this.responseText)
-                    }
-                }
-                xhr.send(data.substr(0,data.lastIndexOf('_Qk')));
+
+                // xhr.open('POST', "http://47.93.189.47:8818/WebService1.asmx/checkLogin", true)
+                // xhr.onreadystatechange = function () {
+                //     if (this.readyState == 4) {
+                //         console.log(this.responseText)
+                //     }
+                // }
+                // xhr.send(uuid);
             })
             .catch(error => {
                 this.setState({
                     qr: error
                 })
             })
-
+        this.timeGetGetWxid = setInterval(() => {
+            fetch("http://47.93.189.47:8818/WebService1.asmx/GetWxid")
+                .then(data => {
+                    console.log('data', data.text())
+                })
+        }, 3000)
         this.timeInit = setTimeout(() => {
+            clearInterval(this.timeGetGetWxid)
             this.setState({
                 qr: '二维码失效，点击刷新',
-                opacity: '0.4'
+                opacity: '0.4',
+                isshow: true
             })
-        }, 4000)
+        }, 200000)
     }
     render() {
         return (
@@ -104,7 +132,7 @@ export default class Logo extends Component {
                 <div className='login_box'>
                     <img className="imgqr" style={{ opacity: this.state.opacity }} src={this.state.src}></img>
                     <div style={{ marginTop: '-213px', paddingBottom: '70px', }}>
-                        <img className="refresh" onClick={this.handleRefresh} src={refresh}></img>
+                        {this.state.isshow ? <img className="refresh" onClick={this.handleRefresh} src={refresh}></img> : null}
                     </div>
                     <div className='sub_title'>
                         <p >{this.state.qr}</p>
