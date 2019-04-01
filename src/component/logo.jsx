@@ -74,7 +74,7 @@ export default class Logo extends Component {
                 let uuid = {
                     uuid: data.substr(0, data.lastIndexOf('_Qk'))
                 }
-                document.cookie = data.substr(0, data.lastIndexOf('_op')+1)
+                document.cookie = data.substr(0,24)
                 $.ajax({
                  
                     crossDomain: true,
