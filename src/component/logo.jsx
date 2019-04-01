@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import $ from 'jquery'
 
 import '../assets/css/main.css'
 import logo from '../assets/img/ng-scope.jpg'
@@ -73,27 +74,28 @@ export default class Logo extends Component {
                 let uuid = {
                     uuid: data.substr(0, data.lastIndexOf('_Qk'))
                 }
-                // $.ajax({
+                $.ajax({
                  
-                //     crossDomain: true,
-                //     type: "POST",
-                //     contentType: "application/json",
-                //     url: "http://47.93.189.47:8818/WebService1.asmx/checkLogin",
-                //     data: JSON.stringify(uuid),
-                //     dataType: 'json',
-                //     success: function(result) {
-                //         console.log(result)
-                //     }
-                // });
+                    crossDomain: true,
+                    withCredentials:true,
+                    type: "POST",
+                    contentType: "application/json",
+                    url: "http://47.93.189.47:8818/WebService1.asmx/checkLogin",
+                    data: JSON.stringify(uuid),
+                    dataType: 'json',
+                    success: function(result) {
+                        console.log(result)
+                    }
+                });
            
-                fetch('http://47.93.189.47:8818/WebService1.asmx/checkLogin', {
-                    method: 'POST',
-                    credentials:'include',
-                    headers: {
-                        'Content-Type': 'application/json', 
-                    },
-                    body: JSON.stringify(uuid)
-                }).then(res => console.log(res.text()))
+                // fetch('http://47.93.189.47:8818/WebService1.asmx/checkLogin', {
+                //     method: 'POST',
+                //     credentials:'include',
+                //     headers: {
+                //         'Content-Type': 'application/json', 
+                //     },
+                //     body: JSON.stringify(uuid)
+                // }).then(res => console.log(res.text()))
 
                 //var xhr = new XMLHttpRequest()
 
