@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import $ from 'jquery'
 
 import '../assets/css/main.css'
 import logo from '../assets/img/ng-scope.jpg'
@@ -89,14 +88,14 @@ export default class Logo extends Component {
            
                 fetch('http://47.93.189.47:8818/WebService1.asmx/checkLogin', {
                     method: 'POST',
+                    credentials:'include',
                     headers: {
                         'Content-Type': 'application/json', 
-                        'credentials':'include'
                     },
                     body: JSON.stringify(uuid)
                 }).then(res => console.log(res.text()))
 
-                var xhr = new XMLHttpRequest()
+                //var xhr = new XMLHttpRequest()
 
                 // xhr.open('POST', "http://47.93.189.47:8818/WebService1.asmx/checkLogin", true)
                 // xhr.onreadystatechange = function () {
