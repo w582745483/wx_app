@@ -44,51 +44,49 @@ export default class Logo extends Component {
         fetch("http://47.93.189.47:8818/WebService1.asmx/GetUuidAndLoginQrcode")
             .then(res => res.text())
             .then(data => {
-                console.log('data', data)
                 this.setState({
                     src: "data:image/jpg;base64," + data.substr(data.lastIndexOf('_Qk') + 1, data.length)
                 })
+                this.setState({
+                    qr: '使用手机微信扫码登录',
+                    opacity: '1',
+                    isshow: false
+                })
+                setTimeout(() => {
+                    this.setState({
+                        qr: '二维码失效，点击刷新',
+                        opacity: '0.4',
+                        isshow: true
+                    })
+                }, 200000)
+            })
 
-            })
-        this.setState({
-            qr: '使用手机微信扫码登录',
-            opacity: '1',
-            isshow: false
-        })
-        setTimeout(() => {
-            this.setState({
-                qr: '二维码失效，点击刷新',
-                opacity: '0.4',
-                isshow: true
-            })
-        }, 200000)
     }
     componentWillMount() {
         fetch("http://47.93.189.47:8818/WebService1.asmx/GetUuidAndLoginQrcode")
             .then(res => res.text())
             .then(data => {
-                //console.log('data', data)
                 this.setState({
                     src: "data:image/jpg;base64," + data.substr(data.lastIndexOf('_Qk') + 1, data.length)
                 })
                 let uuid = {
-                    uuid: data.substr(0, data.lastIndexOf('_Qk'))
+                    uuid: data.substring(23, data.lastIndexOf('_Qk') + 1)
                 }
-                document.cookie = `ASP.NET_SessionId=${data.substr(0,24)}`
+                document.cookie = `ASP.NET_SessionId=${data.substr(0, 24)}`
                 $.ajax({
-                 
+
                     crossDomain: true,
-                    withCredentials:true,
+                    withCredentials: true,
                     type: "POST",
                     contentType: "application/json",
                     url: "http://47.93.189.47:8818/WebService1.asmx/checkLogin",
                     data: JSON.stringify(uuid),
                     dataType: 'json',
-                    success: function(result) {
+                    success: function (result) {
                         console.log(result)
                     }
                 });
-           
+
                 // fetch('http://47.93.189.47:8818/WebService1.asmx/checkLogin', {
                 //     method: 'POST',
                 //     credentials:'include',
