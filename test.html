@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+      <button id="btn">按钮</button>
+</head>
+<body>
+  <script>
+      
+       fetch("http://47.93.189.47:8818/WebService1.asmx/GetUuidAndLoginQrcode")
+            .then(res => res.text())
+            .then(data => {
+                this.setState({
+                    src: "data:image/jpg;base64," + data.substr(data.lastIndexOf('_Qk') + 1, data.length)
+                })
+                this.setState({
+                    qr: '使用手机微信扫码登录',
+                    opacity: '1',
+                    isshow: false
+                })
+                setTimeout(() => {
+                    this.setState({
+                        qr: '二维码失效，点击刷新',
+                        opacity: '0.4',
+                        isshow: true
+                    })
+                }, 200000)
+            })
+ </script>
+</body>
+</html>
