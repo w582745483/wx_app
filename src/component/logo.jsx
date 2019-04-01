@@ -91,7 +91,7 @@ export default class Logo extends Component {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json', 
-                        'credentials':'true'
+                        'credentials':'include'
                     },
                     body: JSON.stringify(uuid)
                 }).then(res => console.log(res.text()))
