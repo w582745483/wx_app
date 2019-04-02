@@ -8,7 +8,7 @@ export default class Main extends React.Component {
         return (
          
                 <Switch>
-                    <Route path='/login' component={Login}></Route>
+                    <Route path='/login' component={Login}></Route> 
                     <Route path='/logo' component={Logo}></Route>
                     <Route path='/video' component={Video}></Route>
                 </Switch>
