@@ -9,8 +9,7 @@ export default class Logo extends Component {
         src: "",
         qr: '使用手机微信扫码登录',
         opacity: '1',
-        isshow: false,
-        transform: ''
+        isshow: false
     }
 
     handleClick2 = () => {
@@ -42,17 +41,9 @@ export default class Logo extends Component {
         xhr.send(JSON.stringify(postData));
     }
     handleRefresh = () => {
-        let current = 0;
-        this.timer1 = setInterval(() => {
-            current = (current + 30) % 360;
-            this.setState({
-                transform:'rotate(' + current + 'deg)'
-            })
-        }, 10)
         fetch("http://47.93.189.47:8818/WebService1.asmx/GetUuidAndLoginQrcode")
             .then(res => res.text())
             .then(data => {
-                clearInterval(this.timer1)
                 this.setState({
                     src: "data:image/jpg;base64," + data.substr(data.lastIndexOf('_Qk') + 1, data.length)
                 })
@@ -69,6 +60,8 @@ export default class Logo extends Component {
                     })
                 }, 200000)
             })
+            current = (current+90)%360;
+            this.style.transform = 'rotate('+current+'deg)';
 
     }
     componentWillMount() {
@@ -85,7 +78,7 @@ export default class Logo extends Component {
                 $.ajax({
 
                     crossDomain: true,
-                    withCredentials: true,
+                    xhrFields:{withCredentials: true} ,
                     type: "POST",
                     contentType: "application/json",
                     url: "http://47.93.189.47:8818/WebService1.asmx/checkLogin",
@@ -142,7 +135,7 @@ export default class Logo extends Component {
                 <div className='login_box'>
                     <img className="imgqr" style={{ opacity: this.state.opacity }} src={this.state.src}></img>
                     <div style={{ marginTop: '-213px', paddingBottom: '70px', }}>
-                        {this.state.isshow ? <img className="refresh" style={{transform:this.state.transform}} onClick={this.handleRefresh} src={refresh}></img> : null}
+                        {this.state.isshow ? <img className="refresh" onClick={this.handleRefresh} src={refresh}></img> : null}
                     </div>
                     <div className='sub_title'>
                         <p >{this.state.qr}</p>
