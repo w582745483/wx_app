@@ -2,6 +2,7 @@ import React from 'react'
 import { Input, Button } from 'antd'
 import Background from '../container/background'
 
+import Sunshine from '../assets//img/sunshine.jpg'
 export default class Bigvideo extends React.Component {
     state = {
         videoUrl: '',
@@ -40,12 +41,12 @@ export default class Bigvideo extends React.Component {
             })
     }
     render() {
-
         return (
             <div>
                 <Background />
                 <div className='bigvideo'>
-                    <Input placeholder="请输入视频链接地址" autoFocus={true} onMouseOut={this.handleonMouseOut} onChange={e => this.handleChange('videoUrl', e.target.value)} style={{ marginTop: '150px', width: '80%', height: '50px' }} size="large" />
+                    <img src={Sunshine} style={{position:'relative',width:'100%',height:'200px'}} alt="sunshine"></img>
+                    <Input placeholder="请输入视频链接地址" autoFocus={true} onMouseOut={this.handleonMouseOut} onChange={e => this.handleChange('videoUrl', e.target.value)} style={{ marginTop: '50px', width: '80%', height: '50px' }} size="large" />
                     <Input placeholder="请输入想要为此视频发送的文字" onChange={e => this.handleChange('videoText', e.target.value)} style={{ marginTop: '15px', width: '80%', height: '50px' }} size="large" />
                     <Button type="primary" onClick={this.handleClick} style={{ marginTop: '60px', height: '40px' }}>发送视频到朋友圈</Button>
                 </div>
