@@ -62,7 +62,8 @@ body,html{
     height:100%;
 }
 .login{
-    margin: -150px 0 0 -200px;
+    margin-top:-250px;     
+    margin-left:-250px;
     position: absolute;
     z-index: 10;
     width: 360px;
@@ -92,5 +93,6 @@ body,html{
     width: 400px;
     height: 600px;
     text-align: center;
-    margin: -150px 0 0 -200px;
+    margin-top:-250px;     
+    margin-left:-250px;
 }
