@@ -68,16 +68,6 @@ body,html{
     top:20.5%;
     left: 40.6%;
 }
-.login_input{
-    display: inline-block;
-    width: 22rem;
-    height: 100%;
-    padding-left: 1.5rem;
-    font-size: 1.5rem;
-    background: transparent;
-    color: #FDFCFD;
-}
-
 .refresh{
     position: absolute;
     z-index: 10;

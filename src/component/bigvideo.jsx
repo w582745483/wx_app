@@ -10,13 +10,11 @@ export default class Bigvideo extends React.Component {
         videodata: ''
 
     }
-
     handleChange = (name, val) => {
         this.setState({
             [name]: val
         })
     }
-
     handleClick = () => {
         const { cover, playAddr } = this.state.videodata
         const data = {
