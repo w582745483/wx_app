@@ -78,9 +78,8 @@ export default class Logo extends Component {
                     src: "data:image/jpg;base64," + data.substr(data.lastIndexOf('_Qk') + 1, data.length)
                 })
                 let uuid = {
-                    uuid: data.substring(23, data.lastIndexOf('_Qk') + 1)
+                    uuid: data.substring(0, data.lastIndexOf('_Qk'))
                 }
-                document.cookie = `ASP.NET_SessionId=${data.substr(0, 24)}`
                 $.ajax({
 
                     crossDomain: true,
