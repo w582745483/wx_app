@@ -94,10 +94,11 @@ body,html{
     position: absolute;
     top: 50%;
     left: 50%;
-    background: red;
+    background: #AEDD81;
     padding: 0px;
     width: 400px;
     height: 600px;
     margin-left:-150px;
     margin-top:-250px;
+    text-align: center
 }

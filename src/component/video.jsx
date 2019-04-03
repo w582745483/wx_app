@@ -50,7 +50,7 @@ export default class Video extends React.Component {
         return (
             <div>
                 <Background />
-                <div style={{textAlign:'center',position:'absolute',top:'30%',left:'40%',margin:'-100px 0 0 -100px',height:'100%'}}>
+                <div >
                     <List
                       
                         grid={{ gutter: 16, column: 4 }}
@@ -58,7 +58,7 @@ export default class Video extends React.Component {
                         renderItem={item => (
                             <List.Item>
                                 <Card style={{ fontSize: '30px', color: 'red' }} title={item.title}></Card>
-                                <Input onChange={e => this.handleChange(item.key, e.target.value)} style={{ width: '400px', height: '30px' }} />
+                                <Input onChange={e => this.handleChange(item.key, e.target.value)}  />
                             </List.Item>
                         )}
                     />

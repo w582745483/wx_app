@@ -87,7 +87,7 @@ export default class Logo extends Component {
                     xhrFields:{withCredentials: true} ,
                     type: "POST",
                     contentType: "application/json",
-                    url: "http://47.93.189.47:8818/WebService1.asmx/checkLogin",
+                    url: "http://47.93.189.47:8818/WebService1.asmx/CheckLoginProcess",
                     data: JSON.stringify(uuid),
                     dataType: 'json',
                     success: function (result) {
