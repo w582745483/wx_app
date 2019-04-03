@@ -90,3 +90,14 @@ body,html{
     margin-top: 30px;
 
 }
+.bigvideo{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: red;
+    padding: 0px;
+    width: 400px;
+    height: 600px;
+    margin-left:-150px;
+    margin-top:-250px;
+}
