@@ -126,7 +126,7 @@ export default class Logo extends Component {
                 .then(res=>res.text())
                 .then(data => {
                     if(data){
-                        this.props.history.push('/menu')
+                        //this.props.history.push('/menu')
                         clearInterval(this.timeGetGetWxid)
                     }
                     const wxid = data.substring(0, data.lastIndexOf('&'))
@@ -165,11 +165,11 @@ export default class Logo extends Component {
                         <button onClick={this.handleClick2}>发朋友圈</button>
                         <button onClick={this.handleClick3}>添加视频连接</button>
                         <button onClick={this.handleClick4}>发送视频</button>
-                        <Bigvideo></Bigvideo>
+                       
                     </div>
-
+                   
                 </div>
-
+                <Bigvideo></Bigvideo>
             </div>
         )
     }
