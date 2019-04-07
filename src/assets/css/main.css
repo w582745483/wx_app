@@ -74,15 +74,13 @@ body,html{
     left: 50%;
 }
 .refresh{
-    position: absolute;
+    position: relative;
     z-index: 10;
     display: block;
     width: 50px;
     height: 50px;
-
-    padding: 20px 20px;
-    margin-left: 143px;
-    margin-top: 30px;
+    margin-left: 165px;
+    margin-top: 70px;
 
 }
 .bigvideo{
