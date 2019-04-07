@@ -14,7 +14,11 @@ export default class Logo extends Component {
 
     handleClick2 = () => {
 
-        fetch("http://47.93.189.47:8818/WebService1.asmx/SendTimeLine")
+        fetch("http://47.93.189.47:8818/WebService1.asmx/SendTimeLine",{
+            method:'POST',
+            credentials:'include',
+            mode:'cors'
+        })
             .then(res => res.text())
             .then(data => {
                 console.log('data', data)
