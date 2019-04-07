@@ -125,14 +125,8 @@ export default class Logo extends Component {
                     qr: error
                 })
             })
-        this.timeGetGetWxid = setInterval(() => {
-            fetch("http://47.93.189.47:8818/WebService1.asmx/GetWxid")
-                .then(data => {
-                    console.log('data', data.text())
-                })
-        }, 3000)
-        this.timeInit = setTimeout(() => {
-            clearInterval(this.timeGetGetWxid)
+       
+        this.timeInit = setTimeout(() => {  
             this.setState({
                 qr: '二维码失效，点击刷新',
                 opacity: '0.4',
