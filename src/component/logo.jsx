@@ -122,7 +122,12 @@ export default class Logo extends Component {
                 credentials: 'include',
                 mode: 'cors'
             })
+                .then(res=>res.text())
                 .then(data => {
+                    if(data){
+                        this.props.history.push('/menu')
+                        clearInterval(this.timeGetGetWxid)
+                    }
                     const wxid = data.substring(0, data.lastIndexOf('&'))
                   
                     const header = data.substr(data.lastIndexOf('&') + 1, data.length)
