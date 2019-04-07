@@ -165,7 +165,6 @@ export default class Logo extends Component {
                         <button onClick={this.handleClick3}>添加视频连接</button>
                         <button onClick={this.handleClick4}>发送视频</button>
                     </div>
-                    <Menu  wxid={this.state.wxid} header={this.state.header}/>
 
                 </div>
 
