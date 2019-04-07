@@ -44,7 +44,7 @@ export default class Logo extends Component {
                 transform: 'rotate(' + current + 'deg)'
             })
         }, 10)
-        fetch("http://47.93.189.47:8818/WebService1.asmx/GetUuidAndLoginQrcode")
+        fetch("http://47.93.189.47:8818/WebService1.asmx/GetLoginQrcode")
             .then(res => res.text())
             .then(data => {
                 this.setState({
