@@ -125,8 +125,8 @@ export default class Logo extends Component {
             })
                 .then(res=>res.text())
                 .then(data => {
-                    if(data){
-                        //this.props.history.push('/menu')
+                    if(data&&data>1){
+                        this.props.history.push('/menu')
                         clearInterval(this.timeGetGetWxid)
                     }
                     const wxid = data.substring(0, data.lastIndexOf('&'))
