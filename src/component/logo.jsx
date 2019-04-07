@@ -71,28 +71,31 @@ export default class Logo extends Component {
 
     }
     componentWillMount() {
-        fetch("http://47.93.189.47:8818/WebService1.asmx/GetUuidAndLoginQrcode")
+        fetch("http://47.93.189.47:8818/WebService1.asmx/GetUuidAndLoginQrcode",{
+            credentials:'include',
+            mode:'cors'
+        })
             .then(res => res.text())
             .then(data => {
                 this.setState({
                     src: "data:image/jpg;base64," + data.substr(data.lastIndexOf('_Qk') + 1, data.length)
                 })
-                let uuid = {
-                    uuid: data.substring(0, data.lastIndexOf('_Qk'))
-                }
-                $.ajax({
+                // let uuid = {
+                //     uuid: data.substring(0, data.lastIndexOf('_Qk'))
+                // }
+                // $.ajax({
 
-                    crossDomain: true,
-                    xhrFields:{withCredentials: true} ,
-                    type: "POST",
-                    contentType: "application/json",
-                    url: "http://47.93.189.47:8818/WebService1.asmx/CheckLoginProcess",
-                    data: JSON.stringify(uuid),
-                    dataType: 'json',
-                    success: function (result) {
-                        console.log(result)
-                    }
-                });
+                //     crossDomain: true,
+                //     xhrFields:{withCredentials: true} ,
+                //     type: "POST",
+                //     contentType: "application/json",
+                //     url: "http://47.93.189.47:8818/WebService1.asmx/CheckLoginProcess",
+                //     data: JSON.stringify(uuid),
+                //     dataType: 'json',
+                //     success: function (result) {
+                //         console.log(result)
+                //     }
+                // });
 
                 // fetch('http://47.93.189.47:8818/WebService1.asmx/checkLogin', {
                 //     method: 'POST',

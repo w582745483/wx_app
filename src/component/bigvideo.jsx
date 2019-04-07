@@ -25,6 +25,8 @@ export default class Bigvideo extends React.Component {
         console.log(data)
         fetch('http://47.93.189.47:8818/WebService1.asmx/SendTimeLineBigVideo', {
             method: 'POST',
+            credentials:'include',
+            mode:'cors',
             body: JSON.stringify(data)
         }).then(res => console.log(res))
     }
