@@ -27,6 +27,9 @@ export default class Bigvideo extends React.Component {
             method: 'POST',
             credentials:'include',
             mode:'cors',
+            headers: {
+                         'Content-Type': 'application/json', 
+                     },
             body: data
         }).then(res => console.log(res))
     }
