@@ -5,6 +5,7 @@ import '../assets/css/main.css'
 import logo from '../assets/img/ng-scope.jpg'
 import refresh from '../assets/img/refresh.jpg'
 import Menu from './menu'
+import Bigvideo from './bigvideo'
 export default class Logo extends Component {
     state = {
         src: "",
@@ -164,6 +165,7 @@ export default class Logo extends Component {
                         <button onClick={this.handleClick2}>发朋友圈</button>
                         <button onClick={this.handleClick3}>添加视频连接</button>
                         <button onClick={this.handleClick4}>发送视频</button>
+                        <Bigvideo></Bigvideo>
                     </div>
 
                 </div>
