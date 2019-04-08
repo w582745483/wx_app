@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import $ from 'jquery'
 
 import '../assets/css/main.css'
 import logo from '../assets/img/ng-scope.jpg'
@@ -169,7 +168,6 @@ export default class Logo extends Component {
                     </div>
                    
                 </div>
-                <Bigvideo></Bigvideo>
             </div>
         )
     }
