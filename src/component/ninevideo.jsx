@@ -3,6 +3,7 @@ import { List, Card, Input, Button } from 'antd'
 import Background from '../container/background'
 
 const Meta = List.Item.Meta
+
 export default class NineVideo extends React.Component {
     state = {
         value1: '',
@@ -24,8 +25,9 @@ export default class NineVideo extends React.Component {
     }
 
     handleClick = () => {
-        let postData = {
-            time_line_content: 'ceshi1',
+
+        const postData = {
+            time_line_content: '',
             video_address: 'ceshi2',
             video_pic_address: 'ceshi3'
         }
@@ -63,7 +65,7 @@ export default class NineVideo extends React.Component {
             <div>
                 <Background />
                 <div className='login_box'>
-                    <div style={{ marginTop: '25px' }}>
+                    <div style={{ marginTop: '25px',marginLeft: '5px' }}>
                         <List
                             grid={{ gutter: 20, column: 1 }}
                             dataSource={data}
@@ -78,7 +80,7 @@ export default class NineVideo extends React.Component {
                         />
                         <Input style={{ width: '80%', left: '10%' }}  placeholder="请输入为九宫格视频发送的文字内容" onChange={e => this.handleChange('time_line_content', e.target.value)} />
                         <div style={{ textAlign: 'center', marginTop: '30px' }}>
-                            <Button onClick={this.handleClick} style={{ width: '300px', height: '40px', fontSize: '20px', background: '#1890ff', border: 'none' }} size='large' type='primary' onClick={this.handleClick}>发送九宫格视频到朋友圈</Button>
+                            <Button onClick={this.handleClick} style={{ width: '300px', height: '40px', fontSize: '20px', border: 'none' }} size='large' type='primary' onClick={this.handleClick}>发送九宫格视频到朋友圈</Button>
                         </div>
                     </div>
 
