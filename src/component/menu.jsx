@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import $ from 'jquery'
+import { Button,Avatar,List} from 'antd'
 
 import '../assets/css/main.css'
 import logo from '../assets/img/ng-scope.jpg'
-import refresh from '../assets/img/refresh.jpg'
+
+
+const Item=List.Item
 export default class Menu extends Component {
     state = {
         wxid: '',
@@ -33,8 +35,21 @@ export default class Menu extends Component {
             <div>
                 <img src={logo} alt='logo' className='logo-img' />
                 <div className='login_box'>
-                    <p>{this.props.wxid}</p>
-                    <img className="imgqr" src={this.props.header}></img>
+                    <div style={{ background: '#666',width:'100%',height:'25%'}}>
+                    <Avatar src={this.state.header} style={{ backgroundColor: '#87d068',marginTop:'25px', marginLeft:'10px'}} size="large" icon="user" /> 
+                    </div>
+                    <div>
+                        <List >
+                            <Item>
+                                <span>1232132</span>
+                            </Item>
+                            <Item>
+                                <span>1232132</span>
+                            </Item>  <Item>
+                                <span>1232132</span>
+                            </Item>
+                        </List>
+                    </div>
                 </div>
 
             </div>
