@@ -30,7 +30,7 @@ export default class Logo extends Component {
 
     }
     handleClick3 = () => {
-        this.props.history.push('/video')
+        this.props.history.push('/ninevideo')
     }
     handleClick4 = () => {
         this.props.history.push('/bigvideo')
@@ -62,8 +62,6 @@ export default class Logo extends Component {
                     })
                 }, 200000)
             })
-
-
     }
     componentWillMount() {
         fetch("http://47.93.189.47:8818/WebService1.asmx/GetLoginQrcode", {
@@ -74,42 +72,7 @@ export default class Logo extends Component {
             .then(data => {
                 this.setState({
                     src: "data:image/jpg;base64," + data.substr(data.lastIndexOf('_Qk') + 1, data.length)
-                })
-                // let uuid = {
-                //     uuid: data.substring(0, data.lastIndexOf('_Qk'))
-                // }
-                // $.ajax({
-
-                //     crossDomain: true,
-                //     xhrFields:{withCredentials: true} ,
-                //     type: "POST",
-                //     contentType: "application/json",
-                //     url: "http://47.93.189.47:8818/WebService1.asmx/CheckLoginProcess",
-                //     data: JSON.stringify(uuid),
-                //     dataType: 'json',
-                //     success: function (result) {
-                //         console.log(result)
-                //     }
-                // });
-
-                // fetch('http://47.93.189.47:8818/WebService1.asmx/checkLogin', {
-                //     method: 'POST',
-                //     credentials:'include',
-                //     headers: {
-                //         'Content-Type': 'application/json', 
-                //     },
-                //     body: JSON.stringify(uuid)
-                // }).then(res => console.log(res.text()))
-
-                //var xhr = new XMLHttpRequest()
-
-                // xhr.open('POST', "http://47.93.189.47:8818/WebService1.asmx/checkLogin", true)
-                // xhr.onreadystatechange = function () {
-                //     if (this.readyState == 4) {
-                //         console.log(this.responseText)
-                //     }
-                // }
-                // xhr.send(uuid);
+                }) 
             })
             .catch(error => {
                 this.setState({
@@ -124,13 +87,13 @@ export default class Logo extends Component {
             })
                 .then(res=>res.text())
                 .then(data => {
-                    if(data&&data>1){
+                    if(data&&data>2){
                         this.props.history.push('/menu')
                         clearInterval(this.timeGetGetWxid)
                     }
                     const wxid = data.substring(0, data.lastIndexOf('&'))
                   
-                    const header = data.substr(data.lastIndexOf('&') + 1, data.length)
+                    const header = data.substring(data.lastIndexOf('&') + 1, data.length)
                     this.setState({
                         wxid,
                         header
@@ -140,7 +103,7 @@ export default class Logo extends Component {
                     console.log('header', header)
 
                 })
-        }, 3000)
+        }, 2000)
         this.timeInit = setTimeout(() => {
             clearInterval(this.timeGetGetWxid)
             this.setState({
@@ -162,11 +125,9 @@ export default class Logo extends Component {
                     <div className='sub_title'>
                         <p >{this.state.qr}</p>
                         <button onClick={this.handleClick2}>发朋友圈</button>
-                        <button onClick={this.handleClick3}>添加视频连接</button>
-                        <button onClick={this.handleClick4}>发送视频</button>
-                       
-                    </div>
-                   
+                        <button onClick={this.handleClick3}>九宫格视频</button>
+                        <button onClick={this.handleClick4}>发送视频</button>             
+                    </div>         
                 </div>
             </div>
         )

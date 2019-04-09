@@ -3,7 +3,6 @@ import { List, Card, Input, Button } from 'antd'
 import Background from '../container/background'
 
 const Meta = List.Item.Meta
-
 export default class NineVideo extends React.Component {
     state = {
         value1: '',
@@ -15,45 +14,54 @@ export default class NineVideo extends React.Component {
         value7: '',
         value8: '',
         value9: '',
-        time_line_content: ''
-
+        time_line_content: '',
     }
     handleChange = (key, val) => {
         this.setState({
-            [key]: val
+            [key]: {
+                value: val
+            }
         })
     }
-
+    handleChangeText = (key, val) => {
+        this.setState({
+            [key]: {
+                time_line_content: val
+            }
+        })
+    }
     handleClick = () => {
 
-        const postData = {
-            time_line_content: '',
-            video_address: 'ceshi2',
-            video_pic_address: 'ceshi3'
+        let postData = {}
+        const ninevideo = this.state
+        for (const key in ninevideo) {
+            Object.assign(postData, ninevideo[key])
         }
-        fetch('http://47.93.189.47:8818/WebService1.asmx/SendTimeLineNineVedio', {
-            method: 'POST',
-            credentials: 'include',
-            mode: 'cors',
-            body: JSON.stringify(postData)
-        }).then(res => console.log(res.json()))
-        //   .then(data=>console.log(data))
+        var arr = Object.keys(postData);
+        console.log('ninevideo', postData)
+        while (ninevideo.time_line_content == "" && arr.length > 17 || ninevideo.time_line_content != "" && arr.length > 18) {
+            fetch('http://47.93.189.47:8818/WebService1.asmx/SendTimeLineNineVedio', {
+                method: 'POST',
+                credentials: 'include',
+                mode: 'cors',
+                body: JSON.stringify(postData)
+            }).then(res => console.log(res.text()))
+            return
+        }
     }
-    handleonMouseOut = (e) => {
-        console.log(e.target.value)
-        // fetch(`https://api.w0ai1uo.org/api/kuaishou.php?url=${this.state.videoUrl.trim()}`, {
-        // }).then(res => res.json())
-        //     .then(data => {
-        //         this.setState({
-        //             videodata: data
-        //         })
-        //     })
+    handleonMouseOut = (key, val) => {
+        fetch(`https://api.w0ai1uo.org/api/kuaishou.php?url=${val.trim()}`, {
+        }).then(res => res.json())
+            .then(data => {
+                data.code == 200 && this.setState({
+                    [key]: {
+                        ["video_pic_address_" + key.substr(key.length - 1, 1)]: data.cover,
+                        ["video_address_" + key.substr(key.length - 1, 1)]: data.playAddr,
+                    }
+                })
+            })
     }
     render() {
-        const style = {
-            textAlign: 'center',
-            paddingTop: '200px'
-        }
         const data = [
             { title: '快手视频1', key: 'value1' }, { title: '快手视频2', key: 'value2' },
             { title: '快手视频3', key: 'value3' }, { title: '快手视频4', key: 'value4' },
@@ -65,7 +73,7 @@ export default class NineVideo extends React.Component {
             <div>
                 <Background />
                 <div className='login_box'>
-                    <div style={{ marginTop: '25px',marginLeft: '5px' }}>
+                    <div style={{ marginTop: '25px', marginLeft: '5px' }}>
                         <List
                             grid={{ gutter: 20, column: 1 }}
                             dataSource={data}
@@ -73,21 +81,17 @@ export default class NineVideo extends React.Component {
                                 <List.Item>
                                     <Meta title={item.title}></Meta>
                                     <div style={{ position: 'absolute', marginLeft: '-90px', marginTop: '-16px', width: '69%' }}>
-                                        <Input placeholder="请输入视频链接"  onMouseOut={this.handleonMouseOut} onChange={e => this.handleChange(item.key, e.target.value)} />
+                                        <Input placeholder="请输入视频链接" onMouseOut={e => this.handleonMouseOut(item.key, e.target.value)} onChange={e => this.handleChange(item.key, e.target.value)} />
                                     </div>
                                 </List.Item>
                             )}
                         />
-                        <Input style={{ width: '80%', left: '10%' }}  placeholder="请输入为九宫格视频发送的文字内容" onChange={e => this.handleChange('time_line_content', e.target.value)} />
+                        <Input style={{ width: '80%', left: '10%' }} placeholder="请输入为九宫格视频发送的文字内容" onChange={e => this.handleChangeText('time_line_content', e.target.value)} />
                         <div style={{ textAlign: 'center', marginTop: '30px' }}>
                             <Button onClick={this.handleClick} style={{ width: '300px', height: '40px', fontSize: '20px', border: 'none' }} size='large' type='primary' onClick={this.handleClick}>发送九宫格视频到朋友圈</Button>
                         </div>
                     </div>
-
                 </div>
-
-
-
             </div>
         )
     }
