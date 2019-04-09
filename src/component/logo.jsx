@@ -11,8 +11,6 @@ export default class Logo extends Component {
         qr: '使用手机微信扫码登录',
         opacity: '1',
         isshow: false,
-        wxid:'',
-        header:''
     }
 
     handleClick2 = () => {
@@ -88,13 +86,11 @@ export default class Logo extends Component {
                 .then(res=>res.text())
                 .then(data => {
                     if(data.length>2&&data!="Please make sure you have loggined"){
+                        this.props.GetUserWxidAndHeadImageUrl(data)
                         clearInterval(this.timeGetGetWxid)
-                        const wxid = data.substring(0, data.lastIndexOf('&'))
-                        const header = data.substring(data.lastIndexOf('&') + 1, data.length)
-                        this.setState({
-                            wxid,
-                            header
-                        })
+                       // const wxid = data.substring(0, data.lastIndexOf('&'))
+                        //const header = data.substring(data.lastIndexOf('&') + 1, data.length)
+                       
                     }
                    
 
