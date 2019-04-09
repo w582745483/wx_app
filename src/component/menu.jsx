@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Avatar, List } from 'antd'
+import { Modal, Avatar, List } from 'antd'
 
 import '../assets/css/main.css'
 import logo from '../assets/img/ng-scope.jpg'
@@ -40,6 +40,10 @@ export default class Menu extends Component {
         header: '',
     }
     handleClick=(url)=>{
+        if(!this.state.wxid){
+           this.warning()
+           return
+        }
         this.props.history.push(url)
     }
     componentWillMount() {
@@ -57,10 +61,14 @@ export default class Menu extends Component {
                 })
             })
     }
-
+     warning=()=> {
+        Modal.warning({
+          content: '用户未登录，请登录用户！',
+        });
+      }
 
     render() {
-        const {header}=this.state
+        const {header,wxid}=this.state
         
         return (
             <div>
@@ -71,7 +79,7 @@ export default class Menu extends Component {
                        <span style={{color:'white',paddingLeft:'10px'}}>{header.length>2?'已登录':'未登录'}</span>
                        <div onClick={()=>this.props.history.push('/logo')} style={{marginTop:'-30px',marginLeft:'300px',textAlign:'center'}}>
                        <img style={{width:'30px'}} src={login} ></img>
-                       <span style={{display:'block',lineHeight:'1.15',fontSize:'1rem'}}>扫码登陆</span>
+                       <span style={{display:'block',lineHeight:'1.15',fontSize:'1rem',color:'white'}}>扫码登陆</span>
                        </div>
                        
                     </div>

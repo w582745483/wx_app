@@ -98,9 +98,6 @@ export default class Logo extends Component {
                         wxid,
                         header
                     })
-                   
-                    console.log('wxid', wxid)
-                    console.log('header', header)
 
                 })
         }, 2000)
