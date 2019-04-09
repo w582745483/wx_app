@@ -65,7 +65,7 @@ export default class Logo extends Component {
     }
     componentWillMount() {
         fetch("http://47.93.189.47:8818/WebService1.asmx/GetLoginQrcode", {
-            credentials: 'include',
+           // credentials: 'include',
             mode: 'cors'
         })
             .then(res => res.text())
@@ -87,6 +87,7 @@ export default class Logo extends Component {
             })
                 .then(res=>res.text())
                 .then(data => {
+                    console.log(data)
                     if(data.length>2&&data!="Please make sure you have loggined"){
                         this.props.history.push('/menu')
                         clearInterval(this.timeGetGetWxid)
@@ -112,9 +113,8 @@ export default class Logo extends Component {
     }
     render() {
         return (
-            <div>
-                <img src={logo} alt='logo' className='logo-img' />
-                <div className='login_box'>
+            <div style={{marginTop:'-320px'}}>
+               
                     <img className="imgqr" style={{ opacity: this.state.opacity }} src={this.state.src}></img>
                     <div style={{ marginTop: '-213px', paddingBottom: '70px', }}>
                         {this.state.isshow ? <img className="refresh" style={{ transform: this.state.transform }} onClick={this.handleRefresh} src={refresh}></img> : null}
@@ -123,7 +123,7 @@ export default class Logo extends Component {
                         <p >{this.state.qr}</p>
                         <button onClick={this.handleClick2}>发朋友圈</button>       
                     </div>         
-                </div>
+              
             </div>
         )
     }

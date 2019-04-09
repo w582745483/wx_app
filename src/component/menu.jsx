@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Avatar, List } from 'antd'
 
+import Logo from '../component/logo'
 import '../assets/css/main.css'
 import logo from '../assets/img/ng-scope.jpg'
 import ninevideo from '../assets/img/ninevideo.png'
@@ -20,15 +21,7 @@ const data = [
         title: '长视频',
         img: bigvideo,
         url: '/bigvideo'
-    },
-    {
-        title: '朋友圈',
-        img: fridrend
-    },
-    {
-        title: '开发中',
-        img: develop
-    },
+    }, 
     {
         title: '客服',
         img: customer
@@ -74,7 +67,7 @@ export default class Menu extends Component {
             <div>
                 <img src={logo} alt='logo' className='logo-img' />
                 <div className='login_box'>
-                    <div style={{ background: '#666', width: '100%', height: '25%' }}>
+                    <div style={{ background: '#666', width: '100%', height: '20%' }}>
                         <Avatar src={header} style={{ backgroundColor: '#87d068', marginTop: '25px', marginLeft: '10px' }} size="large" icon="user" />
                         <span style={{ color: 'white', paddingLeft: '10px' }}>{header.length>2&&header!="Please make sure you have loggined"? '已登录' : '未登录'}</span>
                         <div onClick={() => this.props.history.push('/logo')} style={{ marginTop: '-30px', marginLeft: '300px', textAlign: 'center' }}>
@@ -100,6 +93,7 @@ export default class Menu extends Component {
                             )}
                         />
                     </div>
+                    <Logo/>
                 </div>
 
             </div>
