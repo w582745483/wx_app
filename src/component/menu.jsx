@@ -13,25 +13,25 @@ const Item = List.Item
 const data = [
     {
         title: '九宫格',
-        img:ninevideo,
+        img: ninevideo,
         url: '/ninevideo'
     },
     {
         title: '长视频',
-        img:bigvideo,
+        img: bigvideo,
         url: '/bigvideo'
     },
     {
         title: '朋友圈',
-        img:fridrend
+        img: fridrend
     },
     {
         title: '开发中',
-        img:develop
+        img: develop
     },
     {
         title: '客服',
-        img:customer
+        img: customer
     },
 ];
 export default class Menu extends Component {
@@ -39,10 +39,10 @@ export default class Menu extends Component {
         wxid: '',
         header: '',
     }
-    handleClick=(url)=>{
-        if(!this.state.wxid){
-           this.warning()
-           return
+    handleClick = (url) => {
+        if (!this.state.wxid) {
+            this.warning()
+            return
         }
         this.props.history.push(url)
     }
@@ -61,29 +61,29 @@ export default class Menu extends Component {
                 })
             })
     }
-     warning=()=> {
+    warning = () => {
         Modal.warning({
-          content: '用户未登录，请登录用户！',
+            content: '用户未登录，请登录用户！',
         });
-      }
+    }
 
     render() {
-        const {header,wxid}=this.state
-        
+        const { header, wxid } = this.state
+
         return (
             <div>
                 <img src={logo} alt='logo' className='logo-img' />
                 <div className='login_box'>
                     <div style={{ background: '#666', width: '100%', height: '25%' }}>
                         <Avatar src={header} style={{ backgroundColor: '#87d068', marginTop: '25px', marginLeft: '10px' }} size="large" icon="user" />
-                       <span style={{color:'white',paddingLeft:'10px'}}>{header.length>2?'已登录':'未登录'}</span>
-                       <div onClick={()=>this.props.history.push('/logo')} style={{marginTop:'-30px',marginLeft:'300px',textAlign:'center'}}>
-                       <img style={{width:'30px'}} src={login} ></img>
-                       <span style={{display:'block',lineHeight:'1.15',fontSize:'1rem',color:'white'}}>扫码登陆</span>
-                       </div>
-                       
+                        <span style={{ color: 'white', paddingLeft: '10px' }}>{header.length>2&&header!="Please make sure you have loggined"? '已登录' : '未登录'}</span>
+                        <div onClick={() => this.props.history.push('/logo')} style={{ marginTop: '-30px', marginLeft: '300px', textAlign: 'center' }}>
+                            <img style={{ width: '30px' }} src={login} ></img>
+                            <span style={{ display: 'block', lineHeight: '1.15', fontSize: '1rem', color: 'white' }}>扫码登陆</span>
+                        </div>
+
                     </div>
-                    <div  style={{background:'#ddd',height:'65%'}}>
+                    <div style={{ background: '#ddd', height: '65%' }}>
                         <List
                             split={false}
                             grid={{ gutter: 16, column: 3 }}
@@ -91,9 +91,9 @@ export default class Menu extends Component {
                             renderItem={item => (
                                 <List.Item>
                                     <div >
-                                        <img onClick={()=>this.handleClick(item.url)} style={{width:'50px',marginLeft:'30px',marginTop:'20px'}} src={item.img}></img>
-                                        <div style={{textAlign:'center'}}>
-                                            <span style={{lineHeight:'1.15',fontSize:'1rem',marginLeft:'-10px'}}>{item.title}</span>
+                                        <img onClick={() => this.handleClick(item.url)} style={{ width: '50px', marginLeft: '30px', marginTop: '20px' }} src={item.img}></img>
+                                        <div style={{ textAlign: 'center' }}>
+                                            <span style={{ lineHeight: '1.15', fontSize: '1rem', marginLeft: '-10px' }}>{item.title}</span>
                                         </div>
                                     </div>
                                 </List.Item>
