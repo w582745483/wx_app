@@ -35,7 +35,6 @@ export default class Menu extends Component {
     }
     handleClick=(url)=>{
         this.props.history.push(url)
-        console.log(url)
     }
     componentWillMount() {
         fetch("http://47.93.189.47:8818/WebService1.asmx/GetUserWxidAndHeadImageUrl", {
