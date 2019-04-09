@@ -87,7 +87,7 @@ export default class Logo extends Component {
             })
                 .then(res=>res.text())
                 .then(data => {
-                    if(data.length>2){
+                    if(data.length>2&&data!="Please make sure you have loggined"){
                         this.props.history.push('/menu')
                         clearInterval(this.timeGetGetWxid)
                     }
