@@ -65,7 +65,7 @@ export default class Logo extends Component {
     }
     componentWillMount() {
         fetch("http://47.93.189.47:8818/WebService1.asmx/GetLoginQrcode", {
-           // credentials: 'include',
+            credentials: 'include',
             mode: 'cors'
         })
             .then(res => res.text())
