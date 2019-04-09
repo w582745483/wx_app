@@ -7,6 +7,8 @@ import ninevideo from '../assets/img/ninevideo.png'
 import bigvideo from '../assets/img/bigvideo.png'
 import customer from '../assets/img/customer.png'
 import develop from '../assets/img/develop.png'
+import login from '../assets/img/login.png'
+import fridrend from '../assets/img/fridrend.png'
 const Item = List.Item
 const data = [
     {
@@ -20,18 +22,22 @@ const data = [
         url: '/bigvideo'
     },
     {
+        title: '朋友圈',
+        img:fridrend
+    },
+    {
         title: '开发中',
-        img:customer
+        img:develop
     },
     {
         title: '客服',
-        img:develop
+        img:customer
     },
 ];
 export default class Menu extends Component {
     state = {
         wxid: '',
-        header: ''
+        header: '',
     }
     handleClick=(url)=>{
         this.props.history.push(url)
@@ -49,19 +55,25 @@ export default class Menu extends Component {
                     wxid,
                     header
                 })
-                console.log('wxid', wxid)
-                console.log('header', header)
             })
     }
 
 
     render() {
+        const {header}=this.state
+        
         return (
             <div>
                 <img src={logo} alt='logo' className='logo-img' />
                 <div className='login_box'>
                     <div style={{ background: '#666', width: '100%', height: '25%' }}>
-                        <Avatar src={this.state.header} style={{ backgroundColor: '#87d068', marginTop: '25px', marginLeft: '10px' }} size="large" icon="user" />
+                        <Avatar src={header} style={{ backgroundColor: '#87d068', marginTop: '25px', marginLeft: '10px' }} size="large" icon="user" />
+                       <span style={{color:'white',paddingLeft:'10px'}}>{header.length>0?'已登录':'未登录'}</span>
+                       <div onClick={()=>this.props.history.push('/logo')} style={{marginTop:'-30px',marginLeft:'300px',textAlign:'center'}}>
+                       <img style={{width:'30px'}} src={login} ></img>
+                       <span style={{display:'block',lineHeight:'1.15',fontSize:'1rem'}}>扫码登陆</span>
+                       </div>
+                       
                     </div>
                     <div  style={{background:'#ddd',height:'65%'}}>
                         <List

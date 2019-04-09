@@ -124,9 +124,7 @@ export default class Logo extends Component {
                     </div>
                     <div className='sub_title'>
                         <p >{this.state.qr}</p>
-                        <button onClick={this.handleClick2}>发朋友圈</button>
-                        <button onClick={this.handleClick3}>九宫格视频</button>
-                        <button onClick={this.handleClick4}>发送视频</button>             
+                        <button onClick={this.handleClick2}>发朋友圈</button>       
                     </div>         
                 </div>
             </div>
