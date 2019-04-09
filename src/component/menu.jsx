@@ -21,7 +21,7 @@ const data = [
         title: '长视频',
         img: bigvideo,
         url: '/bigvideo'
-    }, 
+    },
     {
         title: '客服',
         img: customer
@@ -31,6 +31,7 @@ export default class Menu extends Component {
     state = {
         wxid: '',
         header: '',
+        isShow: false
     }
     handleClick = (url) => {
         if (!this.state.wxid) {
@@ -46,12 +47,16 @@ export default class Menu extends Component {
         })
             .then(res => res.text())
             .then(data => {
-                const wxid = data.substring(0, data.lastIndexOf('&'))
-                const header = data.substr(data.lastIndexOf('&') + 1, data.length)
-                this.setState({
-                    wxid,
-                    header
-                })
+                if (data != "Please make sure you have loggined" && data.length > 2) {
+                    const wxid = data.substring(0, data.lastIndexOf('&'))
+                    const header = data.substr(data.lastIndexOf('&') + 1, data.length)
+                    this.setState({
+                        wxid,
+                        header,
+                        isShow: false
+                    })
+                }
+
             })
     }
     warning = () => {
@@ -61,7 +66,7 @@ export default class Menu extends Component {
     }
 
     render() {
-        const { header, wxid } = this.state
+        const { header, wxid ,isShow} = this.state
 
         return (
             <div>
@@ -69,8 +74,8 @@ export default class Menu extends Component {
                 <div className='login_box'>
                     <div style={{ background: '#666', width: '100%', height: '20%' }}>
                         <Avatar src={header} style={{ backgroundColor: '#87d068', marginTop: '25px', marginLeft: '10px' }} size="large" icon="user" />
-                        <span style={{ color: 'white', paddingLeft: '10px' }}>{header.length>2&&header!="Please make sure you have loggined"? '已登录' : '未登录'}</span>
-                        <div onClick={() => this.props.history.push('/logo')} style={{ marginTop: '-30px', marginLeft: '300px', textAlign: 'center' }}>
+                        <span style={{ color: 'white', paddingLeft: '10px' }}>{header.length > 2 && header != "Please make sure you have loggined" ? '已登录' : '未登录'}</span>
+                        <div onClick={() => { this.setState({ isShow: true }) }} style={{ marginTop: '-30px', marginLeft: '300px', textAlign: 'center' }}>
                             <img style={{ width: '30px' }} src={login} ></img>
                             <span style={{ display: 'block', lineHeight: '1.15', fontSize: '1rem', color: 'white' }}>扫码登陆</span>
                         </div>
@@ -93,7 +98,7 @@ export default class Menu extends Component {
                             )}
                         />
                     </div>
-                    <Logo/>
+                    {isShow?<Logo />:null}
                 </div>
 
             </div>
