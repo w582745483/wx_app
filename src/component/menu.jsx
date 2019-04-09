@@ -68,7 +68,7 @@ export default class Menu extends Component {
                 <div className='login_box'>
                     <div style={{ background: '#666', width: '100%', height: '25%' }}>
                         <Avatar src={header} style={{ backgroundColor: '#87d068', marginTop: '25px', marginLeft: '10px' }} size="large" icon="user" />
-                       <span style={{color:'white',paddingLeft:'10px'}}>{header.length>0?'已登录':'未登录'}</span>
+                       <span style={{color:'white',paddingLeft:'10px'}}>{header.length>2?'已登录':'未登录'}</span>
                        <div onClick={()=>this.props.history.push('/logo')} style={{marginTop:'-30px',marginLeft:'300px',textAlign:'center'}}>
                        <img style={{width:'30px'}} src={login} ></img>
                        <span style={{display:'block',lineHeight:'1.15',fontSize:'1rem'}}>扫码登陆</span>
