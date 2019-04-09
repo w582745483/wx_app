@@ -87,9 +87,7 @@ export default class Logo extends Component {
             })
                 .then(res=>res.text())
                 .then(data => {
-                    console.log('timeGetGetWxid',data)
-                    if(data>2){
-                        console.log('if')
+                    if(data.length>2){
                         this.props.history.push('/menu')
                         clearInterval(this.timeGetGetWxid)
                     }
