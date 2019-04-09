@@ -87,18 +87,16 @@ export default class Logo extends Component {
             })
                 .then(res=>res.text())
                 .then(data => {
-                    console.log(data)
                     if(data.length>2&&data!="Please make sure you have loggined"){
-                        this.props.history.push('/menu')
                         clearInterval(this.timeGetGetWxid)
+                        const wxid = data.substring(0, data.lastIndexOf('&'))
+                        const header = data.substring(data.lastIndexOf('&') + 1, data.length)
+                        this.setState({
+                            wxid,
+                            header
+                        })
                     }
-                    const wxid = data.substring(0, data.lastIndexOf('&'))
-                  
-                    const header = data.substring(data.lastIndexOf('&') + 1, data.length)
-                    this.setState({
-                        wxid,
-                        header
-                    })
+                   
 
                 })
         }, 2000)

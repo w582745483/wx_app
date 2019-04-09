@@ -47,6 +47,7 @@ export default class Menu extends Component {
         })
             .then(res => res.text())
             .then(data => {
+                console.log(data)
                 if (data != "Please make sure you have loggined" && data.length > 2) {
                     const wxid = data.substring(0, data.lastIndexOf('&'))
                     const header = data.substr(data.lastIndexOf('&') + 1, data.length)
