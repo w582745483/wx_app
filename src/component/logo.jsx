@@ -115,6 +115,7 @@ export default class Logo extends Component {
                     }
                     if (data == 'logout') {
                         PubSub.publish('logout', data)
+                        clearInterval(this.timeGetGetWxid)
                     }
                 })
         }, 3000)
