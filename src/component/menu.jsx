@@ -34,7 +34,7 @@ export default class Menu extends Component {
         isShow: false
     }
     handleClick = (url) => {
-        if (!this.state.wxid) {
+        if (this.state.wxid.length<1) {
             this.warning()
             return
         }
