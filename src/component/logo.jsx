@@ -93,7 +93,7 @@ export default class Logo extends Component {
                         // const wxid = data.substring(0, data.lastIndexOf('&'))
                         //const header = data.substring(data.lastIndexOf('&') + 1, data.length)                     
                     }
-                    else{
+                    if(data=='logout'){
                         PubSub.publish('logout',data)
                     }
                 })
