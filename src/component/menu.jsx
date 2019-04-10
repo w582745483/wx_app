@@ -113,7 +113,7 @@ export default class Menu extends Component {
                             )}
                         />
                     </div>
-                    {isShow ? <Logo GetUserWxidAndHeadImageUrl={(data) => this.GetUserWxidAndHeadImageUrl(data)} /> : null}
+                    {/* {isShow ? <Logo GetUserWxidAndHeadImageUrl={(data) => this.GetUserWxidAndHeadImageUrl(data)} /> : null} */}
                 </div>
 
             </div>
