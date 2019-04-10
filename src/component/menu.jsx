@@ -9,7 +9,7 @@ import bigvideo from '../assets/img/bigvideo.png'
 import customer from '../assets/img/customer.png'
 import develop from '../assets/img/develop.png'
 import login from '../assets/img/login.png'
-import fridrend from '../assets/img/fridrend.png'
+
 const Item = List.Item
 const data = [
     {
@@ -31,14 +31,23 @@ export default class Menu extends Component {
     state = {
         wxid: '',
         header: '',
-        isShow: false
+        isShow: false,
+        test:'123'
     }
     handleClick = (url) => {
-        if (this.state.wxid.length<1) {
-            this.warning()
-            return
-        }
-        this.props.history.push(url)
+        console.log(this.state.test)
+        this.setState({
+            test:'test'
+        })
+        // if (this.state.wxid.length<1) {
+        //     this.warning()
+        //     return
+        // }
+       
+        setTimeout(()=>{ 
+            console.log(this.state.test)
+            this.props.history.push(url)},1000)
+       
     }
     GetUserWxidAndHeadImageUrl = (data) => {
         console.log(data)

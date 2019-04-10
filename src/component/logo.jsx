@@ -87,7 +87,7 @@ export default class Logo extends Component {
                 .then(data => {
                     if(data.length>2&&data!="Please make sure you have loggined"){
                         this.props.GetUserWxidAndHeadImageUrl(data)
-                        clearInterval(this.timeGetGetWxid)
+                        //clearInterval(this.timeGetGetWxid)
                        // const wxid = data.substring(0, data.lastIndexOf('&'))
                         //const header = data.substring(data.lastIndexOf('&') + 1, data.length)
                        
