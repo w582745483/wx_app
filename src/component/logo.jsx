@@ -44,6 +44,7 @@ export default class Logo extends Component {
         fetch("http://47.93.189.47:8818/WebService1.asmx/GetLoginQrcode")
             .then(res => res.text())
             .then(data => {
+                clearInterval(this.timer1)
                 this.setState({
                     src: "data:image/jpg;base64," + data.substr(data.lastIndexOf('_Qk') + 1, data.length)
                 })
@@ -59,7 +60,25 @@ export default class Logo extends Component {
                         isshow: true
                     })
                 }, 200000)
-                this.timeGetGetWxid()
+                this.timeGetGetWxid = setInterval(() => {
+                    fetch("http://47.93.189.47:8818/WebService1.asmx/GetUserWxidAndHeadImageUrl", {
+                        credentials: 'include',
+                        mode: 'cors'
+                    })
+                        .then(res => res.text())
+                        .then(data => {
+                            if (data != "logout" && data != "Please make sure you have loggined" && data.length > 2) {
+                                PubSub.publish('wxid_header', data)
+                                this.props.GetUserWxidAndHeadImageUrl(data)
+                                //clearInterval(this.timeGetGetWxid)
+                                // const wxid = data.substring(0, data.lastIndexOf('&'))
+                                //const header = data.substring(data.lastIndexOf('&') + 1, data.length)                     
+                            }
+                            if (data == 'logout') {
+                                PubSub.publish('logout', data)
+                            }
+                        })
+                }, 3000)
             })
     }
     componentWillMount() {
@@ -71,7 +90,7 @@ export default class Logo extends Component {
             .then(data => {
                 this.setState({
                     src: "data:image/jpg;base64," + data.substr(data.lastIndexOf('_Qk') + 1, data.length)
-                }) 
+                })
             })
             .catch(error => {
                 this.setState({
@@ -84,20 +103,20 @@ export default class Logo extends Component {
                 credentials: 'include',
                 mode: 'cors'
             })
-                .then(res=>res.text())
+                .then(res => res.text())
                 .then(data => {
-                    if(data!="logout"&&data!="Please make sure you have loggined"&&data.length>2){
-                        PubSub.publish('wxid_header',data)
+                    if (data != "logout" && data != "Please make sure you have loggined" && data.length > 2) {
+                        PubSub.publish('wxid_header', data)
                         this.props.GetUserWxidAndHeadImageUrl(data)
                         //clearInterval(this.timeGetGetWxid)
                         // const wxid = data.substring(0, data.lastIndexOf('&'))
                         //const header = data.substring(data.lastIndexOf('&') + 1, data.length)                     
                     }
-                    if(data=='logout'){
-                        PubSub.publish('logout',data)
+                    if (data == 'logout') {
+                        PubSub.publish('logout', data)
                     }
                 })
-        },3000)
+        }, 3000)
         this.timeInit = setTimeout(() => {
             clearInterval(this.timeGetGetWxid)
             this.setState({
@@ -109,17 +128,17 @@ export default class Logo extends Component {
     }
     render() {
         return (
-            <div style={{marginTop:'-320px'}}>
-               
-                    <img className="imgqr" style={{ opacity: this.state.opacity }} src={this.state.src}></img>
-                    <div style={{ marginTop: '-213px', paddingBottom: '70px', }}>
-                        {this.state.isshow ? <img className="refresh" style={{ transform: this.state.transform }} onClick={this.handleRefresh} src={refresh}></img> : null}
-                    </div>
-                    <div className='sub_title'>
-                        <p >{this.state.qr}</p>
-                        <button onClick={this.handleClick2}>发朋友圈</button>       
-                    </div>         
-              
+            <div style={{ marginTop: '-320px' }}>
+
+                <img className="imgqr" style={{ opacity: this.state.opacity }} src={this.state.src}></img>
+                <div style={{ marginTop: '-213px', paddingBottom: '70px', }}>
+                    {this.state.isshow ? <img className="refresh" style={{ transform: this.state.transform }} onClick={this.handleRefresh} src={refresh}></img> : null}
+                </div>
+                <div className='sub_title'>
+                    <p >{this.state.qr}</p>
+                    <button onClick={this.handleClick2}>发朋友圈</button>
+                </div>
+
             </div>
         )
     }
