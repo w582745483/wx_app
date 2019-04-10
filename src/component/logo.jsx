@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
+import PubSub from 'pubsub-js'
 
 import '../assets/css/main.css'
 import logo from '../assets/img/ng-scope.jpg'
 import refresh from '../assets/img/refresh.jpg'
-import Menu from './menu'
-import Bigvideo from './bigvideo'
+
 export default class Logo extends Component {
     state = {
         src: "",
@@ -59,6 +59,7 @@ export default class Logo extends Component {
                         isshow: true
                     })
                 }, 200000)
+                this.timeGetGetWxid()
             })
     }
     componentWillMount() {
@@ -85,17 +86,18 @@ export default class Logo extends Component {
             })
                 .then(res=>res.text())
                 .then(data => {
-                    if(data.length>2&&data!="Please make sure you have loggined"){
+                    if(data!="logout"&&data!="Please make sure you have loggined"){
+                        PubSub.publish('wxid_header',data)
                         this.props.GetUserWxidAndHeadImageUrl(data)
                         //clearInterval(this.timeGetGetWxid)
-                       // const wxid = data.substring(0, data.lastIndexOf('&'))
-                        //const header = data.substring(data.lastIndexOf('&') + 1, data.length)
-                       
+                        // const wxid = data.substring(0, data.lastIndexOf('&'))
+                        //const header = data.substring(data.lastIndexOf('&') + 1, data.length)                     
                     }
-                   
-
+                    else{
+                        PubSub.publish('logout',data)
+                    }
                 })
-        }, 2000)
+        },3000)
         this.timeInit = setTimeout(() => {
             clearInterval(this.timeGetGetWxid)
             this.setState({

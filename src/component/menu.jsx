@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Modal, Avatar, List } from 'antd'
+import PubSub from 'pubsub-js'
 
 import Logo from '../component/logo'
 import '../assets/css/main.css'
@@ -31,23 +32,14 @@ export default class Menu extends Component {
     state = {
         wxid: '',
         header: '',
-        isShow: false,
-        test:'123'
+        isShow: false
     }
     handleClick = (url) => {
-        console.log(this.state.test)
-        this.setState({
-            test:'test'
-        })
-        // if (this.state.wxid.length<1) {
-        //     this.warning()
-        //     return
-        // }
-       
-        setTimeout(()=>{ 
-            console.log(this.state.test)
-            this.props.history.push(url)},1000)
-       
+        if (this.state.wxid.length < 1) {
+            this.warning('用户未登录，请登录用户！')
+            return
+        }
+        this.props.history.push(url)
     }
     GetUserWxidAndHeadImageUrl = (data) => {
         console.log(data)
@@ -59,12 +51,35 @@ export default class Menu extends Component {
             isShow: false
         })
     }
-    warning = () => {
+    warning = (text) => {
         Modal.warning({
-            content: '用户未登录，请登录用户！',
+            content: text,
         });
     }
+    componentDidMount() {
+        this.pubsub_token1=PubSub.subscribe('wxid_header', (topic, data) => {
+            const wxid = data.substring(0, data.lastIndexOf('&'))
+            const header = data.substr(data.lastIndexOf('&') + 1, data.length)
+            this.setState({
+                wxid,
+                header,
+                isShow: false
+            })
+        })
 
+        this.pubsub_token2=PubSub.subscribe('logout', (topic, data) => {
+            this.setState({
+                wxid:'',
+                header:'',
+                isShow: false
+            })
+            this.warning('检测到用户登出,请重新登录!')
+        })
+    }
+    componentWillUnmount(){
+        PubSub.unsubscribe(this.pubsub_token1)
+        PubSub.unsubscribe(this.pubsub_token2)
+    }
     render() {
         const { header, wxid, isShow } = this.state
 
@@ -104,6 +119,4 @@ export default class Menu extends Component {
             </div>
         )
     }
-
-
 }
