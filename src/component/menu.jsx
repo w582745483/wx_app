@@ -41,6 +41,16 @@ export default class Menu extends Component {
         }
         this.props.history.push(url)
     }
+    GetUserWxidAndHeadImageUrl = (data) => {
+        console.log(data)
+        const wxid = data.substring(0, data.lastIndexOf('&'))
+        const header = data.substr(data.lastIndexOf('&') + 1, data.length)
+        this.setState({
+            wxid,
+            header,
+            isShow: false
+        })
+    }
     warning = (text) => {
         Modal.warning({
             content: text,
@@ -103,7 +113,7 @@ export default class Menu extends Component {
                             )}
                         />
                     </div>
-                    {isShow ? <Logo/> : null}
+                    {isShow ? <Logo GetUserWxidAndHeadImageUrl={(data) => this.GetUserWxidAndHeadImageUrl(data)} /> : null}
                 </div>
 
             </div>
