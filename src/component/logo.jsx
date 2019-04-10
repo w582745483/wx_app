@@ -130,7 +130,7 @@ export default class Logo extends Component {
     }
     render() {
         return (
-            <div style={{ marginTop: '320px' }}>
+            <div style={{ marginTop: '-320px' }}>
 
                 <img className="imgqr" style={{ opacity: this.state.opacity }} src={this.state.src}></img>
                 <div style={{ marginTop: '-213px', paddingBottom: '70px', }}>

@@ -103,7 +103,7 @@ export default class Menu extends Component {
                             )}
                         />
                     </div>
-                    {/* {isShow ? <Logo/> : null} */}
+                    {isShow ? <Logo/> : null}
                 </div>
 
             </div>
