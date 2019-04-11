@@ -34,7 +34,7 @@ export default class Bigvideo extends React.Component {
                     body: JSON.stringify(bigvideo)
                 }).then(res => {
                     message.destroy()
-                    message.loading('发送成功！', 1)
+                    message.success('发送成功！', 1)
                     console.log(res)
                 })
                 this.setState({
