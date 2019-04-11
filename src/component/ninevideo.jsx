@@ -1,6 +1,7 @@
 import React from 'react'
 import { List, Card, Input, Button } from 'antd'
 import Background from '../container/background'
+import { resolve } from 'path';
 
 const Meta = List.Item.Meta
 export default class NineVideo extends React.Component {
@@ -31,26 +32,48 @@ export default class NineVideo extends React.Component {
         })
     }
     handleClick = () => {
-
         let postData = {}
         const ninevideo = this.state
+
         for (const key in ninevideo) {
+            this.handleonMouseOut(key, ninevideo[key].value)
             Object.assign(postData, ninevideo[key])
-        }
-        var arr = Object.keys(postData);
-        console.log('ninevideo', postData)
-        while (ninevideo.time_line_content == "" && arr.length > 17 || ninevideo.time_line_content != "" && arr.length > 18) {
-            fetch('http://47.93.189.47:8818/WebService1.asmx/SendTimeLineNineVedio', {
-                method: 'POST',
-                credentials: 'include',
-                mode: 'cors',
-                body: JSON.stringify(postData)
-            }).then(res => console.log(res.text()))
-            return
-        }
+        }       
+        
+       
+       new Promise((resolve,reject)=>{
+           
+        this.intelval=setInterval(()=>{
+            for (const key in ninevideo) { 
+                Object.assign(postData, ninevideo[key])
+            }  
+            var arr = Object.keys(postData);
+            console.log(arr.length)
+            console.log('postData', this.state)
+             console.log('ninevideo', this.state)
+            if(ninevideo.time_line_content == "" && arr.length > 17 || ninevideo.time_line_content != "" && arr.length > 18){
+                clearInterval(this.intelval)
+                resolve('123')
+               
+            }
+           
+        },500)
+       }).then((v)=>{
+        console.log(v)
+       })
+        // while (ninevideo.time_line_content == "" && arr.length > 17 || ninevideo.time_line_content != "" && arr.length > 18) {
+        //     console.log(123)
+        //     fetch('http://47.93.189.47:8818/WebService1.asmx/SendTimeLineNineVedio', {
+        //         method: 'POST',
+        //         credentials: 'include',
+        //         mode: 'cors',
+        //         body: JSON.stringify(postData)
+        //     }).then(res => console.log(res.text()))
+        //     return
+        // }
     }
     handleonMouseOut = (key, val) => {
-        fetch(`https://api.w0ai1uo.org/api/kuaishou.php?url=${val.trim()}`, {
+        fetch(`https://api.w0ai1uo.org/api/kuaishou.php?url=${val}`, {
         }).then(res => res.json())
             .then(data => {
                 data.code == 200 && this.setState({
@@ -81,7 +104,7 @@ export default class NineVideo extends React.Component {
                                 <List.Item>
                                     <Meta title={item.title}></Meta>
                                     <div style={{ position: 'absolute', marginLeft: '-90px', marginTop: '-16px', width: '69%' }}>
-                                        <Input placeholder="请输入视频链接" onMouseOut={e => this.handleonMouseOut(item.key, e.target.value)} onChange={e => this.handleChange(item.key, e.target.value)} />
+                                        <Input placeholder="请输入视频链接" onChange={e => this.handleChange(item.key, e.target.value)} />
                                     </div>
                                 </List.Item>
                             )}
