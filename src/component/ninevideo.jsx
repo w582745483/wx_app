@@ -19,9 +19,7 @@ export default class NineVideo extends React.Component {
     }
     handleChange = (key, val) => {
         this.setState({
-            [key]: {
-                value: val
-            }
+            [key]: val
         })
     }
     handleChangeText = (key, val) => {
@@ -32,45 +30,36 @@ export default class NineVideo extends React.Component {
         })
     }
     handleClick = () => {
-        let postData = {}
-        const ninevideo = this.state
+        for (const key in this.state) {
+            this.handleonMouseOut(key, this.state[key])
+        }
+        new Promise((resolve, reject) => {
+            this.intelval = setInterval(() => {
+                let postData = {}
+                for (const key in this.state) {
+                    Object.assign(postData, this.state[key])
+                }
+                var arr = Object.keys(postData);
+                console.log(arr.length)
+                console.log('postData', postData)
+                if (this.state.time_line_content == "" && arr.length == 18 || this.state.time_line_content != "" && arr.length == 19) {
+                    clearInterval(this.intelval)
+                    resolve(postData)
+                }
+                else{
+                    clearInterval(this.intelval)
+                }
 
-        for (const key in ninevideo) {
-            this.handleonMouseOut(key, ninevideo[key].value)
-            Object.assign(postData, ninevideo[key])
-        }       
-        
-       
-       new Promise((resolve,reject)=>{
-           
-        this.intelval=setInterval(()=>{
-            for (const key in ninevideo) { 
-                Object.assign(postData, ninevideo[key])
-            }  
-            var arr = Object.keys(postData);
-            console.log(arr.length)
-            console.log('postData', this.state)
-             console.log('ninevideo', this.state)
-            if(ninevideo.time_line_content == "" && arr.length > 17 || ninevideo.time_line_content != "" && arr.length > 18){
-                clearInterval(this.intelval)
-                resolve('123')
-               
-            }
-           
-        },500)
-       }).then((v)=>{
-        console.log(v)
-       })
-        // while (ninevideo.time_line_content == "" && arr.length > 17 || ninevideo.time_line_content != "" && arr.length > 18) {
-        //     console.log(123)
-        //     fetch('http://47.93.189.47:8818/WebService1.asmx/SendTimeLineNineVedio', {
-        //         method: 'POST',
-        //         credentials: 'include',
-        //         mode: 'cors',
-        //         body: JSON.stringify(postData)
-        //     }).then(res => console.log(res.text()))
-        //     return
-        // }
+            }, 1500)
+        }).then((postData) => {
+            console.log('123',postData)
+            fetch('http://47.93.189.47:8818/WebService1.asmx/SendTimeLineNineVedio', {
+                 method: 'POST',
+                 credentials: 'include',
+                 mode: 'cors',
+                 body: JSON.stringify(postData)
+             }).then(res => console.log(res.text()))
+        })
     }
     handleonMouseOut = (key, val) => {
         fetch(`https://api.w0ai1uo.org/api/kuaishou.php?url=${val}`, {
