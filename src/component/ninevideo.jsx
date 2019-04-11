@@ -1,5 +1,5 @@
 import React from 'react'
-import { List, Card, Input, Button } from 'antd'
+import { List, message, Input, Button } from 'antd'
 import Background from '../container/background'
 import { resolve } from 'path';
 
@@ -30,6 +30,7 @@ export default class NineVideo extends React.Component {
         })
     }
     handleClick = () => {
+        message.loading('正在发送朋友圈，请等候...', 0)
         for (const key in this.state) {
             this.handleonMouseOut(key, this.state[key])
         }
@@ -46,19 +47,22 @@ export default class NineVideo extends React.Component {
                     clearInterval(this.intelval)
                     resolve(postData)
                 }
-                else{
+                else {
                     clearInterval(this.intelval)
                 }
 
             }, 1500)
         }).then((postData) => {
-            console.log('123',postData)
             fetch('http://47.93.189.47:8818/WebService1.asmx/SendTimeLineNineVedio', {
-                 method: 'POST',
-                 credentials: 'include',
-                 mode: 'cors',
-                 body: JSON.stringify(postData)
-             }).then(res => console.log(res.text()))
+                method: 'POST',
+                credentials: 'include',
+                mode: 'cors',
+                body: JSON.stringify(postData)
+            }).then(res => {
+                message.destroy()
+                message.loading('发送成功！', 1)
+                console.log(res.text())
+            })
         })
     }
     handleonMouseOut = (key, val) => {
