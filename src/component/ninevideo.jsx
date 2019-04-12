@@ -3,53 +3,9 @@ import { List, message, Input, Button, Modal } from 'antd'
 import Background from '../container/background'
 import PubSub from 'pubsub-js'
 
-import ninevideo from '../assets/img/ninevideo.png'
-import bigvideo from '../assets/img/bigvideo.png'
-import customer from '../assets/img/customer.png'
 const Meta = List.Item.Meta
-const data1 = [
-    {
-        title: '九宫格',
-        img: ninevideo,
-        url: '/ninevideo'
-    },
-    {
-        title: '长视频',
-        img: bigvideo,
-        url: '/bigvideo'
-    },
-    {
-        title: '客服',
-        img: customer
-    },
-    {
-        title: '九宫格',
-        img: ninevideo,
-        url: '/ninevideo'
-    },
-    {
-        title: '长视频',
-        img: bigvideo,
-        url: '/bigvideo'
-    },
-    {
-        title: '客服',
-        img: customer
-    },
-    {
-        title: '九宫格',
-        img: ninevideo,
-        url: '/ninevideo'
-    },
-    {
-        title: '长视频',
-        img: bigvideo,
-        url: '/bigvideo'
-    },
-    {
-        title: '客服',
-        img: customer
-    },
+var videodata = [
+
 ];
 export default class NineVideo extends React.Component {
     state = {
@@ -73,6 +29,9 @@ export default class NineVideo extends React.Component {
         });
     }
     showModal = () => {
+        this.AsyncPromise('videodata').then((videodata) => {
+            console.log('video',videodata)
+        })
         this.setState({
             visible: true,
         });
@@ -105,28 +64,8 @@ export default class NineVideo extends React.Component {
     }
     handleClick = () => {
         message.loading('正在发送朋友圈，请等候...', 30)
-        for (const key in this.state) {
-            this.ParseVideoAddress(key, this.state[key])
-        }
-        new Promise((resolve, reject) => {
-            this.intelval = setInterval(() => {
-                let postData = {}
-                for (const key in this.state) {
-                    Object.assign(postData, this.state[key])
-                }
-                var arr = Object.keys(postData);
-                console.log(arr.length)
-                console.log('postData', postData)
-                if (this.state.time_line_content == "" && arr.length == 18 || this.state.time_line_content != "" && arr.length == 19) {
-                    clearInterval(this.intelval)
-                    resolve(postData)
-                }
-                else {
-                    clearInterval(this.intelval)
-                }
-
-            }, 1500)
-        }).then((postData) => {
+        this.AsyncPromise('postData').then((postData) => {
+            console.log('postData', postData)
             fetch('http://47.93.189.47:8818/WebService1.asmx/SendTimeLineNineVedio', {
                 method: 'POST',
                 credentials: 'include',
@@ -139,16 +78,48 @@ export default class NineVideo extends React.Component {
             })
         })
     }
+
+    AsyncPromise=(dataType)=>{
+        for (const key in this.state) {
+            this.ParseVideoAddress(key, this.state[key])
+        }
+        return  new Promise((resolve, reject) => {
+            this.intelval = setInterval(() => {
+                let postData = {}
+                for (const key in this.state) {
+                    Object.assign(postData, this.state[key])
+                }
+                var arr = Object.keys(postData);
+                console.log(arr.length)
+               
+               
+                if (this.state.time_line_content == "" && arr.length == 18 || this.state.time_line_content != "" && arr.length == 19) {
+                    clearInterval(this.intelval)
+                    
+                    resolve(dataType=='postData'?postData:videodata)
+                }
+                else {
+                    clearInterval(this.intelval)
+                }
+
+            }, 1500)
+        })
+    }
+
     ParseVideoAddress = (key, val) => {
         fetch(`https://api.w0ai1uo.org/api/kuaishou.php?url=${val}`, {
         }).then(res => res.json())
             .then(data => {
-                data.code == 200 && this.setState({
-                    [key]: {
-                        ["video_pic_address_" + key.substr(key.length - 1, 1)]: data.cover,
-                        ["video_address_" + key.substr(key.length - 1, 1)]: data.playAddr,
-                    }
-                })
+                if (data.code == 200) {
+                    this.setState({
+                        [key]: {
+                            ["video_pic_address_" + key.substr(key.length - 1, 1)]: data.cover,
+                            ["video_address_" + key.substr(key.length - 1, 1)]: data.playAddr,
+                        }
+                    })
+                    videodata.push(data)
+                    
+                }
             })
     }
     componentDidMount() {
@@ -202,11 +173,11 @@ export default class NineVideo extends React.Component {
                                 <List
                                     split={false}
                                     grid={{ gutter: 16, column: 3 }}
-                                    dataSource={data1}
+                                    dataSource={videodata}
                                     renderItem={item => (
                                         <List.Item>
                                             <div >
-                                                <img onClick={() => this.handleClick(item.url)} style={{ width: '50px', marginLeft: '30px', marginTop: '20px' }} src={item.img}></img>
+                                                <img onClick={() => this.handleClick(item.url)} style={{ width: '50px', marginLeft: '30px', marginTop: '20px' }} src={item.cover}></img>
                                                 <div style={{ textAlign: 'center' }}>
                                                     <span style={{ lineHeight: '1.15', fontSize: '1rem', marginLeft: '-10px' }}>{item.title}</span>
                                                 </div>
