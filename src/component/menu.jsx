@@ -46,7 +46,7 @@ export default class Menu extends Component {
             content: text,
         });
     }
-    componentWillMount() {
+    componentDidMount() {
         this.pubsub_token1=PubSub.subscribe('wxid_header', (topic, data) => {
             const wxid = data.substring(0, data.lastIndexOf('&'))
             const header = data.substr(data.lastIndexOf('&') + 1, data.length)

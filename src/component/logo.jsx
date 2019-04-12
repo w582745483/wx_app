@@ -14,7 +14,7 @@ export default class Logo extends Component {
     }
 
     handleClick2 = () => {
-
+        console.log(localStorage.getItem('wxid_header'))
         fetch("http://47.93.189.47:8818/WebService1.asmx/SendTimeLine", {
             method: 'POST',
             credentials: 'include',
@@ -68,13 +68,16 @@ export default class Logo extends Component {
                         .then(res => res.text())
                         .then(data => {
                             if (data != "logout" && data != "Please make sure you have loggined" && data.length > 2) {
+                                localStorage.setItem('wxid_header',data)
                                 PubSub.publish('wxid_header', data)
+                                console.log('setInterval if')
                                 //this.props.GetUserWxidAndHeadImageUrl(data)
                                 //clearInterval(this.timeGetGetWxid)
                                 // const wxid = data.substring(0, data.lastIndexOf('&'))
                                 //const header = data.substring(data.lastIndexOf('&') + 1, data.length)                     
                             }
                             if (data == 'logout') {
+                                console.log('setInterval else')
                                 PubSub.publish('logout', data)
                                 clearInterval(this.timeGetGetWxid)
                             }

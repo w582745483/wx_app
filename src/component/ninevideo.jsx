@@ -32,7 +32,7 @@ export default class NineVideo extends React.Component {
     handleClick = () => {
         message.loading('正在发送朋友圈，请等候...', 0)
         for (const key in this.state) {
-            this.handleonMouseOut(key, this.state[key])
+            this.ParseVideoAddress(key, this.state[key])
         }
         new Promise((resolve, reject) => {
             this.intelval = setInterval(() => {
@@ -65,7 +65,7 @@ export default class NineVideo extends React.Component {
             })
         })
     }
-    handleonMouseOut = (key, val) => {
+    ParseVideoAddress = (key, val) => {
         fetch(`https://api.w0ai1uo.org/api/kuaishou.php?url=${val}`, {
         }).then(res => res.json())
             .then(data => {
@@ -76,6 +76,30 @@ export default class NineVideo extends React.Component {
                     }
                 })
             })
+    }
+    componentDidMount() {
+        this.pubsub_token1=PubSub.subscribe('wxid_header', (topic, data) => {
+            const wxid = data.substring(0, data.lastIndexOf('&'))
+            const header = data.substr(data.lastIndexOf('&') + 1, data.length)
+            this.setState({
+                wxid,
+                header,
+                isShow: false
+            })
+        })
+
+        this.pubsub_token2=PubSub.subscribe('logout', (topic, data) => {
+            this.setState({
+                wxid:'',
+                header:'',
+                isShow: false
+            })
+            this.warning('检测到用户登出,请重新登录!')
+        })
+    }
+    componentWillUnmount(){
+        PubSub.unsubscribe(this.pubsub_token1)
+        PubSub.unsubscribe(this.pubsub_token2)
     }
     render() {
         const data = [
