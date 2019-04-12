@@ -12,7 +12,7 @@ export default class Bigvideo extends React.Component {
     warning = (text) => {
         Modal.warning({
             content: text,
-            onOk(){window.location.assign('/menu')}
+            onOk(){window.history.pushState('/menu')}
         });
     }
 
@@ -22,7 +22,7 @@ export default class Bigvideo extends React.Component {
         })
     }
     handleClick = () => {
-        message.loading('正在发送朋友圈，请等候...', 0)
+        message.loading('正在发送朋友圈，请等候...', 30)
         fetch(`https://api.w0ai1uo.org/api/kuaishou.php?url=${this.state.videoUrl.trim()}`, {
         }).then(res => res.json())
             .then(data => {

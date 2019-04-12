@@ -1,9 +1,56 @@
 import React from 'react'
-import { List, message, Input, Button,Modal } from 'antd'
+import { List, message, Input, Button, Modal } from 'antd'
 import Background from '../container/background'
 import PubSub from 'pubsub-js'
 
+import ninevideo from '../assets/img/ninevideo.png'
+import bigvideo from '../assets/img/bigvideo.png'
+import customer from '../assets/img/customer.png'
 const Meta = List.Item.Meta
+const data1 = [
+    {
+        title: '九宫格',
+        img: ninevideo,
+        url: '/ninevideo'
+    },
+    {
+        title: '长视频',
+        img: bigvideo,
+        url: '/bigvideo'
+    },
+    {
+        title: '客服',
+        img: customer
+    },
+    {
+        title: '九宫格',
+        img: ninevideo,
+        url: '/ninevideo'
+    },
+    {
+        title: '长视频',
+        img: bigvideo,
+        url: '/bigvideo'
+    },
+    {
+        title: '客服',
+        img: customer
+    },
+    {
+        title: '九宫格',
+        img: ninevideo,
+        url: '/ninevideo'
+    },
+    {
+        title: '长视频',
+        img: bigvideo,
+        url: '/bigvideo'
+    },
+    {
+        title: '客服',
+        img: customer
+    },
+];
 export default class NineVideo extends React.Component {
     state = {
         value1: '',
@@ -16,15 +63,34 @@ export default class NineVideo extends React.Component {
         value8: '',
         value9: '',
         time_line_content: '',
+        visible: false
     }
 
     warning = (text) => {
         Modal.warning({
             content: text,
-            onOk(){window.location.assign('/menu')}
+            onOk() { window.location.assign('/menu') }
+        });
+    }
+    showModal = () => {
+        this.setState({
+            visible: true,
         });
     }
 
+    handleOk = (e) => {
+        console.log(e);
+        this.setState({
+            visible: false,
+        });
+    }
+
+    handleCancel = (e) => {
+        console.log(e);
+        this.setState({
+            visible: false,
+        });
+    }
     handleChange = (key, val) => {
         this.setState({
             [key]: val
@@ -38,7 +104,7 @@ export default class NineVideo extends React.Component {
         })
     }
     handleClick = () => {
-        message.loading('正在发送朋友圈，请等候...', 0)
+        message.loading('正在发送朋友圈，请等候...', 30)
         for (const key in this.state) {
             this.ParseVideoAddress(key, this.state[key])
         }
@@ -86,11 +152,11 @@ export default class NineVideo extends React.Component {
             })
     }
     componentDidMount() {
-        this.pubsub_token2=PubSub.subscribe('logout', (topic, data) => {
+        this.pubsub_token2 = PubSub.subscribe('logout', (topic, data) => {
             this.warning('检测到用户登出,请重新登录!')
         })
     }
-    componentWillUnmount(){
+    componentWillUnmount() {
         PubSub.unsubscribe(this.pubsub_token2)
     }
     render() {
@@ -121,6 +187,34 @@ export default class NineVideo extends React.Component {
                         <Input style={{ width: '80%', left: '10%' }} placeholder="请输入为九宫格视频发送的文字内容" onChange={e => this.handleChangeText('time_line_content', e.target.value)} />
                         <div style={{ textAlign: 'center', marginTop: '30px' }}>
                             <Button onClick={this.handleClick} style={{ width: '300px', height: '40px', fontSize: '20px', border: 'none' }} size='large' type='primary' onClick={this.handleClick}>发送九宫格视频到朋友圈</Button>
+                            <Button type='danger' onClick={this.showModal} size='large' style={{ marginTop: '10px', border: 'none' }}>查看视频</Button>
+                        </div>
+                        <div>
+                            <Modal
+                                title="视频预览"
+                                visible={this.state.visible}
+                                onOk={this.handleOk}
+                                onCancel={this.handleCancel}
+                                centered={true}
+                                closable={false}
+
+                            >
+                                <List
+                                    split={false}
+                                    grid={{ gutter: 16, column: 3 }}
+                                    dataSource={data1}
+                                    renderItem={item => (
+                                        <List.Item>
+                                            <div >
+                                                <img onClick={() => this.handleClick(item.url)} style={{ width: '50px', marginLeft: '30px', marginTop: '20px' }} src={item.img}></img>
+                                                <div style={{ textAlign: 'center' }}>
+                                                    <span style={{ lineHeight: '1.15', fontSize: '1rem', marginLeft: '-10px' }}>{item.title}</span>
+                                                </div>
+                                            </div>
+                                        </List.Item>
+                                    )}
+                                />
+                            </Modal>
                         </div>
                     </div>
                 </div>

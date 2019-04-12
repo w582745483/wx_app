@@ -8,10 +8,8 @@ import logo from '../assets/img/ng-scope.jpg'
 import ninevideo from '../assets/img/ninevideo.png'
 import bigvideo from '../assets/img/bigvideo.png'
 import customer from '../assets/img/customer.png'
-import develop from '../assets/img/develop.png'
 import login from '../assets/img/login.png'
 
-const Item = List.Item
 const data = [
     {
         title: '九宫格',
