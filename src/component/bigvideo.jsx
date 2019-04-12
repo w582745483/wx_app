@@ -1,6 +1,7 @@
 import React from 'react'
 import { Input, Button, message } from 'antd'
 import Background from '../container/background'
+import PubSub from 'pubsub-js'
 
 import Sunshine from '../assets//img/sunshine.jpg'
 export default class Bigvideo extends React.Component {
