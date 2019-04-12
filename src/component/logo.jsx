@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PubSub from 'pubsub-js'
 
 import '../assets/css/main.css'
-import logo from '../assets/img/ng-scope.jpg'
 import refresh from '../assets/img/refresh.jpg'
 
 export default class Logo extends Component {

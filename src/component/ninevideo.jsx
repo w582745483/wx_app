@@ -1,5 +1,5 @@
 import React from 'react'
-import { List, message, Input, Button } from 'antd'
+import { List, message, Input, Button,Modal } from 'antd'
 import Background from '../container/background'
 import PubSub from 'pubsub-js'
 
@@ -17,6 +17,14 @@ export default class NineVideo extends React.Component {
         value9: '',
         time_line_content: '',
     }
+
+    warning = (text) => {
+        Modal.warning({
+            content: text,
+            onOk(){window.location.assign('/menu')}
+        });
+    }
+
     handleChange = (key, val) => {
         this.setState({
             [key]: val
@@ -78,27 +86,11 @@ export default class NineVideo extends React.Component {
             })
     }
     componentDidMount() {
-        this.pubsub_token1=PubSub.subscribe('wxid_header', (topic, data) => {
-            const wxid = data.substring(0, data.lastIndexOf('&'))
-            const header = data.substr(data.lastIndexOf('&') + 1, data.length)
-            this.setState({
-                wxid,
-                header,
-                isShow: false
-            })
-        })
-
         this.pubsub_token2=PubSub.subscribe('logout', (topic, data) => {
-            this.setState({
-                wxid:'',
-                header:'',
-                isShow: false
-            })
             this.warning('检测到用户登出,请重新登录!')
         })
     }
     componentWillUnmount(){
-        PubSub.unsubscribe(this.pubsub_token1)
         PubSub.unsubscribe(this.pubsub_token2)
     }
     render() {
