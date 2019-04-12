@@ -5,9 +5,17 @@ import PubSub from 'pubsub-js'
 import { Player } from 'video-react'
 
 const Meta = List.Item.Meta
-var videodata = [
 
-];
+var videodata1 = [
+    { code: 200,
+     cover:"http://js2.a.yximgs.com/upic/2019/04/01/15/BMjAxOTA0MDExNTI0MDZfMTQzMTk5MDYwXzExODQ4ODYzNTU5XzFfMw==_Bc1ad38dff6f7c501f1d55c5976894cca.jpg?tag=1-1555078382-nil-0-gaju20i4xc-f1fae289b4b158a7&type=hot",
+     head:"http://u2.a.yximgs.com/uhead/AB/2018/12/04/11/BMjAxODEyMDQxMTQxMjNfMTQzMTk5MDYwXzNfaGQ4MTdfMA==.jpg",
+     msg:"获取成功",
+     name:"papi酱",
+     playAddr:"http://jsmov2.a.yximgs.com/upic/2019/04/01/15/BMjAxOTA0MDExNTI0MDZfMTQzMTk5MDYwXzExODQ4ODYzNTU5XzFfMw==_b_Bc56659e3fefd6d278a044234648e1f34.mp4?tag=1-1555078382-nil-0-aas362okad-ab0009686598a81d&type=hot",
+     title:"其实你每天都在过愚人节"},
+   
+ ];
 export default class NineVideo extends React.Component {
     state = {
         value1: '',
@@ -20,7 +28,8 @@ export default class NineVideo extends React.Component {
         value8: '',
         value9: '',
         time_line_content: '',
-        visible: false
+        visible: false,
+        videodata:[]
     }
 
     warning = (text) => {
@@ -30,12 +39,13 @@ export default class NineVideo extends React.Component {
         });
     }
     showModal = () => {
-        this.AsyncPromise('videodata').then((videodata) => {
-            console.log('video', videodata)
-        })
         this.setState({
             visible: true,
         });
+        this.AsyncPromise('videodata').then(() => {
+          
+        })
+       
     }
 
     handleOk = (e) => {
@@ -96,13 +106,8 @@ export default class NineVideo extends React.Component {
 
                 if (this.state.time_line_content == "" && arr.length == 18 || this.state.time_line_content != "" && arr.length == 19) {
                     clearInterval(this.intelval)
-
-                    resolve(dataType == 'postData' ? postData : videodata)
+                    resolve(postData)
                 }
-                else {
-                    clearInterval(this.intelval)
-                }
-
             }, 1500)
         })
     }
@@ -118,7 +123,9 @@ export default class NineVideo extends React.Component {
                             ["video_address_" + key.substr(key.length - 1, 1)]: data.playAddr,
                         }
                     })
-                    videodata.push(data)
+                    this.setState({
+                        videodata:this.state.videodata.concat(data)
+                    })
 
                 }
             })
@@ -138,8 +145,9 @@ export default class NineVideo extends React.Component {
             { title: '快手视频5', key: 'value5' }, { title: '快手视频6', key: 'value6' },
             { title: '快手视频7', key: 'value7' }, { title: '快手视频8', key: 'value8' },
             { title: '快手视频9', key: 'value9' },
-        ]
+        ]   
         return (
+          
             <div>
                 <Background />
                 <div className='login_box'>
@@ -174,23 +182,28 @@ export default class NineVideo extends React.Component {
                                 <List
                                     split={false}
                                     grid={{ gutter: 16, column: 3 }}
-                                    dataSource={videodata}
+                                    dataSource={this.state.videodata}
                                     renderItem={item => (
+                                     
                                         <List.Item>
-                                            <div >
-                                                <Player  videoId="video-1">
-                                              
-                                                    <source src={item.playAddr}  />
+                                              { console.log('item')}
+                                            <div>
+                                           
+                                                <div >
+                                                  
+                                                <video  style={{width:'100px',height:'100px'}}  controls="controls" src={item.playAddr}>
+                                                </video>
+                                               
+                                                    </div>
 
-                                                </Player>
-                                                {/* <img onClick={() => this.handleClick(item.url)} style={{ width: '50px', marginLeft: '30px', marginTop: '20px' }} src={item.cover}></img> */}
-                                                <div style={{ textAlign: 'center' }}>
+                                            {/* <img onClick={() => this.handleClick(item.url)} style={{ width: '50px', marginLeft: '30px', marginTop: '20px' }} src={item.cover}></img> */}
+                                            {/* <div style={{ textAlign: 'center' }}>
                                                     <span style={{ lineHeight: '1.15', fontSize: '1rem', marginLeft: '-10px' }}>{item.title}</span>
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </List.Item>
-                                    )}
-                                />
+                            )}
+                        />
                             </Modal>
                         </div>
                     </div>
