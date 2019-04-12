@@ -69,11 +69,7 @@ export default class Logo extends Component {
                         .then(data => {
                             if (data != "logout" && data != "Please make sure you have loggined" && data.length > 2) {
                                 PubSub.publish('wxid_header', data)
-                                console.log('setInterval if')
-                                //this.props.GetUserWxidAndHeadImageUrl(data)
-                                //clearInterval(this.timeGetGetWxid)
-                                // const wxid = data.substring(0, data.lastIndexOf('&'))
-                                //const header = data.substring(data.lastIndexOf('&') + 1, data.length)                     
+                                console.log('setInterval if')                 
                             }
                             if (data == 'logout') {
                                 console.log('setInterval else')

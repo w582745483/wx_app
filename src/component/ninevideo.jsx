@@ -1,7 +1,7 @@
 import React from 'react'
 import { List, message, Input, Button } from 'antd'
 import Background from '../container/background'
-import { resolve } from 'path';
+import PubSub from 'pubsub-js'
 
 const Meta = List.Item.Meta
 export default class NineVideo extends React.Component {
