@@ -2,6 +2,7 @@ import React from 'react'
 import { List, message, Input, Button, Modal } from 'antd'
 import Background from '../container/background'
 import PubSub from 'pubsub-js'
+import { Player } from 'video-react'
 
 const Meta = List.Item.Meta
 var videodata = [
@@ -30,7 +31,7 @@ export default class NineVideo extends React.Component {
     }
     showModal = () => {
         this.AsyncPromise('videodata').then((videodata) => {
-            console.log('video',videodata)
+            console.log('video', videodata)
         })
         this.setState({
             visible: true,
@@ -79,11 +80,11 @@ export default class NineVideo extends React.Component {
         })
     }
 
-    AsyncPromise=(dataType)=>{
+    AsyncPromise = (dataType) => {
         for (const key in this.state) {
             this.ParseVideoAddress(key, this.state[key])
         }
-        return  new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             this.intelval = setInterval(() => {
                 let postData = {}
                 for (const key in this.state) {
@@ -91,12 +92,12 @@ export default class NineVideo extends React.Component {
                 }
                 var arr = Object.keys(postData);
                 console.log(arr.length)
-               
-               
+
+
                 if (this.state.time_line_content == "" && arr.length == 18 || this.state.time_line_content != "" && arr.length == 19) {
                     clearInterval(this.intelval)
-                    
-                    resolve(dataType=='postData'?postData:videodata)
+
+                    resolve(dataType == 'postData' ? postData : videodata)
                 }
                 else {
                     clearInterval(this.intelval)
@@ -118,7 +119,7 @@ export default class NineVideo extends React.Component {
                         }
                     })
                     videodata.push(data)
-                    
+
                 }
             })
     }
@@ -177,7 +178,12 @@ export default class NineVideo extends React.Component {
                                     renderItem={item => (
                                         <List.Item>
                                             <div >
-                                                <img onClick={() => this.handleClick(item.url)} style={{ width: '50px', marginLeft: '30px', marginTop: '20px' }} src={item.cover}></img>
+                                                <Player  videoId="video-1">
+                                              
+                                                    <source src={item.playAddr}  />
+
+                                                </Player>
+                                                {/* <img onClick={() => this.handleClick(item.url)} style={{ width: '50px', marginLeft: '30px', marginTop: '20px' }} src={item.cover}></img> */}
                                                 <div style={{ textAlign: 'center' }}>
                                                     <span style={{ lineHeight: '1.15', fontSize: '1rem', marginLeft: '-10px' }}>{item.title}</span>
                                                 </div>
