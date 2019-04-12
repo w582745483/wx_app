@@ -53,7 +53,7 @@ export default class Logo extends Component {
                     opacity: '1',
                     isshow: false
                 })
-                setTimeout(() => {
+                this.timeInit=setTimeout(() => {
                     this.setState({
                         qr: '二维码失效，点击刷新',
                         opacity: '0.4',
@@ -69,7 +69,8 @@ export default class Logo extends Component {
                         .then(data => {
                             if (data != "logout" && data != "Please make sure you have loggined" && data.length > 2) {
                                 PubSub.publish('wxid_header', data)
-                                console.log('setInterval if')                 
+                                console.log('setInterval if')  
+                                clearTimeout(this.timeInit)               
                             }
                             if (data == 'logout') {
                                 console.log('setInterval else')
@@ -106,10 +107,7 @@ export default class Logo extends Component {
                 .then(data => {
                     if (data != "logout" && data != "Please make sure you have loggined" && data.length > 2) {
                         PubSub.publish('wxid_header', data)
-                        //this.props.GetUserWxidAndHeadImageUrl(data)
-                        //clearInterval(this.timeGetGetWxid)
-                        // const wxid = data.substring(0, data.lastIndexOf('&'))
-                        //const header = data.substring(data.lastIndexOf('&') + 1, data.length)                     
+                        clearTimeout(this.timeInit)                   
                     }
                     if (data == 'logout') {
                         PubSub.publish('logout', data)
@@ -118,7 +116,6 @@ export default class Logo extends Component {
                 })
         }, 3000)
         this.timeInit = setTimeout(() => {
-            clearInterval(this.timeGetGetWxid)
             this.setState({
                 qr: '二维码失效，点击刷新',
                 opacity: '0.4',
