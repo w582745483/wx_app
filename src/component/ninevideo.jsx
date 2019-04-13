@@ -76,8 +76,10 @@ export default class NineVideo extends React.Component {
                     }
                 }
                 this.setState({
-                    time_line_content: ''
+                    time_line_content: '',
+                    videodata:[]
                 })
+
                 this.setState({
                     visible: false,
                 });
