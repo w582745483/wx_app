@@ -184,7 +184,7 @@ export default class NineVideo extends React.Component {
                                 closable={false}
 
                             >
-                                <Input.TextArea rows={3} style={{width:'100%'}} value={this.state.time_line_content} placeholder="请输入为九宫格视频发送的文字内容" onChange={e => this.handleChangeText('time_line_content', e.target.value)} />
+                                <Input.TextArea rows={3} style={{width:'100%',marginBottom:'20px'}} value={this.state.time_line_content} placeholder="请输入为九宫格视频发送的文字内容" onChange={e => this.handleChangeText('time_line_content', e.target.value)} />
                                 <List
                                     okText='发表'
                                     split={false}
