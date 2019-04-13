@@ -92,7 +92,7 @@ export default class NineVideo extends React.Component {
                 var arr = Object.keys(postData);
                 console.log(arr.length)
 
-
+                console.log('postData',postData)
                 if (this.state.time_line_content == "" && arr.length == 18 || this.state.time_line_content != "" && arr.length == 19) {
                     clearInterval(this.intelval)
                     resolve(postData)
