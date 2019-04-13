@@ -184,7 +184,7 @@ export default class NineVideo extends React.Component {
                                                 <div >
                                               
 
-                                                <video  style={{width:'100%',height:'200px'}}  controls preload autoplay controlslist="nodownload nofullscreen" poster={item.cover} src={item.playAddr}>
+                                                <video  style={{width:'100%',height:'200px'}}  x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload autoplay controlslist="nodownload nofullscreen" poster={item.cover} src={item.playAddr}>
                                                 </video>
                                                
                                                     </div>
