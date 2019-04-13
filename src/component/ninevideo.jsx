@@ -2,7 +2,7 @@ import React from 'react'
 import { List, message, Input, Button, Modal } from 'antd'
 import Background from '../container/background'
 import PubSub from 'pubsub-js'
-import {draw} from './canvas'
+import { draw } from './canvas'
 
 const Meta = List.Item.Meta
 export default class NineVideo extends React.Component {
@@ -18,7 +18,8 @@ export default class NineVideo extends React.Component {
         value9: '',
         time_line_content: '',
         visible: false,
-        videodata:[]
+        videodata: [],
+        empty: ''
     }
 
     warning = (text) => {
@@ -31,21 +32,12 @@ export default class NineVideo extends React.Component {
         this.setState({
             visible: true,
         });
-        this.AsyncPromise('videodata').then(() => {
-          
+        this.AsyncPromise().then(()=>{
+            console.log('videodata',this.state.videodata)
         })
-       
-    }
-
-    handleOk = (e) => {
-        console.log(e);
-        this.setState({
-            visible: false,
-        });
     }
 
     handleCancel = (e) => {
-        console.log(e);
         this.setState({
             visible: false,
         });
@@ -64,8 +56,8 @@ export default class NineVideo extends React.Component {
     }
     handleClick = () => {
         message.destroy()
-        message.loading('正在发送朋友圈，请等候...', 15)
-        this.AsyncPromise('postData').then((postData) => {
+        message.loading('正在发送朋友圈，请等候...', 0)
+        this.AsyncPromise().then((postData) => {
             console.log('postData', postData)
             fetch('http://47.93.189.47:8818/WebService1.asmx/SendTimeLineNineVedio', {
                 method: 'POST',
@@ -76,11 +68,25 @@ export default class NineVideo extends React.Component {
                 message.destroy()
                 message.success('发送成功！', 1)
                 console.log(res.text())
+                for (const key in this.state) {
+                    if (key.indexOf('value') != -1) {
+                        this.setState({
+                            [key]: ''
+                        })
+                    }
+                }
+                this.setState({
+                    time_line_content: ''
+                })
+                this.setState({
+                    visible: false,
+                });
             })
         })
+
     }
 
-    AsyncPromise = (dataType) => {
+    AsyncPromise = () => {
         for (const key in this.state) {
             this.ParseVideoAddress(key, this.state[key])
         }
@@ -88,10 +94,10 @@ export default class NineVideo extends React.Component {
             this.intelval = setInterval(() => {
                 let postData = {}
                 for (const key in this.state) {
-                    if(key!='videodata'){
+                    if (key != 'videodata') {
                         Object.assign(postData, this.state[key])
                     }
-                  
+
                 }
                 var arr = Object.keys(postData);
                 console.log(arr.length)
@@ -108,21 +114,24 @@ export default class NineVideo extends React.Component {
         }).then(res => res.json())
             .then(data => {
                 if (data.code == 200) {
+                    console.log(this.state)
                     this.setState({
-                        [key]: {
+                        [key]:
+                        {
                             ["video_pic_address_" + key.substr(key.length - 1, 1)]: data.cover,
                             ["video_address_" + key.substr(key.length - 1, 1)]: data.playAddr,
                         }
                     })
+
                     this.setState({
-                        videodata:this.state.videodata.concat(data)
+                        videodata: this.state.videodata.concat(data)
                     })
 
                 }
             })
     }
     componentDidMount() {
-        if(this.canvas){
+        if (this.canvas) {
             draw(this.canvas)
         }
         this.pubsub_token2 = PubSub.subscribe('logout', (topic, data) => {
@@ -139,66 +148,64 @@ export default class NineVideo extends React.Component {
             { title: '快手视频5', key: 'value5' }, { title: '快手视频6', key: 'value6' },
             { title: '快手视频7', key: 'value7' }, { title: '快手视频8', key: 'value8' },
             { title: '快手视频9', key: 'value9' },
-        ]   
+        ]
         return (
-          
             <div>
                 <Background />
-               
                 <div className='login_box'>
-              
-   
                     <div style={{ marginTop: '25px', marginLeft: '5px' }}>
                         <List
                             grid={{ gutter: 20, column: 1 }}
                             dataSource={data}
                             renderItem={item => (
+
                                 <List.Item>
                                     <Meta title={item.title}></Meta>
                                     <div style={{ position: 'absolute', marginLeft: '-90px', marginTop: '-16px', width: '69%' }}>
-                                        <Input placeholder="请输入视频链接" onChange={e => this.handleChange(item.key, e.target.value)} />
+                                        <Input placeholder="请输入视频链接" value={this.state[item.key]} onChange={e => this.handleChange(item.key, e.target.value)} />
                                     </div>
                                 </List.Item>
                             )}
                         />
-                        <Input style={{ width: '80%', left: '10%' }} placeholder="请输入为九宫格视频发送的文字内容" onChange={e => this.handleChangeText('time_line_content', e.target.value)} />
+
                         <div style={{ textAlign: 'center', marginTop: '30px' }}>
-                            <Button onClick={this.handleClick} style={{ width: '300px', height: '40px', fontSize: '20px', border: 'none' }} size='large' type='primary' onClick={this.handleClick}>发送九宫格视频到朋友圈</Button>
-                            <Button type='danger' onClick={this.showModal} size='large' style={{ marginTop: '10px', border: 'none' }}>查看视频</Button>
+                            {/* <Button onClick={this.handleClick} style={{ width: '300px', height: '40px', fontSize: '20px', border: 'none' }} size='large' type='primary' onClick={this.handleClick}>发送九宫格视频到朋友圈</Button> */}
+                            <Button type='primary' onClick={this.showModal} size='large' style={{ marginTop: '10px', border: 'none' }}>查看视频</Button>
                         </div>
                         <div>
                             <Modal
+                                cancelText='取消'
+                                okText='发表'
                                 title="视频预览"
                                 visible={this.state.visible}
-                                onOk={this.handleOk}
+                                onOk={this.handleClick}
                                 onCancel={this.handleCancel}
                                 centered={true}
                                 closable={false}
 
                             >
+                                <Input.TextArea rows={3} style={{width:'100%'}} value={this.state.time_line_content} placeholder="请输入为九宫格视频发送的文字内容" onChange={e => this.handleChangeText('time_line_content', e.target.value)} />
                                 <List
+                                    okText='发表'
                                     split={false}
                                     grid={{ gutter: 16, column: 2 }}
                                     dataSource={this.state.videodata}
-                                    renderItem={item => (                               
+                                    renderItem={item => (
                                         <List.Item>
-                                            <div>                                       
+                                            <div>
                                                 <div >
-                                              
+                                                    <video style={{ width: '100%', height: '200px' }} x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload autoplay controlslist="nodownload nofullscreen" poster={item.cover} src={item.playAddr}>
+                                                    </video>
+                                                </div>
 
-                                                <video  style={{width:'100%',height:'200px'}}  x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload autoplay controlslist="nodownload nofullscreen" poster={item.cover} src={item.playAddr}>
-                                                </video>
-                                               
-                                                    </div>
-
-                                            {/* <img onClick={() => this.handleClick(item.url)} style={{ width: '50px', marginLeft: '30px', marginTop: '20px' }} src={item.cover}></img> */}
-                                            {/* <div style={{ textAlign: 'center' }}>
+                                                {/* <img onClick={() => this.handleClick(item.url)} style={{ width: '50px', marginLeft: '30px', marginTop: '20px' }} src={item.cover}></img> */}
+                                                {/* <div style={{ textAlign: 'center' }}>
                                                     <span style={{ lineHeight: '1.15', fontSize: '1rem', marginLeft: '-10px' }}>{item.title}</span>
                                                 </div> */}
                                             </div>
                                         </List.Item>
-                            )}
-                        />
+                                    )}
+                                />
                             </Modal>
                         </div>
                     </div>
