@@ -22,7 +22,8 @@ export default class Bigvideo extends React.Component {
         })
     }
     handleClick = () => {
-        message.loading('正在发送朋友圈，请等候...', 30)
+        message.destroy()
+        message.loading('正在发送朋友圈，请等候...', 15)
         fetch(`https://api.w0ai1uo.org/api/kuaishou.php?url=${this.state.videoUrl.trim()}`, {
         }).then(res => res.json())
             .then(data => {

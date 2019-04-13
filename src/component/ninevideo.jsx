@@ -63,7 +63,8 @@ export default class NineVideo extends React.Component {
         })
     }
     handleClick = () => {
-        message.loading('正在发送朋友圈，请等候...', 30)
+        message.destroy()
+        message.loading('正在发送朋友圈，请等候...', 15)
         this.AsyncPromise('postData').then((postData) => {
             console.log('postData', postData)
             fetch('http://47.93.189.47:8818/WebService1.asmx/SendTimeLineNineVedio', {
@@ -87,12 +88,13 @@ export default class NineVideo extends React.Component {
             this.intelval = setInterval(() => {
                 let postData = {}
                 for (const key in this.state) {
-                    Object.assign(postData, this.state[key])
+                    if(key!='videodata'){
+                        Object.assign(postData, this.state[key])
+                    }
+                  
                 }
                 var arr = Object.keys(postData);
                 console.log(arr.length)
-
-                console.log('postData',postData)
                 if (this.state.time_line_content == "" && arr.length == 18 || this.state.time_line_content != "" && arr.length == 19) {
                     clearInterval(this.intelval)
                     resolve(postData)
