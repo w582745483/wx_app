@@ -44,7 +44,8 @@ export default class NineVideo extends React.Component {
     }
     handleChange = (key, val) => {
         this.setState({
-            [key]: val
+            [key]: {
+                data:val}
         })
     }
     handleChangeText = (key, val) => {
@@ -79,7 +80,6 @@ export default class NineVideo extends React.Component {
                     time_line_content: '',
                     videodata:[]
                 })
-
                 this.setState({
                     visible: false,
                 });
@@ -90,14 +90,16 @@ export default class NineVideo extends React.Component {
 
     AsyncPromise = () => {
         for (const key in this.state) {
-            this.ParseVideoAddress(key, this.state[key])
+            if(key.includes('value')){
+                this.ParseVideoAddress(key, this.state[key].data)
+            }  
         }
         return new Promise((resolve, reject) => {
             this.intelval = setInterval(() => {
                 let postData = {}
                 for (const key in this.state) {
-                    if (key != 'videodata') {
-                        Object.assign(postData, this.state[key])
+                    if (key.includes('value')) {
+                        Object.assign(postData, this.state[key].postdata)
                     }
                 }
                 var arr = Object.keys(postData);
@@ -115,11 +117,16 @@ export default class NineVideo extends React.Component {
         }).then(res => res.json())
             .then(data => {
                 if (data.code == 200) {
+                    //console.log(this.state)
                     this.setState({
                         [key]:
-                        {
-                            ["video_pic_address_" + key.substr(key.length - 1, 1)]: data.cover,
-                            ["video_address_" + key.substr(key.length - 1, 1)]: data.playAddr,
+                        {   data:this.state[key].data,
+                            postdata:{
+                                ["video_pic_address_" + key.substr(key.length - 1, 1)]: data.cover,
+                                ["video_address_" + key.substr(key.length - 1, 1)]: data.playAddr,
+                            }
+                            
+                            
                         }
                     })
 
@@ -162,7 +169,7 @@ export default class NineVideo extends React.Component {
                                 <List.Item>
                                     <Meta title={item.title}></Meta>
                                     <div style={{ position: 'absolute', marginLeft: '-90px', marginTop: '-16px', width: '69%' }}>
-                                        <Input placeholder="请输入视频链接" value={this.state[item.key]} onChange={e => this.handleChange(item.key, e.target.value)} />
+                                        <Input placeholder="请输入视频链接" value={this.state[item.key].data} onChange={e => this.handleChange(item.key, e.target.value)} />
                                     </div>
                                 </List.Item>
                             )}

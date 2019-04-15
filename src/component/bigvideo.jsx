@@ -66,7 +66,8 @@ export default class Bigvideo extends React.Component {
         })
         this.setState({
             videoUrl: '',
-            videoText: ''
+            videoText: '',
+            videodata:[]
         })
 
     }
