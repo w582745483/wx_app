@@ -99,7 +99,6 @@ export default class NineVideo extends React.Component {
                     if (key != 'videodata') {
                         Object.assign(postData, this.state[key])
                     }
-
                 }
                 var arr = Object.keys(postData);
                 console.log(arr.length)
@@ -116,7 +115,6 @@ export default class NineVideo extends React.Component {
         }).then(res => res.json())
             .then(data => {
                 if (data.code == 200) {
-                    console.log(this.state)
                     this.setState({
                         [key]:
                         {
@@ -196,7 +194,7 @@ export default class NineVideo extends React.Component {
                                         <List.Item>
                                             <div>
                                                 <div >
-                                                    <video style={{ width: '100%', height: '200px' }} x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload autoplay controlslist="nodownload nofullscreen" poster={item.cover} src={item.playAddr}>
+                                                    <video style={{ width: '100%', height: '200px' }} x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" poster={item.cover} src={item.playAddr}>
                                                     </video>
                                                 </div>
 
