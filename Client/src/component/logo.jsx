@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PubSub from 'pubsub-js'
+import io from 'socket.io-client'
 
 import '../assets/css/main.css'
 import refresh from '../assets/img/refresh.jpg'
@@ -26,11 +27,18 @@ export default class Logo extends Component {
 
 
     }
-    handleClick3 = () => {
-        this.props.history.push('/ninevideo')
-    }
-    handleClick4 = () => {
-        this.props.history.push('/bigvideo')
+     uuid=()=> {
+        var s = [];
+        var hexDigits = "0123456789abcdef";
+        for (var i = 0; i < 36; i++) {
+            s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+        }
+        s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+        s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+        s[8] = s[13] = s[18] = s[23] = "-";
+
+        var uuid = s.join("");
+        return uuid;
     }
     handleRefresh = () => {
         let current = 0;
@@ -81,39 +89,49 @@ export default class Logo extends Component {
             })
     }
     componentWillMount() {
-        fetch("http://47.93.189.47:8818/WebService1.asmx/GetLoginQrcode", {
-            credentials: 'include',
-            mode: 'cors'
-        })
-            .then(res => res.text())
-            .then(data => {
-                this.setState({
-                    src: "data:image/jpg;base64," + data.substr(data.lastIndexOf('_Qk') + 1, data.length)
-                })
+       
+        if(!io.socket){
+            let uuid=this.uuid()
+            let host = "47.93.189.47:22222";
+            io.socket=io(`ws://${host}/?action=scan&uuid=${uuid}&devicename=xzy-ipad&isreset=true`)
+            io.socket.emit('HeartBeat')
+            io.socket.on('message',(data)=>{
+                console.log('data',data)
             })
-            .catch(error => {
-                this.setState({
-                    qr: error
-                })
-            })
+        }
+        // fetch("http://47.93.189.47:8818/WebService1.asmx/GetLoginQrcode", {
+        //     credentials: 'include',
+        //     mode: 'cors'
+        // })
+        //     .then(res => res.text())
+        //     .then(data => {
+        //         this.setState({
+        //             src: "data:image/jpg;base64," + data.substr(data.lastIndexOf('_Qk') + 1, data.length)
+        //         })
+        //     })
+        //     .catch(error => {
+        //         this.setState({
+        //             qr: error
+        //         })
+        //     })
 
-        this.timeGetGetWxid = setInterval(() => {
-            fetch("http://47.93.189.47:8818/WebService1.asmx/GetUserWxidAndHeadImageUrl", {
-                credentials: 'include',
-                mode: 'cors'
-            })
-                .then(res => res.text())
-                .then(data => {
-                    if (data != "logout" && data != "Please make sure you have loggined" && data.length > 2) {
-                        PubSub.publish('wxid_header', data)
-                        clearTimeout(this.timeInit)                   
-                    }
-                    if (data == 'logout') {
-                        PubSub.publish('logout', data)
-                        clearInterval(this.timeGetGetWxid)
-                    }
-                })
-        }, 3000)
+        // this.timeGetGetWxid = setInterval(() => {
+        //     fetch("http://47.93.189.47:8818/WebService1.asmx/GetUserWxidAndHeadImageUrl", {
+        //         credentials: 'include',
+        //         mode: 'cors'
+        //     })
+        //         .then(res => res.text())
+        //         .then(data => {
+        //             if (data != "logout" && data != "Please make sure you have loggined" && data.length > 2) {
+        //                 PubSub.publish('wxid_header', data)
+        //                 clearTimeout(this.timeInit)                   
+        //             }
+        //             if (data == 'logout') {
+        //                 PubSub.publish('logout', data)
+        //                 clearInterval(this.timeGetGetWxid)
+        //             }
+        //         })
+        // }, 3000)
         this.timeInit = setTimeout(() => {
             this.setState({
                 qr: '二维码失效，点击刷新',
