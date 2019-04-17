@@ -2,7 +2,6 @@ import React from 'react'
 import { List, message, Input, Button, Modal } from 'antd'
 import Background from '../container/background'
 import PubSub from 'pubsub-js'
-import { draw } from './canvas'
 
 const Meta = List.Item.Meta
 export default class NineVideo extends React.Component {
@@ -138,9 +137,6 @@ export default class NineVideo extends React.Component {
             })
     }
     componentDidMount() {
-        if (this.canvas) {
-            draw(this.canvas)
-        }
         this.pubsub_token2 = PubSub.subscribe('logout', (topic, data) => {
             this.warning('检测到用户登出,请重新登录!')
         })

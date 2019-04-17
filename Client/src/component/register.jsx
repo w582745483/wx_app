@@ -1,6 +1,4 @@
-import {
-    Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete,
-} from 'antd';
+import {Form, Input, Button,Select} from 'antd';
 import React from 'react'
 import Background from '../container/background'
 const { Option } = Select;
@@ -9,7 +7,7 @@ class RegistrationForm extends React.Component {
         confirmDirty: false,
         autoCompleteResult: [],
     };
-
+    
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
@@ -41,16 +39,6 @@ class RegistrationForm extends React.Component {
         callback();
     }
 
-    handleWebsiteChange = (value) => {
-        let autoCompleteResult;
-        if (!value) {
-            autoCompleteResult = [];
-        } else {
-            autoCompleteResult = ['.com', '.org', '.net'].map(domain => `${value}${domain}`);
-        }
-        this.setState({ autoCompleteResult });
-    }
-
     render() {
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
@@ -61,18 +49,6 @@ class RegistrationForm extends React.Component {
             wrapperCol: {
                 xs: { span: 24 },
                 sm: { span: 16 },
-            },
-        };
-        const tailFormItemLayout = {
-            wrapperCol: {
-                xs: {
-                    span: 24,
-                    offset: 0,
-                },
-                sm: {
-                    span: 16,
-                    offset: 8,
-                },
             },
         };
         const prefixSelector = getFieldDecorator('prefix', {
@@ -87,7 +63,7 @@ class RegistrationForm extends React.Component {
             <div>
                 <Background />
                 <div className="login_box">
-                    <div style={{margin:'10px 10px'}}>
+                    <div style={{ margin: '40px 10px' }}>
                         <Form {...formItemLayout} onSubmit={this.handleSubmit}>
                             <Form.Item
                                 label="邮箱"
@@ -137,10 +113,11 @@ class RegistrationForm extends React.Component {
                                     <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
                                 )}
                             </Form.Item>
-                            <Form.Item {...tailFormItemLayout}>
+                            <Form.Item style={{ textAlign: 'center' }}>
                                 <Button type="primary" htmlType="submit">注册</Button>
                             </Form.Item>
                         </Form>
+                      
                     </div>
                 </div>
             </div>
