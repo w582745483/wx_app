@@ -80,14 +80,12 @@ export default class Bigvideo extends React.Component {
         PubSub.unsubscribe(this.pubsub_token2)
     }
     render() {
-        console.log('render',this.state.videodata)
         return (
             <div>
                 <Background />
                 <div className='bigvideo'>
                     <img src={Sunshine} style={{ position: 'relative', width: '100%', height: '200px' }} alt="sunshine"></img>
-                    <Input placeholder="请输入视频链接地址" value={this.state.videoUrl} autoFocus={true} onChange={e => this.handleChange('videoUrl', e.target.value)} style={{ marginTop: '50px', width: '80%', height: '50px' }} size="large" />
-                    <Input placeholder="请输入想要为此视频发送的文字" value={this.state.videoText} onChange={e => this.handleChange('videoText', e.target.value)} style={{ marginTop: '15px', width: '80%', height: '50px' }} size="large" />
+                    <Input placeholder="请输入视频链接地址" value={this.state.videoUrl} autoFocus={true} onChange={e => this.handleChange('videoUrl', e.target.value)} style={{ marginTop: '70px', width: '80%', height: '50px' }} size="large" />
                     <Button type="primary" onClick={this.showModal} style={{ marginTop: '60px', height: '40px' }}>查看视频</Button>
                 </div>
                 <div>
@@ -102,7 +100,7 @@ export default class Bigvideo extends React.Component {
                         closable={false}
 
                     >
-                        <Input.TextArea rows={3} style={{ width: '100%', marginBottom: '20px' }} value={this.state.videoText} placeholder="请输入想要为此视频发送的文字" onChange={e => this.handleChange('videoText', e.target.value)} />
+                        <Input.TextArea rows={3} style={{ width: '100%', marginBottom: '20px' }} value={this.state.videoText} placeholder="请输入心情！" onChange={e => this.handleChange('videoText', e.target.value)} />
                         <List
                             okText='发表'
                             split={false}

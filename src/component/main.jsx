@@ -1,7 +1,8 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom';
 
-import Login from './login';
+import {Login} from './login';
+import {Register} from './register'
 import Logo from './logo';
 import NineVideo from './ninevideo';
 import Bigvideo from './bigvideo';
@@ -14,6 +15,7 @@ export default class Main extends React.Component {
             <Switch>
                 <Route path='/menu' component={Menu}></Route>
                 <Route path='/login' component={Login}></Route>
+                <Route path='/register' component={Register}></Route>
                 <Route path='/logo' component={Logo}></Route>
                 <Route path='/ninevideo' component={NineVideo}></Route>
                 <Route path='/bigvideo' component={Bigvideo}></Route>

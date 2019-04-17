@@ -176,7 +176,6 @@ export default class NineVideo extends React.Component {
                         />
 
                         <div style={{ textAlign: 'center', marginTop: '30px' }}>
-                            {/* <Button onClick={this.handleClick} style={{ width: '300px', height: '40px', fontSize: '20px', border: 'none' }} size='large' type='primary' onClick={this.handleClick}>发送九宫格视频到朋友圈</Button> */}
                             <Button type='primary' onClick={this.showModal} size='large' style={{ marginTop: '10px', border: 'none' }}>查看视频</Button>
                         </div>
                         <div>
@@ -191,7 +190,7 @@ export default class NineVideo extends React.Component {
                                 closable={false}
 
                             >
-                                <Input.TextArea rows={3} style={{width:'100%',marginBottom:'20px'}} value={this.state.time_line_content} placeholder="请输入为九宫格视频发送的文字内容" onChange={e => this.handleChangeText('time_line_content', e.target.value)} />
+                                <Input.TextArea rows={3} style={{width:'100%',marginBottom:'20px'}} value={this.state.time_line_content} placeholder="请输入心情！" onChange={e => this.handleChangeText('time_line_content', e.target.value)} />
                                 <List
                                     okText='发表'
                                     split={false}
@@ -204,11 +203,6 @@ export default class NineVideo extends React.Component {
                                                     <video style={{ width: '100%', height: '200px' }} x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" poster={item.cover} src={item.playAddr}>
                                                     </video>
                                                 </div>
-
-                                                {/* <img onClick={() => this.handleClick(item.url)} style={{ width: '50px', marginLeft: '30px', marginTop: '20px' }} src={item.cover}></img> */}
-                                                {/* <div style={{ textAlign: 'center' }}>
-                                                    <span style={{ lineHeight: '1.15', fontSize: '1rem', marginLeft: '-10px' }}>{item.title}</span>
-                                                </div> */}
                                             </div>
                                         </List.Item>
                                     )}
