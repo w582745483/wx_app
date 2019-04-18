@@ -88,16 +88,36 @@ export default class Logo extends Component {
                 }, 3000)
             })
     }
-    componentWillMount() {
-       
+    handleClick3=()=> {
+        // if(!io.socket){
+        //     let uuid=this.uuid()
+        //    let host = "ws://localhost:4000";
+        //     const socket=io("ws://localhost:4000")
+        
+        //    socket.on('message',(data)=>{
+        //         console.log('data',data)
+        //     })
+        //     socket.send('hello')
+        // }
         if(!io.socket){
             let uuid=this.uuid()
             let host = "47.93.189.47:22222";
-            io.socket=io(`ws://${host}/?action=scan&uuid=${uuid}&devicename=xzy-ipad&isreset=true`)
-            io.socket.emit('HeartBeat')
-            io.socket.on('message',(data)=>{
-                console.log('data',data)
-            })
+            //const socket=io("ws://" + host + "/?action=scan&uuid=" + uuid + "&devicename=xzy-ipad&isreset=true")
+            var ws = new WebSocket("ws://" + host + "/?action=scan&uuid=" + uuid + "&devicename=xzy-ipad&isreset=true");
+            
+            ws.onmessage=(evt)=>{
+                console.log(JSON.parse(evt.data))
+                var msg = JSON.parse( evt.data); 
+                if(msg.action=="qrcode"){
+                    console.log('msg',msg)
+                    this.setState({
+                        src: "data:image/jpg;base64,"+msg.context
+                    })
+                }
+            }
+        //    socket.on('connect',(data)=>{
+        //         console.log('data',data)
+        //     })
         }
         // fetch("http://47.93.189.47:8818/WebService1.asmx/GetLoginQrcode", {
         //     credentials: 'include',
@@ -151,6 +171,7 @@ export default class Logo extends Component {
                 <div className='sub_title'>
                     <p >{this.state.qr}</p>
                     <button onClick={this.handleClick2}>发朋友圈</button>
+                    <button onClick={this.handleClick3}>获取二维码</button>
                 </div>
 
             </div>
