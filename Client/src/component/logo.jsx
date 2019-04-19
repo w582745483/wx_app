@@ -85,10 +85,15 @@ class Logo extends Component {
             })
     }
     componentDidMount(){
-        console.log(this.props)
         this.setState({
             src:this.props.qr
         })
+    }
+    componentWillReceiveProps(nextProps){
+        console.log(nextProps)
+        if(nextProps.currentStep !== this.props.currentStep){
+            console.log(this.props)
+        }
     }
     componentWillMount() {
        
