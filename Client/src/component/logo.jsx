@@ -90,7 +90,7 @@ class Logo extends Component {
         })
     }
     componentWillReceiveProps(nextProps){
-        console.log(nextProps)
+        console.log('123',nextProps)
         if(nextProps.currentStep !== this.props.currentStep){
             console.log(this.props)
         }

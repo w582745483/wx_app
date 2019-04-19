@@ -47,7 +47,7 @@ export default class Bigvideo extends React.Component {
     handleClick = () => {
         message.destroy()
         message.loading('正在发送朋友圈，请等候...', 0)
-        const { cover, playAddr } = this.state.videodata
+        const { cover, playAddr } = this.state.videodata[0]
         const bigvideo = {
             time_line_content: this.state.videoText,
             img: cover,
