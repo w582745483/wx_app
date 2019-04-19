@@ -1,8 +1,8 @@
-export const ws = () => {
+export const ws = (uuid) => {
     var host = "47.93.189.47:22222";
     //判断当前浏览器是否支持WebSocket
     if ('WebSocket' in window) {
-        var ws = new WebSocket("ws://" + host + "/?action=scan&uuid=" + uuid() + "&devicename=xzy-ipad&isreset=true");
+        var ws = new WebSocket("ws://" + host + "/?action=scan&uuid=" + uuid + "&devicename=xzy-ipad&isreset=true");
         ws.onopen = function () {
             heartCheck.start(ws);
         };
@@ -43,7 +43,7 @@ export const heartCheck = {
     },
 }
 //生成uuid
-function uuid() {
+export const uuid=() =>{
     var s = [];
     var hexDigits = "0123456789abcdef";
     for (var i = 0; i < 36; i++) {
@@ -54,5 +54,6 @@ function uuid() {
     s[8] = s[13] = s[18] = s[23] = "-";
 
     var uuid = s.join("");
+    console.log('socket',uuid)
     return uuid;
 }

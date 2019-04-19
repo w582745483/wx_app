@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PubSub from 'pubsub-js'
-import { ws, heartCheck } from './socket'
+import { ws, heartCheck ,uuid} from './socket'
 import {connect} from 'react-redux'
 
 import '../assets/css/main.css'
@@ -17,14 +17,17 @@ class Logo extends Component {
     }
 
     handleClick2 = () => {
-        
+        console.log('uuid',this.state.uuid)
         var content = {
             text: "hello",
             uuid: this.state.uuid
         }
         fetch("http://47.93.189.47:22221/api/sns/sendtext", {
+            headers:{
+                'Content-Type':'application/json',
+                'Accept':' application/json'
+            },
             method: 'POST',
-            credentials: 'include',
             mode: 'cors',
             body: JSON.stringify(content)
         })
@@ -84,20 +87,23 @@ class Logo extends Component {
                 }, 3000)
             })
     }
+    
     componentDidMount(){
-        this.setState({
-            src:this.props.qr
-        })
+      
     }
     componentWillReceiveProps(nextProps){
         console.log('123',nextProps)
         if(nextProps.currentStep !== this.props.currentStep){
             console.log(this.props)
         }
+        this.setState({
+            src: "data:image/jpg;base64,"+nextProps.src.qr,
+            uuid:nextProps.src.uuid
+        })
     }
     componentWillMount() {
        
-        this.props.getQr()
+        this.props.getQr(uuid())
 
      
      
