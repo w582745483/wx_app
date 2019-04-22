@@ -11,7 +11,6 @@ import Menu from './menu'
 export default class Main extends React.Component {
     render() {
         return (
-
             <Switch>
                 <Route path='/' exact={true} component={Menu}></Route>
                 <Route path='/login' component={Login}></Route>
@@ -20,8 +19,6 @@ export default class Main extends React.Component {
                 <Route path='/ninevideo' component={NineVideo}></Route>
                 <Route path='/bigvideo' component={Bigvideo}></Route>
             </Switch>
-
-
         )
     }
 }
