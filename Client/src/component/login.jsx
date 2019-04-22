@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Icon, Input, Button, Checkbox, Modal, List, Select } from 'antd'
+import { Form, Icon, Input, Button, Checkbox, Modal, Select } from 'antd'
 
 import Background from '../container/background'
 const { Option } = Select;
