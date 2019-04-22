@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route,HashRouter } from 'react-router-dom';
 
 import {Login} from './login';
 import {Register} from './register'
@@ -13,7 +13,7 @@ export default class Main extends React.Component {
         return (
 
             <Switch>
-                <Route path='/menu' component={Menu}></Route>
+                <Route path='/' exact={true} component={Menu}></Route>
                 <Route path='/login' component={Login}></Route>
                 <Route path='/register' component={Register}></Route>
                 <Route path='/logo' component={Logo}></Route>

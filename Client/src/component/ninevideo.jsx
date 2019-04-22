@@ -58,90 +58,103 @@ class NineVideo extends React.Component {
     handleClick = () => {
         message.destroy()
         message.loading('正在发送朋友圈，请等候...', 0)
-        this.AsyncPromise().then((postData) => {
-            Object.assign(postData, { uuid: this.props.uuid })
-            console.log('postData', postData)
-            fetch('http://47.93.189.47:22221/api/sns/sendninebigvideo', {
-                method: 'POST',
-                //credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': ' application/json'
-                },
-                mode: 'cors',
-                body: JSON.stringify(postData)
-            }).then(res => {
-                message.destroy()
-                message.success('发送成功！', 1)
-                console.log(res.text())
-                for (const key in this.state) {
-                    if (key.indexOf('value') != -1) {
-                        this.setState({
-                            [key]: ''
-                        })
-                    }
+        let postData = {}
+        for (const key in this.state) {
+            if (key.includes('value')) {
+                Object.assign(postData, this.state[key].postdata)
+            }
+        }
+         Object.assign(postData, { uuid: this.props.uuid })
+         console.log('postData', postData)
+        fetch('http://47.93.189.47:22221/api/sns/sendninebigvideo', {
+            method: 'POST',
+            //credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': ' application/json'
+            },
+            mode: 'cors',
+            body: JSON.stringify(postData)
+        }).then(res => {
+            message.destroy()
+            message.success('发送成功！', 1)
+            console.log(res.text())
+            for (const key in this.state) {
+                if (key.indexOf('value') != -1) {
+                    this.setState({
+                        [key]: ''
+                    })
                 }
-                this.setState({
-                    time_line_content: '',
-                    videodata: []
-                })
-                this.setState({
-                    visible: false,
-                });
+            }
+            this.setState({
+                time_line_content: '',
+                videodata: []
             })
+            this.setState({
+                visible: false,
+            });
         })
-
     }
 
     AsyncPromise = () => {
-        for (const key in this.state) {
-            if (key.includes('value')) {
-                this.ParseVideoAddress(key, this.state[key].data)
+        return new Promise(resolve => {
+            let promiseArry = []
+            for (const key in this.state) {
+                if (key.includes('value')) {
+                    promiseArry.push(this.ParseVideoAddress(key, this.state[key].data))
+                }
             }
-        }
-        return new Promise((resolve, reject) => {
-            this.intelval = setInterval(() => {
-                let postData = {}
-                for (const key in this.state) {
-                    if (key.includes('value')) {
-                        Object.assign(postData, this.state[key].postdata)
-                    }
-                }
-                var arr = Object.keys(postData);
-                console.log(arr.length)
-                if (this.state.time_line_content == "" && arr.length == 18 || this.state.time_line_content != "" && arr.length == 19) {
-                    clearInterval(this.intelval)
-                    resolve(postData)
-                }
-            }, 1500)
+            Promise.all(promiseArry).then(val => {
+                resolve()
+            })
         })
+
+        // return new Promise((resolve, reject) => {
+        //     this.intelval = setInterval(() => {
+        //         let postData = {}
+        //         for (const key in this.state) {
+        //             if (key.includes('value')) {
+        //                 Object.assign(postData, this.state[key].postdata)
+        //             }
+        //         }
+        //         var arr = Object.keys(postData);
+        //         console.log(arr.length)
+        //         if (this.state.time_line_content == "" && arr.length == 18 || this.state.time_line_content != "" && arr.length == 19) {
+        //             clearInterval(this.intelval)
+        //             resolve(postData)
+        //         }
+        //     }, 1500)
+        // })
     }
 
     ParseVideoAddress = (key, val) => {
-        fetch(`https://api.w0ai1uo.org/api/kuaishou.php?url=${val}`, {
-        }).then(res => res.json())
-            .then(data => {
-                if (data.code == 200) {
-                    //console.log(this.state)
-                    this.setState({
-                        [key]:
-                        {
-                            data: this.state[key].data,
-                            postdata: {
-                                ["video_pic_address_" + key.substr(key.length - 1, 1)]: data.cover,
-                                ["video_address_" + key.substr(key.length - 1, 1)]: data.playAddr,
+        return new Promise(resolve => {
+            fetch(`https://api.w0ai1uo.org/api/kuaishou.php?url=${val}`, {
+            }).then(res => res.json())
+                .then(data => {
+                    if (data.code == 200) {
+                        //console.log(this.state)
+                        this.setState({
+                            [key]:
+                            {
+                                data: this.state[key].data,
+                                postdata: {
+                                    ["video_pic_address_" + key.substr(key.length - 1, 1)]: data.cover,
+                                    ["video_address_" + key.substr(key.length - 1, 1)]: data.playAddr,
+                                }
+
+
                             }
+                        })
 
+                        this.setState({
+                            videodata: this.state.videodata.concat(data)
+                        })
+                        resolve()
+                    }
+                })
 
-                        }
-                    })
-
-                    this.setState({
-                        videodata: this.state.videodata.concat(data)
-                    })
-
-                }
-            })
+        })
     }
     componentDidMount() {
         this.pubsub_token2 = PubSub.subscribe('logout', (topic, data) => {
