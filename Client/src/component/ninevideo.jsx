@@ -2,9 +2,11 @@ import React from 'react'
 import { List, message, Input, Button, Modal } from 'antd'
 import Background from '../container/background'
 import PubSub from 'pubsub-js'
+import { connect } from 'react-redux'
+
 
 const Meta = List.Item.Meta
-export default class NineVideo extends React.Component {
+class NineVideo extends React.Component {
     state = {
         value1: '',
         value2: '',
@@ -31,8 +33,8 @@ export default class NineVideo extends React.Component {
         this.setState({
             visible: true,
         });
-        this.AsyncPromise().then(()=>{
-            console.log('videodata',this.state.videodata)
+        this.AsyncPromise().then(() => {
+            console.log('videodata', this.state.videodata)
         })
     }
 
@@ -44,24 +46,28 @@ export default class NineVideo extends React.Component {
     handleChange = (key, val) => {
         this.setState({
             [key]: {
-                data:val}
+                data: val
+            }
         })
     }
     handleChangeText = (key, val) => {
         this.setState({
-            [key]: {
-                time_line_content: val
-            }
+            time_line_content: val
         })
     }
     handleClick = () => {
         message.destroy()
         message.loading('正在发送朋友圈，请等候...', 0)
         this.AsyncPromise().then((postData) => {
+            Object.assign(postData, { uuid: this.props.uuid })
             console.log('postData', postData)
-            fetch('http://47.93.189.47:8818/WebService1.asmx/SendTimeLineNineVedio', {
+            fetch('http://47.93.189.47:22221/api/sns/sendninebigvideo', {
                 method: 'POST',
-                credentials: 'include',
+                //credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': ' application/json'
+                },
                 mode: 'cors',
                 body: JSON.stringify(postData)
             }).then(res => {
@@ -77,7 +83,7 @@ export default class NineVideo extends React.Component {
                 }
                 this.setState({
                     time_line_content: '',
-                    videodata:[]
+                    videodata: []
                 })
                 this.setState({
                     visible: false,
@@ -89,9 +95,9 @@ export default class NineVideo extends React.Component {
 
     AsyncPromise = () => {
         for (const key in this.state) {
-            if(key.includes('value')){
+            if (key.includes('value')) {
                 this.ParseVideoAddress(key, this.state[key].data)
-            }  
+            }
         }
         return new Promise((resolve, reject) => {
             this.intelval = setInterval(() => {
@@ -119,13 +125,14 @@ export default class NineVideo extends React.Component {
                     //console.log(this.state)
                     this.setState({
                         [key]:
-                        {   data:this.state[key].data,
-                            postdata:{
+                        {
+                            data: this.state[key].data,
+                            postdata: {
                                 ["video_pic_address_" + key.substr(key.length - 1, 1)]: data.cover,
                                 ["video_address_" + key.substr(key.length - 1, 1)]: data.playAddr,
                             }
-                            
-                            
+
+
                         }
                     })
 
@@ -186,7 +193,7 @@ export default class NineVideo extends React.Component {
                                 closable={false}
 
                             >
-                                <Input.TextArea rows={3} style={{width:'100%',marginBottom:'20px'}} value={this.state.time_line_content} placeholder="请输入心情！" onChange={e => this.handleChangeText('time_line_content', e.target.value)} />
+                                <Input.TextArea rows={3} style={{ width: '100%', marginBottom: '20px' }} value={this.state.time_line_content} placeholder="请输入心情！" onChange={e => this.handleChangeText('time_line_content', e.target.value)} />
                                 <List
                                     okText='发表'
                                     split={false}
@@ -211,3 +218,6 @@ export default class NineVideo extends React.Component {
         )
     }
 }
+export default connect(
+    state => state.Qr
+)(NineVideo)

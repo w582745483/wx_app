@@ -9,8 +9,7 @@ const initQr = {
 function Qr(state = initQr, action) {
     switch (action.type) {
         case GET_QR:
-        console.log('GET_QR',action.data)
-            return {...initQr,src:action.data}
+            return {...initQr,...action.data}
         default:
             return state
     }

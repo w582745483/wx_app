@@ -2,9 +2,10 @@ import React from 'react'
 import { Input, Button, message, Modal, List } from 'antd'
 import Background from '../container/background'
 import PubSub from 'pubsub-js'
+import { connect } from 'react-redux'
 
 import Sunshine from '../assets//img/sunshine.jpg'
-export default class Bigvideo extends React.Component {
+class Bigvideo extends React.Component {
     state = {
         videoUrl: '',
         videoText: '',
@@ -49,15 +50,20 @@ export default class Bigvideo extends React.Component {
         message.loading('正在发送朋友圈，请等候...', 0)
         const { cover, playAddr } = this.state.videodata[0]
         const bigvideo = {
-            time_line_content: this.state.videoText,
-            img: cover,
-            videourl: playAddr
+            text: this.state.videoText,
+            videoimage: cover,
+            videourl: playAddr,
+            uuid:this.props.uuid
         }
         console.log('bigvideo', bigvideo)
-        fetch('http://47.93.189.47:8818/WebService1.asmx/SendTimeLineBigVideo', {
+        fetch('http://47.93.189.47:22221/api/sns/sendbigvideo', {
             method: 'POST',
-            credentials: 'include',
+            //credentials: 'include',
             mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': ' application/json'
+            },
             body: JSON.stringify(bigvideo)
         }).then(res => {
             message.destroy()
@@ -123,3 +129,6 @@ export default class Bigvideo extends React.Component {
         )
     }
 }
+export default connect(
+    state=>state.Qr,
+)(Bigvideo)

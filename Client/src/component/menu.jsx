@@ -33,10 +33,10 @@ export default class Menu extends Component {
         isShow: false
     }
     handleClick = (url) => {
-        if (this.state.wxid.length < 1) {
-            this.warning('用户未登录，请登录用户！')
-            return
-        }
+        // if (this.state.wxid.length < 1) {
+        //     this.warning('用户未登录，请登录用户！')
+        //     return
+        // }
         this.props.history.push(url)
     }
     warning = (text) => {

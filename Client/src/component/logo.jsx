@@ -1,112 +1,81 @@
 import React, { Component } from 'react';
 import PubSub from 'pubsub-js'
-import { ws, heartCheck ,uuid} from './socket'
-import {connect} from 'react-redux'
+import { uuid } from './socket'
+import { connect } from 'react-redux'
 
 import '../assets/css/main.css'
 import refresh from '../assets/img/refresh.jpg'
-import {getQr} from '../redux/actions'
+import { getQr } from '../redux/actions'
+import { resolve } from 'url';
 
 class Logo extends Component {
     state = {
-        src:'',
-        qr: '使用手机微信扫码登录',
+        qr: '',
+        timeout: '使用手机微信扫码登录',
         opacity: '1',
         isshow: false,
         uuid: ''
     }
 
     handleClick2 = () => {
-        console.log('uuid',this.state.uuid)
+        console.log('uuid', this.state.uuid)
         var content = {
             text: "hello",
             uuid: this.state.uuid
         }
         fetch("http://47.93.189.47:22221/api/sns/sendtext", {
-            headers:{
-                'Content-Type':'application/json',
-                'Accept':' application/json'
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': ' application/json'
             },
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify(content)
         })
-            .then(res => res.text())
+            .then(res => res.json())
             .then(data => {
-                console.log('data', data)
+                console.log('sendtext', data)
             })
-
-
     }
 
     handleRefresh = () => {
         let current = 0;
+        
         this.timer1 = setInterval(() => {
             current = (current + 30) % 360;
             this.setState({
                 transform: 'rotate(' + current + 'deg)'
             })
         }, 10)
-        fetch("http://47.93.189.47:8818/WebService1.asmx/GetLoginQrcode")
-            .then(res => res.text())
-            .then(data => {
-                clearInterval(this.timer1)
-                this.setState({
-                    src: "data:image/jpg;base64," + data.substr(data.lastIndexOf('_Qk') + 1, data.length)
-                })
-                this.setState({
-                    qr: '使用手机微信扫码登录',
-                    opacity: '1',
-                    isshow: false
-                })
-                this.timeInit = setTimeout(() => {
-                    this.setState({
-                        qr: '二维码失效，点击刷新',
-                        opacity: '0.4',
-                        isshow: true
-                    })
-                }, 200000)
-                this.timeGetGetWxid = setInterval(() => {
-                    fetch("http://47.93.189.47:8818/WebService1.asmx/GetUserWxidAndHeadImageUrl", {
-                        credentials: 'include',
-                        mode: 'cors'
-                    })
-                        .then(res => res.text())
-                        .then(data => {
-                            if (data != "logout" && data != "Please make sure you have loggined" && data.length > 2) {
-                                PubSub.publish('wxid_header', data)
-                                console.log('setInterval if')
-                                clearTimeout(this.timeInit)
-                            }
-                            if (data == 'logout') {
-                                console.log('setInterval else')
-                                PubSub.publish('logout', data)
-                                clearInterval(this.timeGetGetWxid)
-                            }
-                        })
-                }, 3000)
-            })
-    }
-    
-    componentDidMount(){
-      
-    }
-    componentWillReceiveProps(nextProps){
-        console.log('123',nextProps)
-        if(nextProps.currentStep !== this.props.currentStep){
-            console.log(this.props)
-        }
+        //this.props.getQr(uuid())
+        
         this.setState({
-            src: "data:image/jpg;base64,"+nextProps.src.qr,
-            uuid:nextProps.src.uuid
+            timeout: '',
+            opacity: '1',
+            isshow: false
+        })
+        this.timeInit = setTimeout(() => {
+            this.setState({
+                timeout: '二维码失效，点击刷新',
+                opacity: '0.4',
+                isshow: true
+            })
+        }, 5000)
+
+    }
+
+    componentWillReceiveProps(nextProps) { 
+        this.setState({
+            qr: "data:image/jpg;base64," + nextProps.qr,
+            uuid: nextProps.uuid
         })
     }
     componentWillMount() {
-       
+
         this.props.getQr(uuid())
 
-     
-     
+
+
         // fetch("http://47.93.189.47:8818/WebService1.asmx/GetLoginQrcode", {
         //     credentials: 'include',
         //     mode: 'cors'
@@ -142,21 +111,21 @@ class Logo extends Component {
         // }, 3000)
         this.timeInit = setTimeout(() => {
             this.setState({
-                qr: '二维码失效，点击刷新',
+                timeout: '二维码失效，点击刷新',
                 opacity: '0.4',
                 isshow: true
             })
-        }, 200000)
+        }, 5000)
     }
     render() {
         return (
             <div style={{ marginTop: '-320px' }}>
-                <img className="imgqr" style={{ opacity: this.state.opacity }} src={this.state.src}></img>
+                <img className="imgqr" style={{ opacity: this.state.opacity }} src={this.state.qr}></img>
                 <div style={{ marginTop: '-213px', paddingBottom: '70px', }}>
                     {this.state.isshow ? <img className="refresh" style={{ transform: this.state.transform }} onClick={this.handleRefresh} src={refresh}></img> : null}
                 </div>
                 <div className='sub_title'>
-                    <p >{this.state.qr}</p>
+                    <p >{this.state.timeout}</p>
                     <button onClick={this.handleClick2}>发朋友圈</button>
                     <button onClick={this.handleClick3}>获取二维码</button>
                 </div>
@@ -166,6 +135,6 @@ class Logo extends Component {
     }
 }
 export default connect(
-    state=>state.Qr,
-    {getQr}
+    state => state.Qr,
+    { getQr }
 )(Logo)
