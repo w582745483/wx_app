@@ -4,7 +4,6 @@ import Background from '../container/background'
 import PubSub from 'pubsub-js'
 import { connect } from 'react-redux'
 
-import Sunshine from '../assets//img/sunshine.jpg'
 class Bigvideo extends React.Component {
     state = {
         videoUrl: '',
@@ -90,7 +89,7 @@ class Bigvideo extends React.Component {
             <div>
                 <Background />
                 <div className='bigvideo'>
-                    <img src={Sunshine} style={{ position: 'relative', width: '100%', height: '200px' }} alt="sunshine"></img>
+                    <img src={require('../assets//img/sunshine.jpg')} style={{ position: 'relative', width: '100%', height: '200px' }} alt="sunshine"></img>
                     <Input placeholder="请输入视频链接地址" value={this.state.videoUrl} autoFocus={true} onChange={e => this.handleChange('videoUrl', e.target.value)} style={{ marginTop: '70px', width: '80%', height: '50px' }} size="large" />
                     <Button type="primary" onClick={this.showModal} style={{ marginTop: '60px', height: '40px' }}>查看视频</Button>
                 </div>

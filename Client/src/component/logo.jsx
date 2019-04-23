@@ -4,9 +4,7 @@ import { uuid } from './socket'
 import { connect } from 'react-redux'
 
 import '../assets/css/main.css'
-import refresh from '../assets/img/refresh.jpg'
-import { getQr } from '../redux/actions'
-import { resolve } from 'url';
+import { WxLogin } from '../redux/actions'
 
 class Logo extends Component {
     state = {
@@ -72,7 +70,7 @@ class Logo extends Component {
     }
     componentWillMount() {
 
-        this.props.getQr(uuid())
+        this.props.WxLogin(uuid())
 
 
 
@@ -115,14 +113,14 @@ class Logo extends Component {
                 opacity: '0.4',
                 isshow: true
             })
-        }, 5000)
+        }, 200000)
     }
     render() {
         return (
             <div style={{ marginTop: '-320px' }}>
                 <img className="imgqr" style={{ opacity: this.state.opacity }} src={this.state.qr}></img>
                 <div style={{ marginTop: '-213px', paddingBottom: '70px', }}>
-                    {this.state.isshow ? <img className="refresh" style={{ transform: this.state.transform }} onClick={this.handleRefresh} src={refresh}></img> : null}
+                    {this.state.isshow ? <img className="refresh" style={{ transform: this.state.transform }} onClick={this.handleRefresh} src={require('../assets/img/refresh.jpg')}></img> : null}
                 </div>
                 <div className='sub_title'>
                     <p >{this.state.timeout}</p>
@@ -136,5 +134,5 @@ class Logo extends Component {
 }
 export default connect(
     state => state.Qr,
-    { getQr }
+    { WxLogin }
 )(Logo)

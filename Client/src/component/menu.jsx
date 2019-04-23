@@ -1,32 +1,29 @@
 import React, { Component } from 'react';
 import { Modal, Avatar, List } from 'antd'
 import PubSub from 'pubsub-js'
+import {connect} from 'react-redux'
 
 import Logo from '../component/logo'
 import '../assets/css/main.css'
-import logo from '../assets/img/ng-scope.jpg'
-import ninevideo from '../assets/img/ninevideo.png'
-import bigvideo from '../assets/img/bigvideo.png'
-import customer from '../assets/img/customer.png'
-import login from '../assets/img/login.png'
+import { WxLogin } from '../redux/actions'
 
 const data = [
     {
         title: '九宫格',
-        img: ninevideo,
+        img: require('../assets/img/ninevideo.png'),
         url: '/ninevideo'
     },
     {
         title: '长视频',
-        img: bigvideo,
+        img: require('../assets/img/bigvideo.png'),
         url: '/bigvideo'
     },
     {
         title: '客服',
-        img: customer
+        img: require('../assets/img/customer.png'),
     },
 ];
-export default class Menu extends Component {
+class Menu extends Component {
     state = {
         wxid: '',
         header: '',
@@ -69,17 +66,18 @@ export default class Menu extends Component {
         PubSub.unsubscribe(this.pubsub_token2)
     }
     render() {
-        const { header, wxid, isShow } = this.state
+        const { header, wxid,nickname } = this.props
+        console.log(header)
 
         return (
             <div>
-                <img src={logo} alt='logo' className='logo-img' />
+                <img src={require('../assets/img/ng-scope.jpg')} alt='logo' className='logo-img' />
                 <div className='login_box'>
                     <div style={{ background: '#666', width: '100%', height: '20%' }}>
-                        <Avatar src={header} style={{ backgroundColor: '#87d068', marginTop: '25px', marginLeft: '10px' }} size="large" icon="user" />
-                        <span style={{ color: 'white', paddingLeft: '10px' }}>{header.length > 2 && header != "Please make sure you have loggined" ? '已登录' : '未登录'}</span>
-                        <div onClick={() => { this.setState({ isShow: true }) }} style={{ marginTop: '-30px', marginLeft: '300px', textAlign: 'center' }}>
-                            <img style={{ width: '30px' }} src={login} ></img>
+                        <Avatar src={header} style={{ backgroundColor: '#87d068', marginTop: '25px', marginLeft: '20px' }} size="large" icon="user" />
+                        <span style={{ color: 'white', paddingLeft: '10px' }}>{nickname? nickname : '未登录'}</span>
+                        <div onClick={() => { this.setState({ isShow: true }) }} style={{ marginTop: '-49px', marginLeft: '300px', textAlign: 'center' }}>
+                            <img style={{ width: '30px' }} src={require('../assets/img/login.png')} ></img>
                             <span style={{ display: 'block', lineHeight: '1.15', fontSize: '1rem', color: 'white' }}>扫码登陆</span>
                         </div>
 
@@ -101,10 +99,14 @@ export default class Menu extends Component {
                             )}
                         />
                     </div>
-                    {isShow ? <Logo/> : null}
+                    {this.state.isShow ? <Logo/> : null}
                 </div>
 
             </div>
         )
     }
 }
+export default connect(
+    state=>state.Qr,
+    { WxLogin }
+)(Menu)

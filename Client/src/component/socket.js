@@ -7,14 +7,6 @@ export const ws = (uuid) => {
             heartCheck.start(ws);
         };
         return ws
-        // ws.onmessage = function (evt) {
-        //     heartCheck.reset();
-        //     var msg = JSON.parse(evt.data);
-        //     if(msg.action=="qrcode"){
-        //         console.log('context',msg.context)
-        //         return msg.context
-        //     }
-        // };
     }
     else {
         alert('当前浏览器 Not support websocket')

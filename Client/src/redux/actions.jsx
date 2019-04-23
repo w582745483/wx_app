@@ -1,18 +1,36 @@
-import { GET_QR } from './action-types'
+import { GET_QR, GET_HEADER, GET_NICK_NAME, GET_WXID } from './action-types'
 import { ws, heartCheck } from '../component/socket'
 
 
 
-const getQr1 = ({ qr, uuid }) => ({ type: GET_QR, data: { qr, uuid } })
-export const getQr = (uuid) => {
+const getQr = ({ qr, uuid }) => ({ type: GET_QR, data: { qr, uuid } })
+const getWxID = (wxid) => ({ type: GET_WXID, data: { wxid } })
+const getHeader = (header) => ({ type: GET_HEADER, data: { header } })
+const getNickname = (nickname) => ({ type: GET_NICK_NAME, data: { nickname } })
+
+export const WxLogin = (uuid) => {
 
     return dispatch => {
         ws(uuid).onmessage = (evt) => {
             heartCheck.reset();
             var msg = JSON.parse(evt.data);
-            if (msg.action == "qrcode") {
-                const qr = msg.context
-                dispatch(getQr1({ qr, uuid }))
+            switch (msg.action) {
+                case 'qrcode'://返回二维码
+                    const qr = msg.context
+                    dispatch(getQr({ qr, uuid }))
+                    break;
+                case 'wxid':
+                    const wxid = msg.context//wxid
+                    dispatch(getWxID(wxid))
+                    break;
+                case 'headimgurl':
+                    const header = msg.context//头像
+                    dispatch(getHeader(header))
+                    break;
+                case 'nickname':
+                    const nickname=msg.context//昵称
+                    dispatch(getNickname(nickname))
+                    break;
             }
         };
     }
