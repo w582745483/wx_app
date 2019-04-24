@@ -6,3 +6,5 @@ export const GET_HEADER='GET_HEADER'
 export const GET_NICK_NAME='GET_NICK_NAME'
 //获取微信id
 export const GET_WXID='GET_WXID'
+//登录成功
+export const GET_LOGIN='GET_LOGIN'

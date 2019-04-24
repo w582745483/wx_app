@@ -76,14 +76,10 @@ class Bigvideo extends React.Component {
         })
 
     }
-    componentDidMount() {
-        this.pubsub_token2 = PubSub.subscribe('logout', (topic, data) => {
-            this.warning('检测到用户登出,请重新登录!')
-        })
-    }
-    componentWillUnmount() {
-        PubSub.unsubscribe(this.pubsub_token2)
-    }
+  componentWillReceiveProps(nextProps){
+    // if(nextProps.)
+  }
+    
     render() {
         return (
             <div>

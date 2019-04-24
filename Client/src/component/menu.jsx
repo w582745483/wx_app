@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Avatar, List } from 'antd'
 import PubSub from 'pubsub-js'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 
 import Logo from '../component/logo'
 import '../assets/css/main.css'
@@ -25,8 +25,6 @@ const data = [
 ];
 class Menu extends Component {
     state = {
-        wxid: '',
-        header: '',
         isShow: false
     }
     handleClick = (url) => {
@@ -42,45 +40,33 @@ class Menu extends Component {
         });
     }
     componentDidMount() {
-        this.pubsub_token1=PubSub.subscribe('wxid_header', (topic, data) => {
-            const wxid = data.substring(0, data.lastIndexOf('&'))
-            const header = data.substr(data.lastIndexOf('&') + 1, data.length)
-            this.setState({
-                wxid,
-                header,
-                isShow: false
-            })
-        })
 
-        this.pubsub_token2=PubSub.subscribe('logout', (topic, data) => {
+    }
+    componentWillUnmount() {
+
+    }
+    componentWillReceiveProps(props) {
+        //用户登录成功关闭二维码扫描界面
+        console.log(props)
+        if (props.loginSuccess) {
             this.setState({
-                wxid:'',
-                header:'',
                 isShow: false
             })
-            this.warning('检测到用户登出,请重新登录!')
-        })
-    }
-    componentWillUnmount(){
-        PubSub.unsubscribe(this.pubsub_token1)
-        PubSub.unsubscribe(this.pubsub_token2)
+        }
     }
     render() {
-        const { header, wxid,nickname } = this.props
-        console.log(header)
-
+        const { header, nickname } = this.props
         return (
             <div>
                 <img src={require('../assets/img/ng-scope.jpg')} alt='logo' className='logo-img' />
                 <div className='login_box'>
                     <div style={{ background: '#666', width: '100%', height: '20%' }}>
                         <Avatar src={header} style={{ backgroundColor: '#87d068', marginTop: '25px', marginLeft: '20px' }} size="large" icon="user" />
-                        <span style={{ color: 'white', paddingLeft: '10px' }}>{nickname? nickname : '未登录'}</span>
+                        <span style={{ color: 'white', paddingLeft: '10px' }}>{nickname ? nickname : '未登录'}</span>
                         <div onClick={() => { this.setState({ isShow: true }) }} style={{ marginTop: '-49px', marginLeft: '300px', textAlign: 'center' }}>
                             <img style={{ width: '30px' }} src={require('../assets/img/login.png')} ></img>
                             <span style={{ display: 'block', lineHeight: '1.15', fontSize: '1rem', color: 'white' }}>扫码登陆</span>
                         </div>
-
                     </div>
                     <div style={{ background: '#ddd', height: '65%' }}>
                         <List
@@ -99,7 +85,7 @@ class Menu extends Component {
                             )}
                         />
                     </div>
-                    {this.state.isShow ? <Logo/> : null}
+                    {this.state.isShow ? <Logo /> : null}
                 </div>
 
             </div>
@@ -107,6 +93,6 @@ class Menu extends Component {
     }
 }
 export default connect(
-    state=>state.Qr,
+    state => state.Qr,
     { WxLogin }
 )(Menu)

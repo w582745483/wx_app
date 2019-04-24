@@ -12,14 +12,12 @@ class Logo extends Component {
         timeout: '使用手机微信扫码登录',
         opacity: '1',
         isshow: false,
-        uuid: ''
     }
 
     handleClick2 = () => {
-        console.log('uuid', this.state.uuid)
         var content = {
-            text: "hello",
-            uuid: this.state.uuid
+            text: "朋友圈测试！！！",
+            uuid: this.props.uuid
         }
         fetch("http://47.93.189.47:22221/api/sns/sendtext", {
             headers: {
@@ -38,15 +36,15 @@ class Logo extends Component {
 
     handleRefresh = () => {
         let current = 0;
-        
+
         this.timer1 = setInterval(() => {
             current = (current + 30) % 360;
             this.setState({
                 transform: 'rotate(' + current + 'deg)'
             })
         }, 10)
-        //this.props.getQr(uuid())
-        
+
+
         this.setState({
             timeout: '',
             opacity: '1',
@@ -61,52 +59,10 @@ class Logo extends Component {
         }, 5000)
 
     }
-
-    componentWillReceiveProps(nextProps) { 
-        this.setState({
-            qr: "data:image/jpg;base64," + nextProps.qr,
-            uuid: nextProps.uuid
-        })
-    }
     componentWillMount() {
-
+        //开启websicket
         this.props.WxLogin(uuid())
 
-
-
-        // fetch("http://47.93.189.47:8818/WebService1.asmx/GetLoginQrcode", {
-        //     credentials: 'include',
-        //     mode: 'cors'
-        // })
-        //     .then(res => res.text())
-        //     .then(data => {
-        //         this.setState({
-        //             src: "data:image/jpg;base64," + data.substr(data.lastIndexOf('_Qk') + 1, data.length)
-        //         })
-        //     })
-        //     .catch(error => {
-        //         this.setState({
-        //             qr: error
-        //         })
-        //     })
-
-        // this.timeGetGetWxid = setInterval(() => {
-        //     fetch("http://47.93.189.47:8818/WebService1.asmx/GetUserWxidAndHeadImageUrl", {
-        //         credentials: 'include',
-        //         mode: 'cors'
-        //     })
-        //         .then(res => res.text())
-        //         .then(data => {
-        //             if (data != "logout" && data != "Please make sure you have loggined" && data.length > 2) {
-        //                 PubSub.publish('wxid_header', data)
-        //                 clearTimeout(this.timeInit)                   
-        //             }
-        //             if (data == 'logout') {
-        //                 PubSub.publish('logout', data)
-        //                 clearInterval(this.timeGetGetWxid)
-        //             }
-        //         })
-        // }, 3000)
         this.timeInit = setTimeout(() => {
             this.setState({
                 timeout: '二维码失效，点击刷新',
@@ -118,14 +74,13 @@ class Logo extends Component {
     render() {
         return (
             <div style={{ marginTop: '-320px' }}>
-                <img className="imgqr" style={{ opacity: this.state.opacity }} src={this.state.qr}></img>
+                <img className="imgqr" style={{ opacity: this.state.opacity }} alt="" src={"data:image/jpg;base64," + this.props.qr}></img>
                 <div style={{ marginTop: '-213px', paddingBottom: '70px', }}>
                     {this.state.isshow ? <img className="refresh" style={{ transform: this.state.transform }} onClick={this.handleRefresh} src={require('../assets/img/refresh.jpg')}></img> : null}
                 </div>
                 <div className='sub_title'>
                     <p >{this.state.timeout}</p>
-                    <button onClick={this.handleClick2}>发朋友圈</button>
-                    <button onClick={this.handleClick3}>获取二维码</button>
+                    {/* <button onClick={this.handleClick2}>发朋友圈</button> */}
                 </div>
 
             </div>
