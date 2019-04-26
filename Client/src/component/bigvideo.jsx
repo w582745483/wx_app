@@ -68,6 +68,9 @@ class Bigvideo extends React.Component {
             message.destroy()
             message.success('发送成功！', 1)
             console.log(res)
+            this.setState({
+                visible: false,
+            });
         })
         this.setState({
             videoUrl: '',

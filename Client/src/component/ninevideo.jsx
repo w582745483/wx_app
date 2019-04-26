@@ -32,6 +32,7 @@ class NineVideo extends React.Component {
     showModal = () => {
         this.setState({
             visible: true,
+            videodata:[]
         });
         this.AsyncPromise().then(() => {
             console.log('videodata', this.state.videodata)
@@ -78,6 +79,9 @@ class NineVideo extends React.Component {
         }).then(res => {
             message.destroy()
             message.success('发送成功！', 1)
+            this.setState({
+                visible: false,
+            });
             console.log(res.text())
             for (const key in this.state) {
                 if (key.indexOf('value') != -1) {

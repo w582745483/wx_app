@@ -71,12 +71,20 @@ class Logo extends Component {
             })
         }, 200000)
     }
+    componentWillReceiveProps(props){
+        if(props.header){
+            this.setState({
+                timeout: '请在手机中点击登录'
+            })
+        }
+    }
     render() {
+        const {header} = this.props
         return (
             <div style={{ marginTop: '-320px' }}>
-                <img className="imgqr" style={{ opacity: this.state.opacity }} alt="" src={"data:image/jpg;base64," + this.props.qr}></img>
+                <img className="imgqr" style={{ opacity: this.state.opacity }} alt="" src={header?header:"data:image/jpg;base64," + this.props.qr}></img>
                 <div style={{ marginTop: '-213px', paddingBottom: '70px', }}>
-                    {this.state.isshow ? <img className="refresh" style={{ transform: this.state.transform }} onClick={this.handleRefresh} src={require('../assets/img/refresh.jpg')}></img> : null}
+                    {this.state.isshow ? <img className="refresh" style={{ transform: this.state.transform }} onClick={this.handleRefresh} src={require('../assets/img/refresh.png')}></img> : null}
                 </div>
                 <div className='sub_title'>
                     <p >{this.state.timeout}</p>

@@ -9,6 +9,19 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+// 处理跨域
+app.all('*', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header(
+      'Access-Control-Allow-Headers',
+      'Content-Type,Content-Length, Authorization, Accept,X-Requested-With'
+  )
+  res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS')
+  res.header('X-Powered-By', ' 3.2.1')
+  if (req.method == 'OPTIONS') res.send(200) /*让options请求快速返回*/
+  else next()
+})
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
