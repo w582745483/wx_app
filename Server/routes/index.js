@@ -8,7 +8,7 @@ let path = require('path')
 let concat = require('concat-files')
 let opn = require('opn')
 
-let uploadDir = 'nodeServer/uploads'
+let uploadDir = 'video'
 /* GET home page. */
 // router.get('/', function(req, res, next) {
 //   res.render('index', { title: 'Express' });
@@ -20,7 +20,7 @@ router.get('/', function(req, resp) {
 })
 
 // 检查文件的MD5
-app.get('/check/file', (req, resp) => {
+router.get('/check/file', (req, resp) => {
   let query = req.query
   let fileName = query.fileName
   let fileMd5Value = query.fileMd5Value
@@ -35,7 +35,7 @@ app.get('/check/file', (req, resp) => {
 })
 
 // 检查chunk的MD5
-app.get('/check/chunk', (req, resp) => {
+router.get('/check/chunk', (req, resp) => {
   let query = req.query
   let chunkIndex = query.index
   let md5 = query.md5
@@ -57,7 +57,7 @@ app.get('/check/chunk', (req, resp) => {
   })
 })
 
-app.all('/merge', (req, resp) => {
+router.all('/merge', (req, resp) => {
   let query = req.query
   let md5 = query.md5
   let size = query.size
@@ -69,15 +69,15 @@ app.all('/merge', (req, resp) => {
   })
 })
 
-app.all('/upload', (req, resp) => {
+router.all('/upload', (req, resp) => {
   var form = new formidable.IncomingForm({
-      uploadDir: 'nodeServer/tmp'
+      uploadDir: 'video'
   })
   form.parse(req, function(err, fields, file) {
       let index = fields.index
       let total = fields.total
       let fileMd5Value = fields.fileMd5Value
-      let folder = path.resolve(__dirname, 'nodeServer/uploads', fileMd5Value)
+      let folder = path.resolve(uploadDir, fileMd5Value)
       folderIsExit(folder).then(val => {
           let destFile = path.resolve(folder, fields.index)
           console.log('----------->', file.data.path, destFile)
@@ -137,7 +137,7 @@ async function getChunkList(filePath, folderPath, callback) {
       }
   } else {
       let isFolderExist = await isExist(folderPath)
-      console.log(folderPath)
+      console.log('folderPath',folderPath)
       // 如果文件夹(md5值后的文件)存在, 就获取已经上传的块
       let fileList = []
       if (isFolderExist) {
