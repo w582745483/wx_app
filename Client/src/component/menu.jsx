@@ -19,8 +19,9 @@ const data = [
         url: '/bigvideo'
     },
     {
-        title: '客服',
+        title: '发送本地视频',
         img: require('../assets/img/customer.png'),
+        url: '/upload'
     },
 ];
 class Menu extends Component {

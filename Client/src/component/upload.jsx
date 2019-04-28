@@ -18,7 +18,7 @@ export default class Upload extends Component {
         percent: 0,
         checkProcessValue: '',
         value: '',
-        visible: true,
+        visible: false,
         path: []
     }
     fileChange = (e) => {
