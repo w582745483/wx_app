@@ -6,7 +6,7 @@ import SparkMD5 from 'spark-md5'
 import Background from '../container/background'
 
 
-let baseUrl = 'http://d24671e789.wicp.vip'
+let baseUrl = 'http://e24589943k.wicp.vip'
 let chunkSize = 5 * 1024 * 1024
 let fileSizes = []
 let files = []
@@ -47,7 +47,8 @@ export default class Upload extends Component {
             message.success('文件已经秒传!')
             this.setState({
                 path: filePath,
-                visible:false
+                visible:false,
+                value: ''
             })
             return
         }
@@ -56,7 +57,8 @@ export default class Upload extends Component {
         this.notifyServer(fileMd5Value, file).then(()=>{
             this.setState({
                 path: filePath,
-                visible:false
+                visible:false,
+                value: ''
             })
         })
     }
@@ -200,15 +202,15 @@ export default class Upload extends Component {
                         <Menu mode="horizontal" onClick={this.handleClick} >
                             <Menu.Item key="text" style={{ padding: '0 28px' }}>
                                 <img src={require('../assets/img/text.png')} style={{ height: '40px', width: '40px', right: '20px' }}></img>
-                                <span style={{ fontSize: '.16rem', lineHeight: '.4rem', marginLeft: '2px' }}>文字</span>
+                                <span style={{ fontSize: '13px', lineHeight: '.4rem', marginLeft: '2px' }}>文字</span>
                             </Menu.Item>
                             <Menu.Item key="picture" style={{ padding: '0 28px' }}>
                                 <img src={require('../assets/img/picture.png')} style={{ height: '40px', width: '40px', right: '20px' }}></img>
-                                <span style={{ fontSize: '.16rem', lineHeight: '.4rem', marginLeft: '2px' }}>图片</span>
+                                <span style={{ fontSize: '13px', lineHeight: '.4rem', marginLeft: '2px' }}>图片</span>
                             </Menu.Item>
                             <Menu.Item key="uploadvideo" style={{ padding: '0 28px' }}>
                                 <img src={require('../assets/img/uploadvideo.png')} style={{ height: '40px', width: '40px', right: '20px' }}></img>
-                                <span style={{ fontSize: '.16rem', lineHeight: '.4rem', marginLeft: '2px' }}>上传视频</span>
+                                <span style={{ fontSize: '13px', lineHeight: '.4rem', marginLeft: '2px' }}>上传视频</span>
                             </Menu.Item>
                         </Menu>
                         <List
