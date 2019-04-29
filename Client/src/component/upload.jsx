@@ -6,7 +6,7 @@ import SparkMD5 from 'spark-md5'
 import Background from '../container/background'
 
 
-let baseUrl = 'http://localhost:4000'
+let baseUrl = 'http://d24671e789.wicp.vip'
 let chunkSize = 5 * 1024 * 1024
 let fileSizes = []
 let files = []
