@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Progress, message, List, Menu } from 'antd'
+import { Progress, message, List, Menu, Modal,Button } from 'antd'
 import $ from 'jquery'
 import SparkMD5 from 'spark-md5'
 
@@ -19,10 +19,10 @@ export default class Upload extends Component {
         checkProcessValue: '',
         value: '',
         visible: false,
-        path: []
+        path: [],
+        modalvisible:false
     }
     fileChange = (e) => {
-
         files = e.target.files
 
         for (var i = 0; i < files.length; i++) {
@@ -30,7 +30,7 @@ export default class Upload extends Component {
             this.responseChange(files[i], files[i].size)
             filePath.push(`${baseUrl}/${files[i].name}`)
         }
-       
+
         //this.responseChange(files[0], files[0].size)
     }
     async  responseChange(file, fileSize) {
@@ -47,18 +47,20 @@ export default class Upload extends Component {
             message.success('文件已经秒传!')
             this.setState({
                 path: filePath,
-                visible:false,
-                value: ''
+                visible: false,
+                value: '',
+                modalvisible:true
             })
             return
         }
         await this.checkAndUploadChunk(file, fileSize, fileMd5Value, result.chunkList)
         // 第四步: 通知服务器所有分片已上传完成
-        this.notifyServer(fileMd5Value, file).then(()=>{
+        this.notifyServer(fileMd5Value, file).then(() => {
             this.setState({
                 path: filePath,
-                visible:false,
-                value: ''
+                visible: false,
+                value: '',
+                modalvisible:true
             })
         })
     }
@@ -114,6 +116,11 @@ export default class Upload extends Component {
             let url = baseUrl + '/check/file?fileName=' + fileName + "&fileMd5Value=" + fileMd5Value
             fetch(url)
                 .then((data) => {
+                    this.setState({
+                        visible: true,
+                        percent: 1,
+                        value: '准备上传'
+                    })
                     resolve(data.json())
                 })
         })
@@ -148,22 +155,26 @@ export default class Upload extends Component {
             form.append("total", chunks) //总片数
             form.append("index", i) //当前是第几片     
             form.append("fileMd5Value", fileMd5Value)
-            $.ajax({
-                url: baseUrl + "/upload",
-                type: "POST",
-                data: form, //刚刚构建的form数据对象
-                async: true, //异步
-                processData: false, //很重要，告诉jquery不要对form进行处理
-                contentType: false, //很重要，指定为false才能形成正确的Content-Type
-                success: function (data) {
-                    resolve(data.desc)
-                }
-            })
-            // fetch(baseUrl + "/upload",{
-            //     method:'POST',
-            //     body:form,
-            //     Headers:{'Content-Type': 'application/x-www-form-urlencoded'}
+            // $.ajax({
+            //     url: baseUrl + "/upload",
+            //     type: "POST",
+            //     data: form, //刚刚构建的form数据对象
+            //     async: true, //异步
+            //     processData: false, //很重要，告诉jquery不要对form进行处理
+            //     contentType: false, //很重要，指定为false才能形成正确的Content-Type
+            //     success: function (data) {
+            //         resolve(data.desc)
+            //     }
             // })
+            fetch(baseUrl + "/upload", {
+                method: 'POST',
+                body: form,
+
+
+            }).then((data) => {
+                console.log(data)
+                resolve(data.desc)
+            })
         })
 
     }
@@ -184,10 +195,15 @@ export default class Upload extends Component {
         let d = new Date()
         return d.getMinutes() + ':' + d.getSeconds() + ' ' + d.getMilliseconds()
     }
-    handleClick = (e) => {
-        console.log('click ', e);
+    handleClick = () => {
         this.setState({
-            current: e.key,
+            modalvisible:true
+        });
+    }
+
+    handleCancel = (e) => {
+        this.setState({
+            modalvisible: false,
         });
     }
     render() {
@@ -197,7 +213,7 @@ export default class Upload extends Component {
                 <div style={{ textAlign: 'center', background: 'white' }} className='bigvideo'>
                     <img src={require('../assets//img/bc.jpg')} style={{ position: 'relative', width: '100%', height: '150px' }} alt="sunshine"></img>
                     <div>
-                        <input type='file' multiple="multiple" style={{ opacity: '0', position: 'absolute', marginTop: '12px', marginLeft: '70px', zIndex: '1' }} onChange={this.fileChange} />
+                       
 
                         <Menu mode="horizontal" onClick={this.handleClick} >
                             <Menu.Item key="text" style={{ padding: '0 28px' }}>
@@ -213,25 +229,34 @@ export default class Upload extends Component {
                                 <span style={{ fontSize: '13px', lineHeight: '.4rem', marginLeft: '2px' }}>上传视频</span>
                             </Menu.Item>
                         </Menu>
-                        <List
-                            okText='发表'
-                            split={false}
-                            grid={{ gutter: 16, column: 1 }}
-                            dataSource={this.state.path}
-                            renderItem={item => (
+                        <Modal
+                             visible={this.state.modalvisible}
+                             onOk={this.handleClick}
+                             onCancel={this.handleCancel}
+                             centered={true}
+                             closable={false}
+                        >
+                         <input type='file' multiple="multiple" style={{ opacity: '1', position: 'absolute', marginTop: '7px', right: '-150px', zIndex: '1' }} onChange={this.fileChange} />
+                            <List
+                                okText='发表'
+                                split={false}
+                                grid={{ gutter: 16, column: 1 }}
+                                dataSource={this.state.path}
+                                renderItem={item => (
 
-                                <List.Item>
-                                    <div>
-                                        <div >
-                                            <video style={{ width: '100%', height: '200px' }} x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" src={item}>
-                                            </video>
+                                    <List.Item>
+                                        <div>
+                                            <div >
+                                                <video style={{ width: '100%', height: '200px' }} x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" src={item}>
+                                                </video>
+                                            </div>
                                         </div>
-                                    </div>
-                                </List.Item>
-                            )}
-                        />
+                                    </List.Item>
+                                )}
+                            />
+                        </Modal>
                     </div>
-                    <div style={{ position: 'absolute', left: '36%' }}>
+                    <div style={{ position: 'absolute', left: '36%',marginTop:'50px' }}>
                         {this.state.visible ? <Progress type="circle" percent={this.state.percent} /> : null}
                         <p>{this.state.value}</p>
 
