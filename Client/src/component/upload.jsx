@@ -1,18 +1,19 @@
 import React, { Component } from 'react'
-import { Progress, message, List, Menu, Modal,Button } from 'antd'
+import { Progress, message, List, Menu, Modal, Button } from 'antd'
 import $ from 'jquery'
 import SparkMD5 from 'spark-md5'
 
 import Background from '../container/background'
 
 
-let baseUrl = 'http://e24589943k.wicp.vip'
+let baseUrl = 'http://localhost:4000'
 let chunkSize = 5 * 1024 * 1024
 let fileSizes = []
 let files = []
 let hasUploaded = 0
 let chunks = 0
 let filePath = []
+let totalProgress = []
 export default class Upload extends Component {
     state = {
         percent: 0,
@@ -20,7 +21,7 @@ export default class Upload extends Component {
         value: '',
         visible: false,
         path: [],
-        modalvisible:false
+        modalvisible: false
     }
     fileChange = (e) => {
         files = e.target.files
@@ -49,7 +50,7 @@ export default class Upload extends Component {
                 path: filePath,
                 visible: false,
                 value: '',
-                modalvisible:true
+                modalvisible: true
             })
             return
         }
@@ -60,7 +61,7 @@ export default class Upload extends Component {
                 path: filePath,
                 visible: false,
                 value: '',
-                modalvisible:true
+                modalvisible: true
             })
         })
     }
@@ -118,7 +119,7 @@ export default class Upload extends Component {
                 .then((data) => {
                     this.setState({
                         visible: true,
-                        percent: 1,
+                        percent: 0,
                         value: '准备上传'
                     })
                     resolve(data.json())
@@ -126,24 +127,23 @@ export default class Upload extends Component {
         })
     }
     // 3.上传chunk
-    async  checkAndUploadChunk(file, fileSize, fileMd5Value, chunkList) {
-        chunks = Math.ceil(fileSize / chunkSize)
-        hasUploaded = chunkList.length
-        for (let i = 0; i < chunks; i++) {
-            let exit = chunkList.indexOf(i + "") > -1
-            // 如果已经存在, 则不用再上传当前块
-            if (!exit) {
-                let index = await this.upload(file, fileSize, i, fileMd5Value, chunks)
-                hasUploaded++
-                let radio = Math.floor((hasUploaded / chunks) * 100)
-                console.log('上传进度', radio)
-                this.setState({
-                    visible: true,
-                    percent: radio,
-                    value: '上传进度'
-                })
+    checkAndUploadChunk(file, fileSize, fileMd5Value, chunkList) {
+        return new Promise(resolve => {
+            chunks = Math.ceil(fileSize / chunkSize)
+            hasUploaded = chunkList.length
+            let promiseArray = []
+            for (let i = 0; i < chunks; i++) {
+                let exit = chunkList.indexOf(i + "") > -1
+                // 如果已经存在, 则不用再上传当前块
+                if (!exit) {
+                    promiseArray.push(this.upload(file, fileSize, i, fileMd5Value, chunks))
+                }
             }
-        }
+            Promise.all(promiseArray).then(() => {
+                resolve()
+            })
+        })
+
     }
     // 3-2. 上传chunk
     upload(file, fileSize, i, fileMd5Value, chunks) {
@@ -155,26 +155,85 @@ export default class Upload extends Component {
             form.append("total", chunks) //总片数
             form.append("index", i) //当前是第几片     
             form.append("fileMd5Value", fileMd5Value)
-            // $.ajax({
-            //     url: baseUrl + "/upload",
-            //     type: "POST",
-            //     data: form, //刚刚构建的form数据对象
-            //     async: true, //异步
-            //     processData: false, //很重要，告诉jquery不要对form进行处理
-            //     contentType: false, //很重要，指定为false才能形成正确的Content-Type
-            //     success: function (data) {
-            //         resolve(data.desc)
-            //     }
+            console.log('form', form)
+
+            var ot, oloaded
+            var xhr = new XMLHttpRequest()
+            xhr.open("post", baseUrl + "/upload", true);
+            xhr.onload = uploadComplete; //请求完成
+            xhr.onerror = uploadFailed; //请求失败
+            //xhr.upload.onprogress = progressFunction;
+            xhr.upload.onloadstart = function () {//上传开始执行方法
+                ot = new Date().getTime();   //设置上传开始时间
+                oloaded = 0;//设置上传开始时，以上传的文件大小为0
+            };
+
+            xhr.send(form); //开始上传，发送form数据
+            //上传进度实现方法，上传过程中会频繁调用该方法
+            xhr.upload.onprogress=(evt)=> {
+
+                // event.total是需要传输的总字节，event.loaded是已经传输的字节。如果event.lengthComputable不为真，则event.total等于0
+                if (evt.lengthComputable) {
+                    var progress = Math.round(evt.loaded / evt.total * 100);
+                    totalProgress[i] = progress
+                    var value=totalProgress.reduce((total,curr)=>{
+                        return total+curr
+                    })
+                    console.log( Math.round(value/chunks))
+                    this.setState({
+                        visible: true,
+                        percent: Math.round(value/chunks),
+                        value: '上传进度'
+                    })
+
+                }
+
+                var nt = new Date().getTime();//获取当前时间
+                var pertime = (nt - ot) / 1000; //计算出上次调用该方法时到现在的时间差，单位为s
+                ot = new Date().getTime(); //重新赋值时间，用于下次计算
+                var perload = evt.loaded - oloaded; //计算该分段上传的文件大小，单位b
+                oloaded = evt.loaded;//重新赋值已上传文件大小，用以下次计算
+                //上传速度计算
+                var speed = perload / pertime;//单位b/s
+                var bspeed = speed;
+                var units = 'b/s';//单位名称
+                if (speed / 1024 > 1) {
+                    speed = speed / 1024;
+                    units = 'k/s';
+                }
+                if (speed / 1024 > 1) {
+                    speed = speed / 1024;
+                    units = 'M/s';
+                }
+                speed = speed.toFixed(1);
+                //剩余时间
+                var resttime = ((evt.total - evt.loaded) / bspeed).toFixed(1);
+
+            }
+            //上传成功响应
+            function uploadComplete(evt) {
+                //服务断接收完文件返回的结果
+                var data = JSON.parse(evt.target.responseText);
+                resolve()
+            }
+            //上传失败
+            function uploadFailed(evt) {
+                alert("上传失败！");
+            }
+            // fetch(baseUrl + "/upload", {
+            //     method: 'POST',
+            //     body: form,
+            // }).then((data) => {
+            //     console.log(i,chunks)
+            //     console.log('上传进度',Math.floor(((i+1) / chunks) * 100))
+            //     this.setState({
+            //         visible: true,
+            //         percent: Math.floor((i+1 / chunks) * 100),
+            //         value: '上传进度'
+            //     })
+
+            //     resolve(data.desc)
             // })
-            fetch(baseUrl + "/upload", {
-                method: 'POST',
-                body: form,
-
-
-            }).then((data) => {
-                console.log(data)
-                resolve(data.desc)
-            })
         })
 
     }
@@ -197,7 +256,7 @@ export default class Upload extends Component {
     }
     handleClick = () => {
         this.setState({
-            modalvisible:true
+            modalvisible: true
         });
     }
 
@@ -213,7 +272,7 @@ export default class Upload extends Component {
                 <div style={{ textAlign: 'center', background: 'white' }} className='bigvideo'>
                     <img src={require('../assets//img/bc.jpg')} style={{ position: 'relative', width: '100%', height: '150px' }} alt="sunshine"></img>
                     <div>
-                       
+
 
                         <Menu mode="horizontal" onClick={this.handleClick} >
                             <Menu.Item key="text" style={{ padding: '0 28px' }}>
@@ -230,13 +289,17 @@ export default class Upload extends Component {
                             </Menu.Item>
                         </Menu>
                         <Modal
-                             visible={this.state.modalvisible}
-                             onOk={this.handleClick}
-                             onCancel={this.handleCancel}
-                             centered={true}
-                             closable={false}
+                            visible={this.state.modalvisible}
+                            onOk={this.handleClick}
+                            onCancel={this.handleCancel}
+                            centered={true}
+                            closable={false}
                         >
-                         <input type='file' multiple="multiple" style={{ opacity: '1', position: 'absolute', marginTop: '7px', right: '-150px', zIndex: '1' }} onChange={this.fileChange} />
+                            <div style={{ position: 'absolute', left: '36%', marginTop: '50px' }}>
+                                {this.state.visible ? <Progress type="circle" percent={this.state.percent} /> : null}
+                                <p>{this.state.value}</p>
+                            </div>
+                            <input type='file' multiple="multiple" style={{ opacity: '1', position: 'absolute', marginTop: '7px', right: '-150px', zIndex: '1' }} onChange={this.fileChange} />
                             <List
                                 okText='发表'
                                 split={false}
@@ -256,11 +319,7 @@ export default class Upload extends Component {
                             />
                         </Modal>
                     </div>
-                    <div style={{ position: 'absolute', left: '36%',marginTop:'50px' }}>
-                        {this.state.visible ? <Progress type="circle" percent={this.state.percent} /> : null}
-                        <p>{this.state.value}</p>
 
-                    </div>
                 </div>
             </div>
 
