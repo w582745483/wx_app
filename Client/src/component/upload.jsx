@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Progress, message, List, Menu, Modal, Button } from 'antd'
 import $ from 'jquery'
 import SparkMD5 from 'spark-md5'
+import { connect } from 'react-redux'
 
 import Background from '../container/background'
 
@@ -14,7 +15,7 @@ let hasUploaded = 0
 let chunks = 0
 let filePath = []
 let totalProgress = []
-export default class Upload extends Component {
+class Upload extends Component {
     state = {
         percent: 0,
         checkProcessValue: '',
@@ -214,7 +215,7 @@ export default class Upload extends Component {
             function uploadComplete(evt) {
                 //服务断接收完文件返回的结果
                 var data = JSON.parse(evt.target.responseText);
-                resolve()
+                resolve(data.desc)
             }
             //上传失败
             function uploadFailed(evt) {
@@ -265,6 +266,37 @@ export default class Upload extends Component {
             modalvisible: false,
         });
     }
+    sendLine=()=>{
+        message.destroy()
+        message.loading('正在发送朋友圈，请等候...', 0)
+        const  playAddr  = this.state.path
+        console.log('playAddr',playAddr)
+        const bigvideo = {
+            //text: this.state.videoText,
+           // videoimage: cover,
+            videourl: playAddr,
+            uuid:this.props.uuid
+        }
+        console.log('bigvideo', bigvideo)
+        fetch('http://47.93.189.47:22221/api/sns/sendbigvideo', {
+            method: 'POST',
+            //credentials: 'include',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': ' application/json'
+            },
+            body: JSON.stringify(bigvideo)
+        }).then(res => {
+            message.destroy()
+            message.success('发送成功！', 1)
+            console.log(res)
+            this.setState({
+                modalvisible: false,
+                path:[]
+            });
+        })
+    }
     render() {
         return (
             <div>
@@ -290,12 +322,12 @@ export default class Upload extends Component {
                         </Menu>
                         <Modal
                             visible={this.state.modalvisible}
-                            onOk={this.handleClick}
+                            onOk={this.sendLine}
                             onCancel={this.handleCancel}
                             centered={true}
                             closable={false}
                         >
-                            <div style={{ position: 'absolute', left: '36%', marginTop: '50px' }}>
+                            <div style={{ position: 'absolute', left: '36%', marginTop: '50px',zIndex:'2'}}>
                                 {this.state.visible ? <Progress type="circle" percent={this.state.percent} /> : null}
                                 <p>{this.state.value}</p>
                             </div>
@@ -309,7 +341,7 @@ export default class Upload extends Component {
 
                                     <List.Item>
                                         <div>
-                                            <div >
+                                            <div>
                                                 <video style={{ width: '100%', height: '200px' }} x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" src={item}>
                                                 </video>
                                             </div>
@@ -326,3 +358,6 @@ export default class Upload extends Component {
         )
     }
 }
+export default connect(
+    state=>state.Qr,
+)(Upload)
