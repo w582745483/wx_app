@@ -270,7 +270,7 @@ class Upload extends Component {
     sendLine=()=>{
         message.destroy()
         message.loading('正在发送朋友圈，请等候...', 0)
-        const  playAddr  = this.state.path
+        const  playAddr  = this.state.path[0]
         console.log('playAddr',playAddr)
         const bigvideo = {
             videoimage:"http://js2.a.yximgs.com/upic/2019/03/22/14/BMjAxOTAzMjIxNDA4NThfMTA4NzI5ODA2MV8xMTU4MTgxMDk5OF8xXzM=_B2102bc5642bd91c29a56ea6f6f8c5129.jpg?tag=1-1556722351-nil-0-tvqohrescm-181a3e6e26692c59&type=hot",
