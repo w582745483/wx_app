@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import Background from '../container/background'
 
 
-let baseUrl = 'http://localhost:4000'
+let baseUrl = 'http://e24589943k.wicp.vip'
 let chunkSize = 5 * 1024 * 1024
 let fileSizes = []
 let files = []
@@ -213,6 +213,7 @@ class Upload extends Component {
             }
             //上传成功响应
             function uploadComplete(evt) {
+                console.log('uploadComplete')
                 //服务断接收完文件返回的结果
                 var data = JSON.parse(evt.target.responseText);
                 resolve(data.desc)
@@ -272,6 +273,7 @@ class Upload extends Component {
         const  playAddr  = this.state.path
         console.log('playAddr',playAddr)
         const bigvideo = {
+            videoimage:"http://js2.a.yximgs.com/upic/2019/03/22/14/BMjAxOTAzMjIxNDA4NThfMTA4NzI5ODA2MV8xMTU4MTgxMDk5OF8xXzM=_B2102bc5642bd91c29a56ea6f6f8c5129.jpg?tag=1-1556722351-nil-0-tvqohrescm-181a3e6e26692c59&type=hot",
             //text: this.state.videoText,
            // videoimage: cover,
             videourl: playAddr,
