@@ -8,6 +8,7 @@ import NineVideo from './ninevideo';
 import Bigvideo from './bigvideo';
 import Menu from './menu'
 import Upload from './upload'
+import Test from './test'
 
 export default class Main extends React.Component {
     render() {
@@ -20,6 +21,7 @@ export default class Main extends React.Component {
                 <Route path='/ninevideo' component={NineVideo}></Route>
                 <Route path='/bigvideo' component={Bigvideo}></Route>
                 <Route path='/upload' component={Upload}></Route>
+                <Route path='/test' component={Test}></Route>
             </Switch>
         )
     }
