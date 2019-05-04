@@ -21,6 +21,10 @@ app.all('*', (req, res, next) => {
   if (req.method == 'OPTIONS') res.send(200) /*让options请求快速返回*/
   else next()
 })
+//处理图片大小
+var bodyParser = require('body-parser')
+app.use(bodyParser.json({limit:'50mb'}));
+app.use(bodyParser.urlencoded({limit:'50mb',extended:true}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
