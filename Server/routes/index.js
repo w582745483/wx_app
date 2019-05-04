@@ -68,7 +68,21 @@ router.all('/merge', (req, resp) => {
       stat: 1
   })
 })
-
+router.all('/saveimg',(req, resp)=>{
+    //接收前台POST过来的base64
+    var imgPoster = req.body.imgPoster;
+   
+    //过滤data:URL
+    var base64Data = imgPoster.replace(/^data:image\/\w+;base64,/, "");
+   // var dataBuffer = new Buffer(base64Data, 'base64');
+    fs.writeFile("image.png", base64Data, 'base64', function(err) {
+        if(err){
+            resp.send(err);
+        }else{
+            resp.send("保存成功！");
+        }
+    });
+});
 router.all('/upload', (req, resp) => {
   var form = new formidable.IncomingForm({
       uploadDir: 'video'

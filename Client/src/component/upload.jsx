@@ -308,6 +308,17 @@ class Upload extends Component {
         //img.src = dataUrl
         this.setState({
             imgPoster: dataUrl
+        },()=>{
+            console.log('imgPoster',this.state.imgPoster)
+            fetch(baseUrl + "/saveimg",{
+                method:'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({imgPoster:this.state.imgPoster})
+            }).then((data)=>{
+                console.log(data)
+            })
         })
         // output.appendChild(img)
 
@@ -402,7 +413,7 @@ class Upload extends Component {
                                                 <div style={{ background: 'black', textAlign: 'center' }}>
                                                     <canvas> </canvas>
                                                     {this.state.iconVisible ? <Icon onClick={e => { this.play(index, item) }} style={{ fontSize: '46px', position: 'absolute', left: '45%', top: '30%', zIndex: '2', color: 'white' }} type={this.state.type}></Icon> : null}
-                                                    {/* <img src={this.state.imgPoster}></img> */}
+                                                    <img src={this.state.imgPoster}></img>
                                                 </div>
                                             </div>
                                         </div>
