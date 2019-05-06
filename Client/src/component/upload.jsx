@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
 import { Progress, message, List, Menu, Modal, Icon } from 'antd'
-import $ from 'jquery'
 import SparkMD5 from 'spark-md5'
 import { connect } from 'react-redux'
 
 import Background from '../container/background'
 
 
-let baseUrl = 'http://localhost:4000'
+let baseUrl = 'http://e24589943k.wicp.vip'
 let chunkSize = 5 * 1024 * 1024
 let fileSizes = []
 let files = []
@@ -25,11 +24,12 @@ class Upload extends Component {
         modalvisible: false,
         imgPoster: '',
         type: 'play-circle',
-        iconVisible: true
+        iconVisible: true,
+        imgUrl: ''
     }
     fileChange = (e) => {
         files = e.target.files
-
+        console.log(files)
         for (var i = 0; i < files.length; i++) {
             fileSizes.push(files[i].size)
             this.responseChange(files[i], files[i].size)
@@ -148,6 +148,9 @@ class Upload extends Component {
             })
         })
 
+    }
+    componentWillUnmount() {
+        filePath = []
     }
     // 3-2. 上传chunk
     upload(file, fileSize, i, fileMd5Value, chunks) {
@@ -271,11 +274,12 @@ class Upload extends Component {
         });
     }
     // canvas 绘制
-    dragVideo(index) {
+    dragVideo = (index) => {
+        console.log('dragVideo')
         let video = document.querySelectorAll('video')[index],
             canvas = document.querySelectorAll('canvas')[index],
             ctx = canvas.getContext('2d')
-        video.play()
+        //video.play()
         canvas.width = 343
         canvas.height = 200;
         video.addEventListener('play', () => {
@@ -298,30 +302,53 @@ class Upload extends Component {
                 video.play();
             }
         }, false);
-        video.addEventListener('loadeddata', function () {
-            alert(1)
+        video.addEventListener('loadeddata', () => {
+            console.log('loadeddata')
+            // var img = new Image()
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height)
+            // img.setAttribute('crossOrigin', 'anonymous');
+            const dataUrl = canvas.toDataURL('image/jpg')
+            //img.src = dataUrl
+            this.setState({
+                imgPoster: dataUrl,
+                imgUrl: `${baseUrl}/${this.props.uuid}.jpg`
+            }, () => {
+                fetch(baseUrl + "/saveimg", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        imgPoster: this.state.imgPoster,
+                        imgName: this.props.uuid
+                    })
+                }).then((data) => {
+                    console.log(data)
+                })
+            })
         })
         // var img = new Image()
         canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height)
         // img.setAttribute('crossOrigin', 'anonymous');
-        const dataUrl = canvas.toDataURL('image/png')
+        const dataUrl = canvas.toDataURL('image/jpg')
         //img.src = dataUrl
         this.setState({
-            imgPoster: dataUrl
-        },()=>{
-            console.log('imgPoster',this.state.imgPoster)
-            fetch(baseUrl + "/saveimg",{
-                method:'POST',
+            imgPoster: dataUrl,
+            imgUrl: `${baseUrl}/${this.props.uuid}.jpg`
+        }, () => {
+            fetch(baseUrl + "/saveimg", {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({imgPoster:this.state.imgPoster})
-            }).then((data)=>{
+                body: JSON.stringify({
+                    imgPoster: this.state.imgPoster,
+                    imgName: this.props.uuid
+                })
+            }).then((data) => {
                 console.log(data)
             })
         })
-        // output.appendChild(img)
-
     }
 
     // 播放
@@ -337,10 +364,11 @@ class Upload extends Component {
         message.loading('正在发送朋友圈，请等候...', 0)
         const playAddr = this.state.path[0]
         console.log('playAddr', playAddr)
+        console.log('imgUrl', this.state.imgUrl)
         const bigvideo = {
-            videoimage: "http://js2.a.yximgs.com/upic/2019/03/22/14/BMjAxOTAzMjIxNDA4NThfMTA4NzI5ODA2MV8xMTU4MTgxMDk5OF8xXzM=_B2102bc5642bd91c29a56ea6f6f8c5129.jpg?tag=1-1556722351-nil-0-tvqohrescm-181a3e6e26692c59&type=hot",
+            //videoimage: "http://js2.a.yximgs.com/upic/2019/03/22/14/BMjAxOTAzMjIxNDA4NThfMTA4NzI5ODA2MV8xMTU4MTgxMDk5OF8xXzM=_B2102bc5642bd91c29a56ea6f6f8c5129.jpg?tag=1-1556722351-nil-0-tvqohrescm-181a3e6e26692c59&type=hot",
             //text: this.state.videoText,
-            // videoimage: cover,
+            videoimage: this.state.imgUrl,
             videourl: playAddr,
             uuid: this.props.uuid
         }
@@ -358,9 +386,10 @@ class Upload extends Component {
             message.destroy()
             message.success('发送成功！', 1)
             console.log(res)
+            filePath = []
             this.setState({
                 modalvisible: false,
-                path: []
+                path: [],
             });
         })
     }
@@ -391,11 +420,16 @@ class Upload extends Component {
                             onCancel={this.handleCancel}
                             centered={true}
                             closable={false}
+                            width={400}
                         >
-
-                            <input type='file' multiple="multiple" style={{ opacity: '1', position: 'absolute', marginTop: '7px', right: '-150px', zIndex: '1' }} onChange={this.fileChange} />
+                            <input type='file' multiple="multiple" style={{ opacity: '0', position: 'absolute', marginTop: '7px', right: '-150px', zIndex: '1' }} onChange={this.fileChange} />
+                            <img style={{ marginLeft: '310px', width: '50px' }} src={require('../assets/img/choosevideo.png')} />
+                            <div style={{ position: 'relative', left: '42%', marginTop: '50px', zIndex: '2' }}>
+                                {this.state.visible ? <Progress type="circle" percent={this.state.percent} width={80} /> : null}
+                                <p style={{ marginLeft: '11px' }}>{this.state.value}</p>
+                            </div>
                             <List
-                                locale={{ emptyText: '暂无数据' }}
+                                locale={{ emptyText: ' ' }}
                                 okText='发表'
                                 split={false}
                                 grid={{ gutter: 16, column: 1 }}
@@ -404,15 +438,11 @@ class Upload extends Component {
                                     <List.Item>
                                         <div>
                                             <div>
-                                                <div style={{ position: 'absolute', left: '36%', marginTop: '50px', zIndex: '2' }}>
-                                                    {this.state.visible ? <Progress type="circle" percent={this.state.percent} /> : null}
-                                                    <p>{this.state.value}</p>
-                                                </div>
-                                                <video crossOrigin='true' style={{ width: '100%', display: 'none', height: '200px' }} x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" src={item}>
+                                                <video crossOrigin='true' style={{ width: '100%', height: '200px' }} x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" src={item}>
                                                 </video>
-                                                <div style={{ background: 'black', textAlign: 'center' }}>
-                                                    <canvas> </canvas>
-                                                    {this.state.iconVisible ? <Icon onClick={e => { this.play(index, item) }} style={{ fontSize: '46px', position: 'absolute', left: '45%', top: '30%', zIndex: '2', color: 'white' }} type={this.state.type}></Icon> : null}
+                                                <div style={{ background: 'black', textAlign: 'center', display: 'none' }}>
+                                                    <canvas > </canvas>
+                                                    {this.state.iconVisible ? <Icon onClick={setTimeout(() => { this.play(index, item) }, 200)} style={{ fontSize: '46px', position: 'absolute', left: '45%', top: '30%', zIndex: '2', color: 'white' }} type={this.state.type}></Icon> : null}
                                                     <img src={this.state.imgPoster}></img>
                                                 </div>
                                             </div>

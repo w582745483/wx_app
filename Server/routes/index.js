@@ -70,12 +70,11 @@ router.all('/merge', (req, resp) => {
 })
 router.all('/saveimg',(req, resp)=>{
     //接收前台POST过来的base64
-    var imgPoster = req.body.imgPoster;
-   
+    var {imgPoster,imgName} = req.body;
     //过滤data:URL
     var base64Data = imgPoster.replace(/^data:image\/\w+;base64,/, "");
    // var dataBuffer = new Buffer(base64Data, 'base64');
-    fs.writeFile("image.png", base64Data, 'base64', function(err) {
+    fs.writeFile(`./img/${imgName}.jpg`, base64Data, 'base64', function(err) {
         if(err){
             resp.send(err);
         }else{
