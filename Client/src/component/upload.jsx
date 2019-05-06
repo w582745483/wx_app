@@ -14,6 +14,7 @@ let hasUploaded = 0
 let chunks = 0
 let filePath = []
 let totalProgress = []
+let saveimgResult = false
 class Upload extends Component {
     state = {
         percent: 0,
@@ -228,22 +229,7 @@ class Upload extends Component {
             function uploadFailed(evt) {
                 alert("上传失败！");
             }
-            // fetch(baseUrl + "/upload", {
-            //     method: 'POST',
-            //     body: form,
-            // }).then((data) => {
-            //     console.log(i,chunks)
-            //     console.log('上传进度',Math.floor(((i+1) / chunks) * 100))
-            //     this.setState({
-            //         visible: true,
-            //         percent: Math.floor((i+1 / chunks) * 100),
-            //         value: '上传进度'
-            //     })
-
-            //     resolve(data.desc)
-            // })
         })
-
     }
     // 第四步: 通知服务器所有分片已上传完成
     notifyServer = (fileMd5Value, file) => {
@@ -279,58 +265,22 @@ class Upload extends Component {
         let video = document.querySelectorAll('video')[index],
             canvas = document.querySelectorAll('canvas')[index],
             ctx = canvas.getContext('2d')
+
         //video.play()
-        canvas.width = 343
-        canvas.height = 200;
-        video.addEventListener('play', () => {
-            setInterval(() => {
-                ctx.drawImage(video, 0, 0, 472, 300);
-            }, false)
-        })
-        canvas.addEventListener('click', () => {
-            if (!video.paused) {
-                this.setState({
-                    type: 'pause',
-                    iconVisible: true
-                })
-                video.pause();
-            } else {
-                this.setState({
-                    type: 'play-circle',
-                    iconVisible: false
-                })
-                video.play();
-            }
-        }, false);
-        video.addEventListener('loadeddata', () => {
-            console.log('loadeddata')
-            // var img = new Image()
-            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height)
-            // img.setAttribute('crossOrigin', 'anonymous');
-            const dataUrl = canvas.toDataURL('image/jpg')
-            //img.src = dataUrl
-            this.setState({
-                imgPoster: dataUrl,
-                imgUrl: `${baseUrl}/${this.props.uuid}.jpg`
-            }, () => {
-                fetch(baseUrl + "/saveimg", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        imgPoster: this.state.imgPoster,
-                        imgName: this.props.uuid
-                    })
-                }).then((data) => {
-                    console.log(data)
-                })
-            })
-        })
-        // var img = new Image()
-        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height)
+        canvas.width = video.videoWidth
+        canvas.height = video.videoHeight;
+
+        let dataUrl
+        ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight)
+        // 竖屏视频改变画布大小
+        if (video.videoWidth < video.videoHeight) {
+            canvas.width = 393
+            canvas.height = 640;
+            ctx.drawImage(video, 0, 0, 393, 640)
+            dataUrl = canvas.toDataURL('image/jpg')
+        }
         // img.setAttribute('crossOrigin', 'anonymous');
-        const dataUrl = canvas.toDataURL('image/jpg')
+        dataUrl = canvas.toDataURL('image/jpg')
         //img.src = dataUrl
         this.setState({
             imgPoster: dataUrl,
@@ -345,28 +295,24 @@ class Upload extends Component {
                     imgPoster: this.state.imgPoster,
                     imgName: this.props.uuid
                 })
-            }).then((data) => {
-                console.log(data)
+            }).then(() => {
+                saveimgResult = true
             })
         })
     }
 
-    // 播放
-    play(index, item) {
-        this.setState({
-            iconVisible: false
-        })
-        this.dragVideo(index)
-    }
-
     sendLine = () => {
+        if (!saveimgResult) {
+            message.destroy()
+            message.warning('视频正在加载中...请稍等！', 5)
+            return
+        }
         message.destroy()
         message.loading('正在发送朋友圈，请等候...', 0)
         const playAddr = this.state.path[0]
         console.log('playAddr', playAddr)
         console.log('imgUrl', this.state.imgUrl)
         const bigvideo = {
-            //videoimage: "http://js2.a.yximgs.com/upic/2019/03/22/14/BMjAxOTAzMjIxNDA4NThfMTA4NzI5ODA2MV8xMTU4MTgxMDk5OF8xXzM=_B2102bc5642bd91c29a56ea6f6f8c5129.jpg?tag=1-1556722351-nil-0-tvqohrescm-181a3e6e26692c59&type=hot",
             //text: this.state.videoText,
             videoimage: this.state.imgUrl,
             videourl: playAddr,
@@ -386,6 +332,7 @@ class Upload extends Component {
             message.destroy()
             message.success('发送成功！', 1)
             console.log(res)
+            saveimgResult=false
             filePath = []
             this.setState({
                 modalvisible: false,
@@ -393,6 +340,7 @@ class Upload extends Component {
             });
         })
     }
+
     render() {
         return (
             <div>
@@ -438,12 +386,10 @@ class Upload extends Component {
                                     <List.Item>
                                         <div>
                                             <div>
-                                                <video crossOrigin='true' style={{ width: '100%', height: '200px' }} x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" src={item}>
+                                                <video onLoadedData={() => this.dragVideo(index)} crossOrigin='true' style={{ width: '100%', height: '200px' }} x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" src={item}>
                                                 </video>
-                                                <div style={{ background: 'black', textAlign: 'center', display: 'none' }}>
-                                                    <canvas > </canvas>
-                                                    {this.state.iconVisible ? <Icon onClick={setTimeout(() => { this.play(index, item) }, 200)} style={{ fontSize: '46px', position: 'absolute', left: '45%', top: '30%', zIndex: '2', color: 'white' }} type={this.state.type}></Icon> : null}
-                                                    <img src={this.state.imgPoster}></img>
+                                                <div style={{ background: 'black', textAlign: 'center',display:'none' }}>
+                                                    <canvas> </canvas>
                                                 </div>
                                             </div>
                                         </div>

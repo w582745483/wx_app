@@ -3,6 +3,9 @@
 # dependencies
 node_modules
 
+img
+
+video
 # testing
 coverage
 

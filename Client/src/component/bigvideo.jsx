@@ -89,7 +89,7 @@ class Bigvideo extends React.Component {
                 <Background />
                 <div className='bigvideo'>
                     <img src={require('../assets//img/sunshine.jpg')} style={{ position: 'relative', width: '100%', height: '200px' }} alt="sunshine"></img>
-                    <Input placeholder="请输入视频链接地址" value={this.state.videoUrl} autoFocus={true} onChange={e => this.handleChange('videoUrl', e.target.value)} style={{ marginTop: '70px', width: '80%', height: '50px' }} size="large" />
+                    <Input placeholder="请输入视频链接地址" value={this.state.videoUrl} onChange={e => this.handleChange('videoUrl', e.target.value)} style={{ marginTop: '70px', width: '80%', height: '50px' }} size="large" />
                     <Button type="primary" onClick={this.showModal} style={{ marginTop: '60px', height: '40px' }}>查看视频</Button>
                 </div>
                 <div>
