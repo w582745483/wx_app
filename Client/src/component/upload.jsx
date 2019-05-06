@@ -284,7 +284,7 @@ class Upload extends Component {
         //img.src = dataUrl
         this.setState({
             imgPoster: dataUrl,
-            imgUrl: `${baseUrl}/${this.props.uuid}.jpg`
+            imgUrl: `${baseUrl}/${new Date().getTime()}.jpg`
         }, () => {
             fetch(baseUrl + "/saveimg", {
                 method: 'POST',
@@ -293,7 +293,7 @@ class Upload extends Component {
                 },
                 body: JSON.stringify({
                     imgPoster: this.state.imgPoster,
-                    imgName: this.props.uuid
+                    imgName: new Date().getTime()
                 })
             }).then(() => {
                 saveimgResult = true
