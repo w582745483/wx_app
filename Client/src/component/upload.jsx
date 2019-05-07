@@ -386,7 +386,7 @@ class Upload extends Component {
                                     <List.Item>
                                         <div>
                                             <div>
-                                                <video onLoadedData={() => this.dragVideo(index)} crossOrigin='true' style={{ width: '100%', height: '200px' }} x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" src={item}>
+                                                <video onLoadedData={() => this.dragVideo(index)} autoplay crossOrigin='true' style={{ width: '100%', height: '200px' }} x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" src={item}>
                                                 </video>
                                                 <div style={{ background: 'black', textAlign: 'center',display:'none' }}>
                                                     <canvas> </canvas>
