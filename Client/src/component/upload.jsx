@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import Background from '../container/background'
 
 
-let baseUrl = 'http://e24589943k.wicp.vip'
+let baseUrl = 'http://e24589943k.wicp.vip' //http://localhost:4000  //http://e24589943k.wicp.vip
 let chunkSize = 5 * 1024 * 1024
 let fileSizes = []
 let files = []
@@ -271,6 +271,7 @@ class Upload extends Component {
         canvas.height = video.videoHeight;
 
         let dataUrl
+        const Random=Math.ceil(Math.random()*10000000)
         ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight)
         // 竖屏视频改变画布大小
         if (video.videoWidth < video.videoHeight) {
@@ -284,7 +285,7 @@ class Upload extends Component {
         //img.src = dataUrl
         this.setState({
             imgPoster: dataUrl,
-            imgUrl: `${baseUrl}/${new Date().getTime()}.jpg`
+            imgUrl: `${baseUrl}/${Random}.jpg`
         }, () => {
             fetch(baseUrl + "/saveimg", {
                 method: 'POST',
@@ -293,7 +294,7 @@ class Upload extends Component {
                 },
                 body: JSON.stringify({
                     imgPoster: this.state.imgPoster,
-                    imgName: new Date().getTime()
+                    imgName: Random
                 })
             }).then(() => {
                 saveimgResult = true
