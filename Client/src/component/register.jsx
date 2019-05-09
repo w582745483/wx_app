@@ -1,4 +1,4 @@
-import {Form, Input, Button,Select} from 'antd';
+import { Form, Input, Button, Select } from 'antd';
 import React from 'react'
 import Background from '../container/background'
 const { Option } = Select;
@@ -7,12 +7,29 @@ class RegistrationForm extends React.Component {
         confirmDirty: false,
         autoCompleteResult: [],
     };
-    
+
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values);
+                // fetch('http://47.93.189.47:22221/api/verifylogin/userRegistration', {
+                //     method: 'POST',
+                //     //credentials: 'include',
+                //     mode: 'cors',
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //         'Accept': ' application/json'
+                //     },
+                //     body: JSON.stringify(bigvideo)
+                // }).then(res => {
+                //     message.destroy()
+                //     message.success('发送成功！', 1)
+                //     console.log(res)
+                //     this.setState({
+                //         visible: false,
+                //     });
+                // })
             }
         });
     }
@@ -23,8 +40,9 @@ class RegistrationForm extends React.Component {
     }
 
     compareToFirstPassword = (rule, value, callback) => {
+
         const form = this.props.form;
-        if (value && value !== form.getFieldValue('password')) {
+        if (value && value !== form.getFieldValue('password_reg')) {
             callback('您输入的两个密码不一致!');
         } else {
             callback();
@@ -42,11 +60,11 @@ class RegistrationForm extends React.Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
-            labelCol: {
+            labelcol: {
                 xs: { span: 24 },
                 sm: { span: 8 },
             },
-            wrapperCol: {
+            wrappercol: {
                 xs: { span: 24 },
                 sm: { span: 16 },
             },
@@ -63,17 +81,13 @@ class RegistrationForm extends React.Component {
             <div>
                 <Background />
                 <div className="login_box">
-                    <div style={{ margin: '40px 10px' }}>
+                    <div style={{ margin: '10px 10px' }}>
                         <Form {...formItemLayout} onSubmit={this.handleSubmit}>
                             <Form.Item
-                                label="邮箱"
+                                label="用户名"
                             >
-                                {getFieldDecorator('email', {
-                                    rules: [{
-                                        type: 'email', message: '该输入不是有效的电子邮件!',
-                                    }, {
-                                        required: true, message: '请输入你的邮箱!',
-                                    }],
+                                {getFieldDecorator('username_reg', {
+                                    rules: [{ required: true, message: '请输入用户名!', whitespace: true }],
                                 })(
                                     <Input />
                                 )}
@@ -81,7 +95,7 @@ class RegistrationForm extends React.Component {
                             <Form.Item
                                 label="密码"
                             >
-                                {getFieldDecorator('password', {
+                                {getFieldDecorator('password_reg', {
                                     rules: [{
                                         required: true, message: '请输入密码!',
                                     }, {
@@ -105,6 +119,19 @@ class RegistrationForm extends React.Component {
                                 )}
                             </Form.Item>
                             <Form.Item
+                                label="邮箱"
+                            >
+                                {getFieldDecorator('email_reg', {
+                                    rules: [{
+                                        type: 'email', message: '该输入不是有效的电子邮件!',
+                                    }, {
+                                        required: true, message: '请输入你的邮箱!',
+                                    }],
+                                })(
+                                    <Input />
+                                )}
+                            </Form.Item>
+                            <Form.Item
                                 label="电话号码"
                             >
                                 {getFieldDecorator('phone', {
@@ -117,7 +144,7 @@ class RegistrationForm extends React.Component {
                                 <Button type="primary" htmlType="submit">注册</Button>
                             </Form.Item>
                         </Form>
-                      
+
                     </div>
                 </div>
             </div>

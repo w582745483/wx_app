@@ -25,7 +25,6 @@ class Upload extends Component {
         modalvisible: false,
         imgPoster: '',
         type: 'play-circle',
-        iconVisible: true,
         imgUrl: ''
     }
     fileChange = (e) => {
@@ -152,6 +151,7 @@ class Upload extends Component {
     }
     componentWillUnmount() {
         filePath = []
+        saveimgResult=false
     }
     // 3-2. 上传chunk
     upload(file, fileSize, i, fileMd5Value, chunks) {
@@ -169,8 +169,17 @@ class Upload extends Component {
             var xhr = new XMLHttpRequest()
             xhr.open("post", baseUrl + "/upload", true);
             xhr.onload = uploadComplete; //请求完成
-            xhr.onerror = uploadFailed; //请求失败
-            //xhr.upload.onprogress = progressFunction;
+            xhr.onerror =(evt) =>{
+                message.destroy()
+                message.error('上传失败！请重新上传', 5)
+                saveimgResult=false
+                filePath = []
+                this.setState({
+                    modalvisible: false,
+                    path: [],
+                });
+            }//请求失败
+            
             xhr.upload.onloadstart = function () {//上传开始执行方法
                 ot = new Date().getTime();   //设置上传开始时间
                 oloaded = 0;//设置上传开始时，以上传的文件大小为0
@@ -225,10 +234,7 @@ class Upload extends Component {
                 var data = JSON.parse(evt.target.responseText);
                 resolve(data.desc)
             }
-            //上传失败
-            function uploadFailed(evt) {
-                alert("上传失败！");
-            }
+           
         })
     }
     // 第四步: 通知服务器所有分片已上传完成
@@ -304,8 +310,7 @@ class Upload extends Component {
 
     sendLine = () => {
         if (!saveimgResult) {
-            message.destroy()
-            message.warning('视频正在加载中...请稍等！', 5)
+     
             return
         }
         message.destroy()
