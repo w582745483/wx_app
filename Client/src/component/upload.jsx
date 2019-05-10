@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Progress, message, List, Menu, Modal, Icon } from 'antd'
+import { Progress, message, List, Menu, Modal, Icon,Input} from 'antd'
 import SparkMD5 from 'spark-md5'
 import { connect } from 'react-redux'
 
@@ -14,7 +14,6 @@ let hasUploaded = 0
 let chunks = 0
 let filePath = []
 let totalProgress = []
-let saveimgResult = false
 class Upload extends Component {
     state = {
         percent: 0,
@@ -25,18 +24,22 @@ class Upload extends Component {
         modalvisible: false,
         imgPoster: '',
         type: 'play-circle',
-        imgUrl: ''
+        imgUrl: '',
+        videoText:''
+    }
+    handleChange = (name, val) => {
+        this.setState({
+            [name]: val
+        })
     }
     fileChange = (e) => {
         files = e.target.files
-        console.log(files)
         for (var i = 0; i < files.length; i++) {
             fileSizes.push(files[i].size)
             this.responseChange(files[i], files[i].size)
             filePath.push(`${baseUrl}/${files[i].name}`)
         }
-
-        //this.responseChange(files[0], files[0].size)
+        e.target.value = ''
     }
     async  responseChange(file, fileSize) {
         // 第一步：按照 修改时间+文件名称+最后修改时间-->MD5
@@ -45,7 +48,6 @@ class Upload extends Component {
         // 第二步：校验文件的MD5
 
         let result = await this.checkFileMD5(file.name, fileMd5Value)
-        console.log(result)
         // 如果文件已存在, 就秒传
         if (result.file) {
             message.destroy()
@@ -151,7 +153,6 @@ class Upload extends Component {
     }
     componentWillUnmount() {
         filePath = []
-        saveimgResult=false
     }
     // 3-2. 上传chunk
     upload(file, fileSize, i, fileMd5Value, chunks) {
@@ -169,17 +170,16 @@ class Upload extends Component {
             var xhr = new XMLHttpRequest()
             xhr.open("post", baseUrl + "/upload", true);
             xhr.onload = uploadComplete; //请求完成
-            xhr.onerror =(evt) =>{
+            xhr.onerror = (evt) => {
                 message.destroy()
                 message.error('上传失败！请重新上传', 5)
-                saveimgResult=false
                 filePath = []
                 this.setState({
                     modalvisible: false,
                     path: [],
                 });
             }//请求失败
-            
+
             xhr.upload.onloadstart = function () {//上传开始执行方法
                 ot = new Date().getTime();   //设置上传开始时间
                 oloaded = 0;//设置上传开始时，以上传的文件大小为0
@@ -234,7 +234,7 @@ class Upload extends Component {
                 var data = JSON.parse(evt.target.responseText);
                 resolve(data.desc)
             }
-           
+
         })
     }
     // 第四步: 通知服务器所有分片已上传完成
@@ -264,87 +264,93 @@ class Upload extends Component {
         this.setState({
             modalvisible: false,
         });
+        message.destroy()
     }
     // canvas 绘制
     dragVideo = (index) => {
-        console.log('dragVideo')
-        let video = document.querySelectorAll('video')[index],
-            canvas = document.querySelectorAll('canvas')[index],
-            ctx = canvas.getContext('2d')
+        return new Promise(resolve => {
+            console.log('dragVideo')
+            let video = document.querySelectorAll('video')[0],
+                canvas = document.querySelectorAll('canvas')[0],
+                ctx = canvas.getContext('2d')
 
-        //video.play()
-        canvas.width = video.videoWidth
-        canvas.height = video.videoHeight;
-
-        let dataUrl
-        const Random=Math.ceil(Math.random()*10000000)
-        ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight)
-        // 竖屏视频改变画布大小
-        if (video.videoWidth < video.videoHeight) {
-            canvas.width = 393
-            canvas.height = 640;
-            ctx.drawImage(video, 0, 0, 393, 640)
+            //video.play()
+            canvas.width = video.videoWidth
+            canvas.height = video.videoHeight;
+            let dataUrl
+            const Random = Math.ceil(Math.random() * 10000000)
+            // 竖屏视频改变画布大小
+            if (video.videoWidth < video.videoHeight) {
+                canvas.width = 393
+                canvas.height = 640;
+                ctx.drawImage(video, 0, 0, 393, 640)
+                dataUrl = canvas.toDataURL('image/jpg')
+            }else{
+                //横屏幕
+                ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight)
+            }
+            // img.setAttribute('crossOrigin', 'anonymous');
             dataUrl = canvas.toDataURL('image/jpg')
-        }
-        // img.setAttribute('crossOrigin', 'anonymous');
-        dataUrl = canvas.toDataURL('image/jpg')
-        //img.src = dataUrl
-        this.setState({
-            imgPoster: dataUrl,
-            imgUrl: `${baseUrl}/${Random}.jpg`
-        }, () => {
-            fetch(baseUrl + "/saveimg", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    imgPoster: this.state.imgPoster,
-                    imgName: Random
+            //img.src = dataUrl
+            this.setState({
+                imgPoster: dataUrl,
+                imgUrl: `${baseUrl}/${Random}.jpg`
+            }, () => {
+                fetch(baseUrl + "/saveimg", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        imgPoster: this.state.imgPoster,
+                        imgName: Random
+                    })
+                }).then(() => {
+                    resolve()
                 })
-            }).then(() => {
-                saveimgResult = true
             })
         })
+
     }
 
     sendLine = () => {
-        if (!saveimgResult) {
-     
+        if (!this.state.imgUrl) {
+            message.destroy()
+            message.loading('视频正在加载中', 3)
             return
         }
         message.destroy()
         message.loading('正在发送朋友圈，请等候...', 0)
-        const playAddr = this.state.path[0]
-        console.log('playAddr', playAddr)
-        console.log('imgUrl', this.state.imgUrl)
-        const bigvideo = {
-            //text: this.state.videoText,
-            videoimage: this.state.imgUrl,
-            videourl: playAddr,
-            uuid: this.props.uuid
-        }
-        console.log('bigvideo', bigvideo)
-        fetch('http://47.93.189.47:22221/api/sns/sendbigvideo', {
-            method: 'POST',
-            //credentials: 'include',
-            mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': ' application/json'
-            },
-            body: JSON.stringify(bigvideo)
-        }).then(res => {
-            message.destroy()
-            message.success('发送成功！', 1)
-            console.log(res)
-            saveimgResult=false
-            filePath = []
-            this.setState({
-                modalvisible: false,
-                path: [],
-            });
-        })
+            const playAddr = this.state.path[0]
+            console.log('playAddr', playAddr)
+            console.log('imgUrl', this.state.imgUrl)
+            const bigvideo = {
+                text: this.state.videoText,
+                videoimage: this.state.imgUrl,
+                videourl: playAddr,
+                uuid: this.props.uuid
+            }
+            console.log('bigvideo', bigvideo)
+            fetch('http://47.93.189.47:22221/api/sns/sendbigvideo', {
+                method: 'POST',
+                //credentials: 'include',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': ' application/json'
+                },
+                body: JSON.stringify(bigvideo)
+            }).then(res => {
+                message.destroy()
+                message.success('发送成功！', 1)
+                console.log(res)
+                filePath = []
+                this.setState({
+                    modalvisible: false,
+                    path: [],
+                    imgUrl:''
+                });
+            })
     }
 
     render() {
@@ -376,8 +382,10 @@ class Upload extends Component {
                             closable={false}
                             width={400}
                         >
+                         
                             <input type='file' multiple="multiple" style={{ opacity: '0', position: 'absolute', marginTop: '7px', right: '-150px', zIndex: '1' }} onChange={this.fileChange} />
                             <img style={{ marginLeft: '310px', width: '50px' }} src={require('../assets/img/choosevideo.png')} />
+                            {this.state.path.length>0?<Input.TextArea rows={3} style={{ width: '100%', marginBottom: '20px' }} value={this.state.videoText} placeholder="请输入心情！" onChange={e => this.handleChange('videoText', e.target.value)} />:null} 
                             <div style={{ position: 'relative', left: '42%', marginTop: '50px', zIndex: '2' }}>
                                 {this.state.visible ? <Progress type="circle" percent={this.state.percent} width={80} /> : null}
                                 <p style={{ marginLeft: '11px' }}>{this.state.value}</p>
@@ -392,7 +400,7 @@ class Upload extends Component {
                                     <List.Item>
                                         <div>
                                             <div>
-                                                  {/* controls  这个属性规定浏览器为该视频提供播放控件 
+                                                {/* controls  这个属性规定浏览器为该视频提供播放控件 
                                                 style = "object-fit:fill"  加这个style会让 Android / web 的视频在微信里的视频全屏，如果是在手机上预览，会让视频的封面同视频一样大小
                                                 webkit-playsinline="true"  这个属性是ios 10中设置可以让视频在小窗内播放，也就是不是全屏播放
                                                 x-webkit-airplay="true"  这个属性还不知道作用
@@ -401,7 +409,7 @@ class Upload extends Component {
                                                 x5-video-orientation="h5" 播放器支付的方向，landscape横屏，portraint竖屏，默认值为竖屏
                                                 x5-video-player-fullscreen="true" 全屏设置，设置为 true 是防止横屏
                                                 preload="auto" 这个属性规定页面加载完成后载入视频  */}
-                                                <video onLoadedData={() => this.dragVideo(index)} autoplay crossOrigin='true' style={{ width: '100%', height: '200px' }} x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" src={item}>
+                                                <video onLoadedData={()=>{this.dragVideo()}} crossOrigin='true' style={{ width: '100%', height: '200px' }} x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" src={item}>
                                                 </video>
                                                 <div style={{ background: 'black', textAlign: 'center',display:'none' }}>
                                                     <canvas> </canvas>
