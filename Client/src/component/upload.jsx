@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { Progress, message, List, Menu, Modal, Icon,Input} from 'antd'
+import { Progress, message, List, Menu, Modal, Icon, Input } from 'antd'
 import SparkMD5 from 'spark-md5'
 import { connect } from 'react-redux'
 
 import Background from '../container/background'
-
+import '../assets/css/main.css'
 
 let baseUrl = 'http://e24589943k.wicp.vip' //http://localhost:4000  //http://e24589943k.wicp.vip
 let chunkSize = 5 * 1024 * 1024
@@ -14,6 +14,8 @@ let hasUploaded = 0
 let chunks = 0
 let filePath = []
 let totalProgress = []
+const SubMenu = Menu.SubMenu;
+const MenuItemGroup = Menu.ItemGroup;
 class Upload extends Component {
     state = {
         percent: 0,
@@ -25,7 +27,7 @@ class Upload extends Component {
         imgPoster: '',
         type: 'play-circle',
         imgUrl: '',
-        videoText:''
+        videoText: ''
     }
     handleChange = (name, val) => {
         this.setState({
@@ -254,10 +256,11 @@ class Upload extends Component {
         let d = new Date()
         return d.getMinutes() + ':' + d.getSeconds() + ' ' + d.getMilliseconds()
     }
-    handleClick = () => {
+    handleClick = (e) => {
         this.setState({
             modalvisible: true
         });
+
     }
 
     handleCancel = (e) => {
@@ -285,7 +288,7 @@ class Upload extends Component {
                 canvas.height = 640;
                 ctx.drawImage(video, 0, 0, 393, 640)
                 dataUrl = canvas.toDataURL('image/jpg')
-            }else{
+            } else {
                 //横屏幕
                 ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight)
             }
@@ -321,47 +324,59 @@ class Upload extends Component {
         }
         message.destroy()
         message.loading('正在发送朋友圈，请等候...', 0)
-            const playAddr = this.state.path[0]
-            console.log('playAddr', playAddr)
-            console.log('imgUrl', this.state.imgUrl)
-            const bigvideo = {
-                text: this.state.videoText,
-                videoimage: this.state.imgUrl,
-                videourl: playAddr,
-                uuid: this.props.uuid
-            }
-            console.log('bigvideo', bigvideo)
-            fetch('http://47.93.189.47:22221/api/sns/sendbigvideo', {
-                method: 'POST',
-                //credentials: 'include',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': ' application/json'
-                },
-                body: JSON.stringify(bigvideo)
-            }).then(res => {
-                message.destroy()
-                message.success('发送成功！', 1)
-                console.log(res)
-                filePath = []
-                this.setState({
-                    modalvisible: false,
-                    path: [],
-                    imgUrl:''
-                });
-            })
+        const playAddr = this.state.path[0]
+        console.log('playAddr', playAddr)
+        console.log('imgUrl', this.state.imgUrl)
+        const bigvideo = {
+            text: this.state.videoText,
+            videoimage: this.state.imgUrl,
+            videourl: playAddr,
+            uuid: this.props.uuid
+        }
+        console.log('bigvideo', bigvideo)
+        fetch('http://47.93.189.47:22221/api/sns/sendbigvideo', {
+            method: 'POST',
+            //credentials: 'include',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': ' application/json'
+            },
+            body: JSON.stringify(bigvideo)
+        }).then(res => {
+            message.destroy()
+            message.success('发送成功！', 1)
+            console.log(res)
+            filePath = []
+            this.setState({
+                modalvisible: false,
+                path: [],
+                imgUrl: ''
+            });
+        })
     }
 
     render() {
+        const menu = (
+            <Menu>
+                <Menu.Item key="0">
+                    <a href="http://www.alipay.com/">1st menu item</a>
+                </Menu.Item>
+                <Menu.Item key="1">
+                    <a href="http://www.taobao.com/">2nd menu item</a>
+                </Menu.Item>
+                <Menu.Divider />
+                <Menu.Item key="3">3rd menu item</Menu.Item>
+            </Menu>
+        );
         return (
             <div>
                 <Background />
                 <div style={{ textAlign: 'center', background: 'white' }} className='bigvideo'>
                     <img src={require('../assets//img/bc.jpg')} style={{ position: 'relative', width: '100%', height: '150px' }} alt="sunshine"></img>
                     <div>
-                        <Menu mode="horizontal" onClick={this.handleClick} >
-                            <Menu.Item key="text" style={{ padding: '0 28px' }}>
+                        <Menu mode="horizontal" onClick={this.handleClick} mode="horizontal">
+                            <Menu.Item key="text" style={{ padding: '0 28px' }} >
                                 <img src={require('../assets/img/text.png')} style={{ height: '40px', width: '40px', right: '20px' }}></img>
                                 <span style={{ fontSize: '13px', lineHeight: '.4rem', marginLeft: '2px' }}>文字</span>
                             </Menu.Item>
@@ -369,12 +384,18 @@ class Upload extends Component {
                                 <img src={require('../assets/img/picture.png')} style={{ height: '40px', width: '40px', right: '20px' }}></img>
                                 <span style={{ fontSize: '13px', lineHeight: '.4rem', marginLeft: '2px' }}>图片</span>
                             </Menu.Item>
-                            <Menu.Item key="uploadvideo" style={{ padding: '0 28px' }}>
+                            {/* <Menu.Item key="uploadvideo" style={{ padding: '0 28px' }} onClick={e => this.handleClick(e)}>
                                 <img src={require('../assets/img/uploadvideo.png')} style={{ height: '40px', width: '40px', right: '20px' }}></img>
                                 <span style={{ fontSize: '13px', lineHeight: '.4rem', marginLeft: '2px' }}>上传视频</span>
-                            </Menu.Item>
+                            </Menu.Item> */}
+                            <SubMenu title={<span style={{ fontSize: '13px', lineHeight: '.4rem', marginLeft: '2px' }}> <img src={require('../assets/img/uploadvideo.png')} style={{ height: '40px', width: '40px', right: '20px' }}></img>上传视频</span>}>
+                                <Menu.Item style={{ background: '#737373', color: 'white', width: '145px', fontSize: '5px', textAlign: 'right' }} key="1">上传长视频</Menu.Item>
+                                <Menu.Item style={{ background: '#737373', color: 'white', width: '145px', fontSize: '5px', textAlign: 'right' }} key="2">上传九宫格</Menu.Item>
+                            </SubMenu>
                         </Menu>
-                        <Modal
+
+
+                        {/* <Modal
                             visible={this.state.modalvisible}
                             onOk={this.sendLine}
                             onCancel={this.handleCancel}
@@ -399,8 +420,8 @@ class Upload extends Component {
                                 renderItem={(item, index) => (
                                     <List.Item>
                                         <div>
-                                            <div>
-                                                {/* controls  这个属性规定浏览器为该视频提供播放控件 
+                                            <div> */}
+                        {/* controls  这个属性规定浏览器为该视频提供播放控件 
                                                 style = "object-fit:fill"  加这个style会让 Android / web 的视频在微信里的视频全屏，如果是在手机上预览，会让视频的封面同视频一样大小
                                                 webkit-playsinline="true"  这个属性是ios 10中设置可以让视频在小窗内播放，也就是不是全屏播放
                                                 x-webkit-airplay="true"  这个属性还不知道作用
@@ -409,7 +430,7 @@ class Upload extends Component {
                                                 x5-video-orientation="h5" 播放器支付的方向，landscape横屏，portraint竖屏，默认值为竖屏
                                                 x5-video-player-fullscreen="true" 全屏设置，设置为 true 是防止横屏
                                                 preload="auto" 这个属性规定页面加载完成后载入视频  */}
-                                                <video onLoadedData={()=>{this.dragVideo()}} crossOrigin='true' style={{ width: '100%', height: '200px' }} x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" src={item}>
+                        {/* <video onLoadedData={()=>{this.dragVideo()}} crossOrigin='true' style={{ width: '100%', height: '200px' }} x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" src={item}>
                                                 </video>
                                                 <div style={{ background: 'black', textAlign: 'center',display:'none' }}>
                                                     <canvas> </canvas>
@@ -419,7 +440,7 @@ class Upload extends Component {
                                     </List.Item>
                                 )}
                             />
-                        </Modal>
+                        </Modal> */}
                     </div>
 
                 </div>
