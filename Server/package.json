@@ -11,6 +11,7 @@
     "debug": "~2.6.9",
     "ejs": "~2.5.7",
     "express": "~4.16.0",
+    "fluent-ffmpeg": "^2.1.2",
     "formidable": "^1.0.15",
     "fs-extra": "^5.0.0",
     "http-errors": "~1.6.2",

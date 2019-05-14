@@ -20,9 +20,10 @@ const data = [
     },
     {
         title: '发送本地视频',
-        img: require('../assets/img/customer.png'),
+        img: require('../assets/img/localvideo.png'),
         url: '/upload'
     },
+    
 ];
 class Menu extends Component {
     state = {
@@ -69,7 +70,7 @@ class Menu extends Component {
                             <span style={{ display: 'block', lineHeight: '1.15', fontSize: '1rem', color: 'white' }}>扫码登陆</span>
                         </div>
                     </div>
-                    <div style={{ background: '#ddd', height: '65%' }}>
+                    <div style={{ background: '#ddd', height: '80%' }}>
                         <List
                             split={false}
                             grid={{ gutter: 16, column: 3 }}
