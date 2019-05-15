@@ -72,6 +72,7 @@ class Logo extends Component {
         }, 200000)
     }
     componentWillReceiveProps(props){
+        console.log(props)
         if(props.header){
             this.setState({
                 timeout: '请在手机中点击登录'

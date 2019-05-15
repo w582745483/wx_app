@@ -1,4 +1,4 @@
-import { GET_QR, GET_HEADER, GET_NICK_NAME, GET_WXID, GET_LOGIN } from './action-types'
+import { GET_QR, GET_HEADER, GET_NICK_NAME, GET_WXID, GET_LOGIN} from './action-types'
 import { ws, heartCheck } from '../component/socket'
 
 
@@ -8,7 +8,6 @@ const getWxID = (wxid) => ({ type: GET_WXID, data: { wxid } })
 const getHeader = (header) => ({ type: GET_HEADER, data: { header } })
 const getNickname = (nickname) => ({ type: GET_NICK_NAME, data: { nickname } })
 const getloginSuccess = (loginSuccess) => ({ type: GET_LOGIN, data: { loginSuccess } })
-
 export const WxLogin = (uuid) => {
 
     return dispatch => {
@@ -20,6 +19,9 @@ export const WxLogin = (uuid) => {
                     const loginSuccess = msg.context
                     if (loginSuccess == '登录成功') {
                         dispatch(getloginSuccess({loginSuccess:true}))
+                    }
+                    if(loginSuccess=='正在登录中'){
+                        dispatch(getloginSuccess({loginSuccess:'正在登录中'}))
                     }
                     break;
                 case 'qrcode'://返回二维码

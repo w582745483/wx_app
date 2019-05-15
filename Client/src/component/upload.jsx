@@ -50,6 +50,7 @@ class Upload extends Component {
         // 第二步：校验文件的MD5
 
         let result = await this.checkFileMD5(file.name, fileMd5Value)
+        console.log(file.name.substring(0,file.name.lastIndexOf('.')))
         // 如果文件已存在, 就秒传
         if (result.file) {
             message.destroy()
@@ -58,7 +59,8 @@ class Upload extends Component {
                 path: filePath,
                 visible: false,
                 value: '',
-                modalvisible: true
+                modalvisible: true,
+                imgUrl:baseUrl+'/Templates/'+file.name.substring(0,file.name.lastIndexOf('.'))+'.jpg'
             })
             return
         }
@@ -248,7 +250,9 @@ class Upload extends Component {
                 .then((data) => {
                     message.destroy()
                     message.success('上传成功')
-                    console.log(data)
+                    this.setState({
+                        imgUrl:baseUrl+'/'+data.videoimage
+                    })
                     resolve()
                 })
         })
@@ -323,7 +327,7 @@ class Upload extends Component {
     sendLine = () => {
         if (!this.state.imgUrl) {
             message.destroy()
-            message.loading('请先点击视频播放！', 3)
+            message.loading('视频正在上传中，请稍后！', 3)
             return
         }
         message.destroy()
@@ -416,7 +420,7 @@ class Upload extends Component {
                                                 x5-video-orientation="h5" 播放器支付的方向，landscape横屏，portraint竖屏，默认值为竖屏
                                                 x5-video-player-fullscreen="true" 全屏设置，设置为 true 是防止横屏
                                                 preload="auto" 这个属性规定页面加载完成后载入视频  */}
-                                                <video onLoadedData={() => { this.dragVideo(index) }} crossOrigin='true' style={{ width: '100%', height: '200px' }} x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" src={item}>
+                                                <video  crossOrigin='true' style={{ width: '100%', height: '200px' }} x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" poster={this.state.imgUrl} src={item}>
                                                 </video>
                                                 <div style={{ background: 'black', textAlign: 'center', display: 'none' }}>
                                                     <canvas> </canvas>
