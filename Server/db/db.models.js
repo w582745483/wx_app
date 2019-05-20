@@ -15,5 +15,11 @@ const userSchema=mongoose.Schema({
     username:{type:String,require:true},
     password:{type:String,require:true},
     email:{type:String,require:true},
+    phone:{type:String,require:true},
+    uuid:{type:String,require:true}
     
 })
+// 2.2. 定义Model(与集合对应, 可以操作集合)
+const UserModel=mongoose.model('user',userSchema)
+// 2.3. 向外暴露Model
+module.UserModel=UserModel

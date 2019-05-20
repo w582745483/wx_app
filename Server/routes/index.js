@@ -64,11 +64,14 @@ router.all('/merge', (req, resp) => {
     let fileName = query.fileName
     console.log('fileName', fileName)
     mergeFiles(path.join(uploadDir, md5), uploadDir, fileName, size).then(()=>{
-        captureImageOne(`video/${fileName}`)
+        captureImageOne(`video/${fileName}`).then(()=>{
+            resp.send({
+                videoimage: `Templates/${fileName.substring( fileName.lastIndexOf('/') + 1).split(".")[0]}.jpg`
+            })
+        })
+       
     })
-    resp.send({
-        videoimage: `Templates/${fileName.substring( fileName.lastIndexOf('/') + 1).split(".")[0]}.jpg`
-    })
+   
 })
 
 router.all('/saveimg', (req, resp) => {
@@ -227,6 +230,7 @@ const captureImageOne = (src)=> {
             let fileName = src.substring( src.lastIndexOf('/') + 1).split(".")[0];
             let width,height
             ffmpeg.ffprobe(src,(err,data)=>{
+                    console.log(data.streams)
                  width=data.streams[0].width?data.streams[0].width:data.streams[1].width
                  height=data.streams[0].height?data.streams[0].height:data.streams[1].height
                  if(width<height){

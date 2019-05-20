@@ -41,12 +41,6 @@ class Menu extends Component {
             content: text,
         });
     }
-    componentDidMount() {
-
-    }
-    componentWillUnmount() {
-
-    }
     componentWillReceiveProps(props) {
         //用户登录成功关闭二维码扫描界面
         console.log(props)
@@ -65,7 +59,7 @@ class Menu extends Component {
                     <div style={{ background: '#666', width: '100%', height: '20%' }}>
                         <Avatar src={header} style={{ backgroundColor: '#87d068', marginTop: '25px', marginLeft: '20px' }} size="large" icon="user" />
                         <span style={{ color: 'white', paddingLeft: '10px' }}>{nickname ? nickname : '未登录'}</span>
-                        <div onClick={() => { this.setState({ isShow: true }) }} style={{ marginTop: '-49px', marginLeft: '300px', textAlign: 'center' }}>
+                        <div onClick={() => { this.setState({ isShow: true }) }} style={{ marginTop: '-49px', marginLeft: '280px', textAlign: 'center' }}>
                             <img style={{ width: '30px' }} src={require('../assets/img/login.png')} ></img>
                             <span style={{ display: 'block', lineHeight: '1.15', fontSize: '1rem', color: 'white' }}>扫码登陆</span>
                         </div>

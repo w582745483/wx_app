@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 
-import { GET_QR,GET_HEADER,GET_WXID,GET_NICK_NAME,GET_LOGIN} from './action-types'
+import { GET_QR,GET_HEADER,GET_WXID,GET_NICK_NAME,GET_LOGIN,REGISTER} from './action-types'
 const initQr = {
     qr: "",
     uuid:'',
@@ -8,6 +8,13 @@ const initQr = {
     header:'',
     nickname:'',
     loginSuccess:false
+}
+const inintUser={
+    username:'',
+    password:'',
+    email:'',
+    phone:'',
+    uuid:''
 }
 
 function Qr(state = initQr, action) {
@@ -27,6 +34,16 @@ function Qr(state = initQr, action) {
     }
 }
 
+function User(state=inintUser,action){
+    switch(action.type){
+        case REGISTER:
+        return {...state,...action.data}
+        default:
+        return state
+    }
+}
+
 export default combineReducers({
-    Qr
+    Qr,
+    User
 })

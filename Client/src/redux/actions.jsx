@@ -1,4 +1,4 @@
-import { GET_QR, GET_HEADER, GET_NICK_NAME, GET_WXID, GET_LOGIN} from './action-types'
+import { GET_QR, GET_HEADER, GET_NICK_NAME, GET_WXID, GET_LOGIN, REGISTER} from './action-types'
 import { ws, heartCheck } from '../component/socket'
 
 
@@ -8,6 +8,7 @@ const getWxID = (wxid) => ({ type: GET_WXID, data: { wxid } })
 const getHeader = (header) => ({ type: GET_HEADER, data: { header } })
 const getNickname = (nickname) => ({ type: GET_NICK_NAME, data: { nickname } })
 const getloginSuccess = (loginSuccess) => ({ type: GET_LOGIN, data: { loginSuccess } })
+const getregister=user=>({type:REGISTER,data:user})
 export const WxLogin = (uuid) => {
 
     return dispatch => {
@@ -42,6 +43,23 @@ export const WxLogin = (uuid) => {
                     break;
             }
         };
+    }
+}
+export const register=({username,password,email,phone,uuid})=>{
+    return async dispatch=>{
+        const response=await fetch('http://e24589943k.wicp.vip/users/register',{
+            method: 'POST',
+            //credentials: 'include',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': ' application/json'
+            },
+            body: JSON.stringify({username,password,email,phone,uuid})
+        })
+        dispatch(getregister({username,password,phone,uuid}))
+        console.log({username,password,phone,uuid})
+
     }
 }
 export const Sendline=()=>{

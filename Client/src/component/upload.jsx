@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Progress, message, List, Menu, Modal, Icon, Input, Dropdown } from 'antd'
+import { Progress, message, List, Menu, Modal, Input } from 'antd'
 import SparkMD5 from 'spark-md5'
 import { connect } from 'react-redux'
 
@@ -14,8 +14,6 @@ let hasUploaded = 0
 let chunks = 0
 let filePath = []
 let totalProgress = []
-const SubMenu = Menu.SubMenu;
-const MenuItemGroup = Menu.ItemGroup;
 class Upload extends Component {
     state = {
         percent: 0,
@@ -50,7 +48,7 @@ class Upload extends Component {
         // 第二步：校验文件的MD5
 
         let result = await this.checkFileMD5(file.name, fileMd5Value)
-        console.log(file.name.substring(0,file.name.lastIndexOf('.')))
+        console.log(file.name.substring(0, file.name.lastIndexOf('.')))
         // 如果文件已存在, 就秒传
         if (result.file) {
             message.destroy()
@@ -60,7 +58,7 @@ class Upload extends Component {
                 visible: false,
                 value: '',
                 modalvisible: true,
-                imgUrl:baseUrl+'/Templates/'+file.name.substring(0,file.name.lastIndexOf('.'))+'.jpg'
+                imgUrl: baseUrl + '/Templates/' + file.name.substring(0, file.name.lastIndexOf('.')) + '.jpg'
             })
             return
         }
@@ -246,12 +244,12 @@ class Upload extends Component {
         return new Promise((resolve) => {
             let url = baseUrl + '/merge?md5=' + fileMd5Value + "&fileName=" + file.name + "&size=" + file.size
             fetch(url)
-                .then(data=>data.json())
+                .then(data => data.json())
                 .then((data) => {
                     message.destroy()
                     message.success('上传成功')
                     this.setState({
-                        imgUrl:baseUrl+'/'+data.videoimage
+                        imgUrl: baseUrl + '/' + data.videoimage
                     })
                     resolve()
                 })
@@ -268,7 +266,7 @@ class Upload extends Component {
         });
 
     }
-    nineVideo=()=>{
+    nineVideo = () => {
 
     }
     handleCancel = (e) => {
@@ -371,7 +369,7 @@ class Upload extends Component {
                 <div style={{ textAlign: 'center', background: 'white' }} className='bigvideo'>
                     <img src={require('../assets//img/bc.jpg')} style={{ position: 'relative', width: '100%', height: '150px' }} alt="sunshine"></img>
                     <div>
-                        <Menu mode="horizontal"  mode="horizontal">
+                        <Menu mode="horizontal" mode="horizontal">
                             <Menu.Item key="ninevideo" style={{ padding: '0 25px' }} onClick={this.nineVideo} >
                                 <img src={require('../assets/img/nine.png')} style={{ height: '40px', width: '40px', right: '20px' }}></img>
                                 <span style={{ fontSize: '13px', lineHeight: '.4rem', marginLeft: '2px' }}>九宫格</span>
@@ -393,9 +391,8 @@ class Upload extends Component {
                             closable={false}
                             width={400}
                         >
-
-                            <input type='file' multiple="multiple" style={{ opacity: '0', position: 'absolute', marginTop: '7px', right: '-150px', zIndex: '1' }} onChange={this.fileChange} />
-                            <img style={{ marginLeft: '310px', width: '50px' }} src={require('../assets/img/choosevideo.png')} />
+                            <input type='file' multiple="multiple" style={{ opacity: '0', position: 'relative', top: '-9px', right: '-275px', fontSize: '18px', zIndex: '1' }} onChange={this.fileChange} />
+                            <img style={{ position: 'absolute', top: '10px', right: '10px', width: '50px' }} src={require('../assets/img/choosevideo.png')} />
                             {this.state.path.length > 0 ? <Input.TextArea rows={3} style={{ width: '100%', marginBottom: '20px' }} value={this.state.videoText} placeholder="请输入心情！" onChange={e => this.handleChange('videoText', e.target.value)} /> : null}
                             <div style={{ position: 'relative', left: '42%', marginTop: '50px', zIndex: '2' }}>
                                 {this.state.visible ? <Progress type="circle" percent={this.state.percent} width={80} /> : null}
@@ -420,7 +417,8 @@ class Upload extends Component {
                                                 x5-video-orientation="h5" 播放器支付的方向，landscape横屏，portraint竖屏，默认值为竖屏
                                                 x5-video-player-fullscreen="true" 全屏设置，设置为 true 是防止横屏
                                                 preload="auto" 这个属性规定页面加载完成后载入视频  */}
-                                                <video  crossOrigin='true' style={{ width: '100%', height: '200px' }} x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" poster={this.state.imgUrl} src={item}>
+
+                                                <video style={{ width: '100%', height: '200px' }} x5-video-player-fullscreen="true" x5-video-player-fullscreen="portraint" controls preload="true" controlsList="nodownload nofullscreen" poster={this.state.imgUrl} src={item}>
                                                 </video>
                                                 <div style={{ background: 'black', textAlign: 'center', display: 'none' }}>
                                                     <canvas> </canvas>

@@ -82,8 +82,8 @@ class Logo extends Component {
     render() {
         const {header} = this.props
         return (
-            <div style={{ marginTop: '-320px' }}>
-                <img className="imgqr" style={{ opacity: this.state.opacity }} alt="" src={header?header:"data:image/jpg;base64," + this.props.qr}></img>
+            <div style={{ marginTop: '-370px' }}>
+                <img className="imgqr"  style={{ opacity: this.state.opacity }} alt="" src={header?header:"data:image/jpg;base64," + this.props.qr}></img>
                 <div style={{ marginTop: '-213px', paddingBottom: '70px', }}>
                     {this.state.isshow ? <img className="refresh" style={{ transform: this.state.transform }} onClick={this.handleRefresh} src={require('../assets/img/refresh.png')}></img> : null}
                 </div>

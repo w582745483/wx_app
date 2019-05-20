@@ -8,3 +8,5 @@ export const GET_NICK_NAME='GET_NICK_NAME'
 export const GET_WXID='GET_WXID'
 //登录成功
 export const GET_LOGIN='GET_LOGIN'
+//注册用户
+export const REGISTER='REGISTER'
