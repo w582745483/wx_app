@@ -230,7 +230,6 @@ const captureImageOne = (src)=> {
             let fileName = src.substring( src.lastIndexOf('/') + 1).split(".")[0];
             let width,height
             ffmpeg.ffprobe(src,(err,data)=>{
-                    console.log(data.streams)
                  width=data.streams[0].width?data.streams[0].width:data.streams[1].width
                  height=data.streams[0].height?data.streams[0].height:data.streams[1].height
                  if(width<height){

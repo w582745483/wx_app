@@ -72,7 +72,7 @@ class Menu extends Component {
                             renderItem={item => (
                                 <List.Item>
                                     <div >
-                                        <img onClick={() => this.handleClick(item.url)} style={{ width: '50px', marginLeft: '30px', marginTop: '20px' }} src={item.img}></img>
+                                        <img onClick={() => this.handleClick(item.url)} style={{ width: '50px', marginLeft: '25px', marginTop: '20px' }} src={item.img}></img>
                                         <div style={{ textAlign: 'center' }}>
                                             <span style={{ lineHeight: '1.15', fontSize: '1rem', marginLeft: '-10px' }}>{item.title}</span>
                                         </div>

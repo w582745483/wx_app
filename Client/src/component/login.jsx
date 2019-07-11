@@ -1,7 +1,11 @@
 import React from 'react'
-import { Form, Icon, Input, Button, Checkbox, Modal, Select } from 'antd'
+import { Form, Icon, Input, Button, Checkbox, Modal, Select,message } from 'antd'
+import {connect} from 'react-redux'
+import {Redirect} from 'react-router-dom'
 
 import Background from '../container/background'
+import {login} from '../redux/actions'
+
 const { Option } = Select;
 class NormalLoginForm extends React.Component {
     state = {
@@ -15,6 +19,9 @@ class NormalLoginForm extends React.Component {
         });
     }
     changePassword = () => {
+         this.props.form.validateFields((err,vals)=>{
+            console.log(vals)
+         })
         this.setState({
             changePassword: true
         })
@@ -31,6 +38,28 @@ class NormalLoginForm extends React.Component {
             console.log(err)
             if (!err) {
                 console.log('Received values of form: ', values);
+                const user={username:values.userName,password:values.password,uuid:''}
+                this.props.login(user)
+                fetch('http://47.93.189.47:22221/api/verifylogin/verifyLogin', {
+                    method: 'POST',
+                    //credentials: 'include',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': ' application/json'
+                    },
+                    body: JSON.stringify(user)
+                }).then(data => data.json())
+                    .then(res => {
+                        if(res.Success){
+                            message.destroy()
+                            message.success('注册成功！', 2)
+                        }else{
+                            message.destroy()
+                            message.success('注册失败，请重试！', 2)
+                        } 
+                       
+                    })
             }
         });
         this.props.form.resetFields()
@@ -53,6 +82,7 @@ class NormalLoginForm extends React.Component {
         }
     }
     render() {
+        const {User}=this.props
         const { getFieldDecorator } = this.props.form;
         const { visible } = this.state
         const prefixSelector = getFieldDecorator('prefix', {
@@ -63,12 +93,15 @@ class NormalLoginForm extends React.Component {
                 <Option value="87">+87</Option>
             </Select>
         );
+        if(User.redirectTo){
+            return <Redirect to={User.redirectTo}/>
+        }
         return (
             <div>
                 <Background />
                 <div className="login_box">
 
-                    <div style={{ marginLeft: '40px', marginTop: '100px' }}>
+                    <div style={{ marginLeft: '30px', marginTop: '100px' }}>
                         {visible ?
                             <div>
                                 <Modal
@@ -171,4 +204,9 @@ class NormalLoginForm extends React.Component {
         )
     }
 }
-export const Login = Form.create({ name: 'normal_login' })(NormalLoginForm);
+const Login = Form.create({ name: 'normal_login' })(NormalLoginForm);
+
+export default connect(
+    state => ({ User: state.User, Qr: state.Qr }),
+    { login }
+)(Login)

@@ -1,4 +1,4 @@
-import { Form, Input, Button, Select } from 'antd';
+import { Form, Input, Button, Select,message } from 'antd';
 import React from 'react'
 import { connect } from 'react-redux'
 import { register } from '../redux/actions'
@@ -15,9 +15,9 @@ class RegistrationForm extends React.Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values);
-                const user = { username: values.username_reg, password: values.password_reg, email: values.email_reg, phone: values.phone_reg, uuid: this.props.Qr.uuid }
+                const user = { username: values.username_reg, password: values.password_reg, email: values.email_reg, phone: values.phone_reg ,uuid:''}
                 //mongodb
-                this.props.register(user)
+                 this.props.register(user)
 
                 fetch('http://47.93.189.47:22221/api/verifylogin/userRegistration', {
                     method: 'POST',
@@ -37,6 +37,7 @@ class RegistrationForm extends React.Component {
                             message.destroy()
                             message.success('注册失败，请重试！', 2)
                         } 
+                       
                     })
             }
         });
@@ -85,7 +86,15 @@ class RegistrationForm extends React.Component {
                 <Option value="87">+87</Option>
             </Select>
         );
+        const {User}=this.props
+        if(User.msg) {
+            message.destroy()
+            message.warning(User.msg, 5)
+            
+           
+        }
         return (
+           
             <div>
                 <Background />
                 <div className="login_box">

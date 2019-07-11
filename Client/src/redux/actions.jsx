@@ -1,4 +1,4 @@
-import { GET_QR, GET_HEADER, GET_NICK_NAME, GET_WXID, GET_LOGIN, REGISTER} from './action-types'
+import { GET_QR, GET_HEADER, GET_NICK_NAME, GET_WXID, GET_LOGIN, REGISTER,ERROR_MSG,AUTH_SUCCESS} from './action-types'
 import { ws, heartCheck } from '../component/socket'
 
 
@@ -9,6 +9,8 @@ const getHeader = (header) => ({ type: GET_HEADER, data: { header } })
 const getNickname = (nickname) => ({ type: GET_NICK_NAME, data: { nickname } })
 const getloginSuccess = (loginSuccess) => ({ type: GET_LOGIN, data: { loginSuccess } })
 const getregister=user=>({type:REGISTER,data:user})
+const errorMsg=msg=>({type:ERROR_MSG,data:msg})
+const authSuccess=user=>({type:AUTH_SUCCESS,data:user})
 export const WxLogin = (uuid) => {
 
     return dispatch => {
@@ -45,9 +47,9 @@ export const WxLogin = (uuid) => {
         };
     }
 }
-export const register=({username,password,email,phone,uuid})=>{
-    return async dispatch=>{
-        const response=await fetch('http://e24589943k.wicp.vip/users/register',{
+export const register=({username,password,email,phone})=>{
+    return  dispatch=>{
+         fetch('http://e24589943k.wicp.vip/users/register',{
             method: 'POST',
             //credentials: 'include',
             mode: 'cors',
@@ -55,11 +57,37 @@ export const register=({username,password,email,phone,uuid})=>{
                 'Content-Type': 'application/json',
                 'Accept': ' application/json'
             },
-            body: JSON.stringify({username,password,email,phone,uuid})
+            body: JSON.stringify({username,password,email,phone})
+        }).then(data=>data.json())
+        .then(data=>{
+            if(data.code==0){
+                dispatch(getregister(data.data))
+            }else{
+                dispatch(errorMsg(data.msg))
+            }
         })
-        dispatch(getregister({username,password,phone,uuid}))
-        console.log({username,password,phone,uuid})
-
+        
+       
+    }
+}
+export const login=({username,password})=>{
+    return dispatch=>{
+        fetch('http://e24589943k.wicp.vip/users/login',{
+            method:'POST',
+            mode: 'cors',
+            headers:{
+                'Content-Type': 'application/json',
+                'Accept': ' application/json'
+            },
+            body:JSON.stringify({username,password})
+        }).then(data=>data.json())
+        .then(data=>{
+            if(data.code==0){
+                dispatch(authSuccess(data.data))
+            }else{
+                dispatch(errorMsg(data.msg))
+            }
+        })
     }
 }
 export const Sendline=()=>{

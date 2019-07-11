@@ -4,7 +4,7 @@ export default class Background extends React.Component {
   
     render() {
         return (
-            <div>
+            <div >
                 <img src={require('../assets/img/background.jpg')} alt='logo' className='login-background' />
             </div>
         )

@@ -1,11 +1,11 @@
 import React from 'react'
 import { Input, Button, message, Modal, List } from 'antd'
 import Background from '../container/background'
-import PubSub from 'pubsub-js'
 import { connect } from 'react-redux'
 
 class Bigvideo extends React.Component {
     state = {
+        test:1,
         videoUrl: '',
         videoText: '',
         videodata:[],
@@ -33,7 +33,11 @@ class Bigvideo extends React.Component {
             visible: true,
         });
     }
-
+    handleBlur=()=>{
+        setTimeout(() => {
+            window.dispatchEvent(new Event('resize'))
+            }, 0)
+    }
     handleCancel = (e) => {
         this.setState({
             visible: false,
@@ -79,9 +83,7 @@ class Bigvideo extends React.Component {
         })
 
     }
-  componentWillReceiveProps(nextProps){
-    // if(nextProps.)
-  }
+
     
     render() {
         return (
@@ -89,7 +91,7 @@ class Bigvideo extends React.Component {
                 <Background />
                 <div className='bigvideo'>
                     <img src={require('../assets//img/sunshine.jpg')} style={{ position: 'relative', width: '100%', height: '200px' }} alt="sunshine"></img>
-                    <Input placeholder="请输入视频链接地址" value={this.state.videoUrl} onChange={e => this.handleChange('videoUrl', e.target.value)} style={{ marginTop: '70px', width: '80%', height: '50px' }} size="large" />
+                    <Input placeholder="请输入视频链接地址" value={this.state.videoUrl} onBlur={this.handleBlur}  onChange={e => this.handleChange('videoUrl', e.target.value)} style={{ marginTop: '70px', width: '80%', height: '50px' }} size="large" />
                     <Button type="primary" onClick={this.showModal} style={{ marginTop: '60px', height: '40px' }}>查看视频</Button>
                 </div>
                 <div>
