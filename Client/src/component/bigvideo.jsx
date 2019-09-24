@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 
 class Bigvideo extends React.Component {
     state = {
-        sdsd:"",
         test:1,
         videoUrl: '',
         videoText: '',
